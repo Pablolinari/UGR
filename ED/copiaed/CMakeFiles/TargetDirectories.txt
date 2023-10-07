@@ -1,0 +1,4 @@
+/home/pablo/Escritorio/copiaed/CMakeFiles/image.dir
+/home/pablo/Escritorio/copiaed/CMakeFiles/negativo.dir
+/home/pablo/Escritorio/copiaed/CMakeFiles/edit_cache.dir
+/home/pablo/Escritorio/copiaed/CMakeFiles/rebuild_cache.dir
