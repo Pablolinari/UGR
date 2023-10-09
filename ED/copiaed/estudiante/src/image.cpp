@@ -173,8 +173,8 @@ Image Image::Zoom2X()const{
                 ++auxj;
             }
             else{
-
-                img.set_pixel(i,j,0);
+                
+                img.set_pixel(i,j,);
             }
         }
     }
