@@ -166,7 +166,7 @@ Image Image::Zoom2X()const{
     Image img(nrows,ncols);
 
     for (int i=0; i<ncols; ++i){
-        for(int j =0 ; j<nrows; j++){
+        for(int j =0 ; j<rows; j++){
             if(i%2 == 0){
                 img.set_pixel(i,j,get_pixel(auxi,auxj));
                 ++auxi;
@@ -174,10 +174,24 @@ Image Image::Zoom2X()const{
             }
             else{
                 
-                img.set_pixel(i,j,);
+                img.set_pixel(i,j,(img.get_pixel(i-1,j) + get_pixel(i/2 +1 , j))/2);
             }
         }
     }
+    for (int j=0; j<nrows; ++j){
+        for(int i =0 ; i<ncols; i++){
+            if(i%2 == 0){
+                img.set_pixel(i,j,get_pixel(auxi,auxj));
+                ++auxi;
+                ++auxj;
+            }
+            else{
+                
+                img.set_pixel(i,j,(img.get_pixel(i-1,j) + get_pixel(i/2 +1 , j))/2);
+            }
+        }
+    }
+
 }
 // Genera un icono como reducción de una imagen.
 Image Image::Subsample(int factor) const{
