@@ -12,6 +12,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>estudiante/src/contraste.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>estudiante/src/subimagen.cpp</itemPath>
     </logicalFolder>
@@ -42,6 +43,8 @@
           </incDir>
         </ccTool>
       </compileType>
+      <item path="estudiante/src/contraste.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="estudiante/src/subimagen.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
@@ -67,6 +70,8 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="estudiante/src/contraste.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="estudiante/src/subimagen.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">

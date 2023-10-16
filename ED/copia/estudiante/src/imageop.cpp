@@ -49,8 +49,7 @@ Image Image::Subsample(int factor) const{
     
     for (int i= 0; i<ncols; i++){
         for (int j=0; j<nrows; j++){
-            byte nuevo = round(this->Mean(i*factor, j*factor, factor, factor));
-            subsample.set_pixel(i,j,nuevo);
+            subsample.set_pixel(i,j,round(this->Mean(i*factor, j*factor, factor, factor)));
         }
     }
     return subsample;
@@ -59,15 +58,36 @@ Image Image::Subsample(int factor) const{
 // Modifica el contraste de una Imagen .
 void Image::AdjustContrast (byte in1, byte in2, byte out1, byte out2){
     byte nuevo =0;
-    for(int i=0;i<cols;i++){
-        for (int j=0;j<rows;j++){
-            if((this->get_pixel(i,j) >=0) && (this->get_pixel(i,j) < in1)){
-                nuevo = 
+    byte a,b ,max, min;
+    int nrows = this->get_rows();
+    int ncols = this ->get_cols();
+    for(int i=0;i<ncols;i++){
+        for (int j=0;j<nrows;j++){
+            std::cout << img[i][j] -'0'<< std::endl;
+            if((this->get_pixel(i,j) <=in1)){
+                a = 0;
+                b = in1;
+                max = out1;
+                min = 0;
+                //std::cout << nuevo -'0' << std::endl;
             }else if((this->get_pixel(i,j) >=in1) && (this->get_pixel(i,j) < in2)){
-                
-            }else if ((this->get_pixel(i,j) >=in2) && (this->get_pixel(i,j) <= 225))
+                a = in1;
+                b = in2;
+                max = out2;
+                min = out1;
+                //std::cout << nuevo -'0' << std::endl;
+            }
+            else if ((this->get_pixel(i,j) >=in2) && (this->get_pixel(i,j) <= 255)){
+                a = in2;
+                b = 255;
+                max = 255;
+                min = out2;
+                std::cout << nuevo -'0' << std::endl;
         }
+                nuevo = round(min + ((round((max-min)/(b-a)))* ( this->get_pixel(i,j)-a)));
+                this->set_pixel(i,j,nuevo);
     }
+}
 }
 
 double Image::Mean(int i, int j, int height, int width) const {

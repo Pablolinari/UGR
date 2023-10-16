@@ -1,5 +1,5 @@
 CMakeFiles/image.dir/estudiante/src/imageIO.cpp.o: \
- /home/pablolinari/Escritorio/copia/estudiante/src/imageIO.cpp \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/src/imageIO.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/12/string \
  /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h \
@@ -112,7 +112,7 @@ CMakeFiles/image.dir/estudiante/src/imageIO.cpp.o: \
  /usr/include/c++/12/bits/functional_hash.h \
  /usr/include/c++/12/bits/hash_bytes.h \
  /usr/include/c++/12/bits/basic_string.tcc \
- /home/pablolinari/Escritorio/copia/estudiante/include/imageIO.h \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/include/imageIO.h \
  /usr/include/c++/12/fstream /usr/include/c++/12/istream \
  /usr/include/c++/12/ios /usr/include/c++/12/exception \
  /usr/include/c++/12/bits/exception_ptr.h \

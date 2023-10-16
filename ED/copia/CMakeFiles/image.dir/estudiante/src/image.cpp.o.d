@@ -1,5 +1,5 @@
 CMakeFiles/image.dir/estudiante/src/image.cpp.o: \
- /home/pablolinari/Escritorio/copia/estudiante/src/image.cpp \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/src/image.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/12/cstring \
  /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h \
@@ -149,6 +149,6 @@ CMakeFiles/image.dir/estudiante/src/image.cpp.o: \
  /usr/include/c++/12/bits/basic_ios.tcc \
  /usr/include/c++/12/bits/ostream.tcc /usr/include/c++/12/istream \
  /usr/include/c++/12/bits/istream.tcc \
- /home/pablolinari/Escritorio/copia/estudiante/include/image.h \
- /home/pablolinari/Escritorio/copia/estudiante/include/imageIO.h \
- /home/pablolinari/Escritorio/copia/estudiante/include/imageIO.h
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/include/image.h \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/include/imageIO.h \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/include/imageIO.h

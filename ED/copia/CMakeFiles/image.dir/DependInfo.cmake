@@ -8,9 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/pablolinari/Escritorio/copia/estudiante/src/image.cpp" "CMakeFiles/image.dir/estudiante/src/image.cpp.o" "gcc" "CMakeFiles/image.dir/estudiante/src/image.cpp.o.d"
-  "/home/pablolinari/Escritorio/copia/estudiante/src/imageIO.cpp" "CMakeFiles/image.dir/estudiante/src/imageIO.cpp.o" "gcc" "CMakeFiles/image.dir/estudiante/src/imageIO.cpp.o.d"
-  "/home/pablolinari/Escritorio/copia/estudiante/src/imageop.cpp" "CMakeFiles/image.dir/estudiante/src/imageop.cpp.o" "gcc" "CMakeFiles/image.dir/estudiante/src/imageop.cpp.o.d"
+  "/home/pablo/Escritorio/UGR/ED/copia/estudiante/src/image.cpp" "CMakeFiles/image.dir/estudiante/src/image.cpp.o" "gcc" "CMakeFiles/image.dir/estudiante/src/image.cpp.o.d"
+  "/home/pablo/Escritorio/UGR/ED/copia/estudiante/src/imageIO.cpp" "CMakeFiles/image.dir/estudiante/src/imageIO.cpp.o" "gcc" "CMakeFiles/image.dir/estudiante/src/imageIO.cpp.o.d"
+  "/home/pablo/Escritorio/UGR/ED/copia/estudiante/src/imageop.cpp" "CMakeFiles/image.dir/estudiante/src/imageop.cpp.o" "gcc" "CMakeFiles/image.dir/estudiante/src/imageop.cpp.o.d"
   )
 
 # Targets to which this target links.

@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pablolinari/Escritorio/copia
+CMAKE_SOURCE_DIR = /home/pablo/Escritorio/UGR/ED/copia
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pablolinari/Escritorio/copia
+CMAKE_BINARY_DIR = /home/pablo/Escritorio/UGR/ED/copia
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pablolinari/Escritorio/copia/CMakeFiles /home/pablolinari/Escritorio/copia//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pablo/Escritorio/UGR/ED/copia/CMakeFiles /home/pablo/Escritorio/UGR/ED/copia//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pablolinari/Escritorio/copia/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pablo/Escritorio/UGR/ED/copia/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -143,17 +143,41 @@ negativo/fast:
 .PHONY : negativo/fast
 
 #=============================================================================
-# Target rules for targets named subimagen
+# Target rules for targets named contraste
 
 # Build rule for target.
-subimagen: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 subimagen
-.PHONY : subimagen
+contraste: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 contraste
+.PHONY : contraste
 
 # fast build rule for target.
-subimagen/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/subimagen.dir/build.make CMakeFiles/subimagen.dir/build
-.PHONY : subimagen/fast
+contraste/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/contraste.dir/build.make CMakeFiles/contraste.dir/build
+.PHONY : contraste/fast
+
+estudiante/src/contraste.o: estudiante/src/contraste.cpp.o
+.PHONY : estudiante/src/contraste.o
+
+# target to build an object file
+estudiante/src/contraste.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/contraste.dir/build.make CMakeFiles/contraste.dir/estudiante/src/contraste.cpp.o
+.PHONY : estudiante/src/contraste.cpp.o
+
+estudiante/src/contraste.i: estudiante/src/contraste.cpp.i
+.PHONY : estudiante/src/contraste.i
+
+# target to preprocess a source file
+estudiante/src/contraste.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/contraste.dir/build.make CMakeFiles/contraste.dir/estudiante/src/contraste.cpp.i
+.PHONY : estudiante/src/contraste.cpp.i
+
+estudiante/src/contraste.s: estudiante/src/contraste.cpp.s
+.PHONY : estudiante/src/contraste.s
+
+# target to generate assembly for a file
+estudiante/src/contraste.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/contraste.dir/build.make CMakeFiles/contraste.dir/estudiante/src/contraste.cpp.s
+.PHONY : estudiante/src/contraste.cpp.s
 
 estudiante/src/image.o: estudiante/src/image.cpp.o
 .PHONY : estudiante/src/image.o
@@ -251,30 +275,6 @@ estudiante/src/negativo.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/negativo.dir/build.make CMakeFiles/negativo.dir/estudiante/src/negativo.cpp.s
 .PHONY : estudiante/src/negativo.cpp.s
 
-estudiante/src/subimagen.o: estudiante/src/subimagen.cpp.o
-.PHONY : estudiante/src/subimagen.o
-
-# target to build an object file
-estudiante/src/subimagen.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/subimagen.dir/build.make CMakeFiles/subimagen.dir/estudiante/src/subimagen.cpp.o
-.PHONY : estudiante/src/subimagen.cpp.o
-
-estudiante/src/subimagen.i: estudiante/src/subimagen.cpp.i
-.PHONY : estudiante/src/subimagen.i
-
-# target to preprocess a source file
-estudiante/src/subimagen.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/subimagen.dir/build.make CMakeFiles/subimagen.dir/estudiante/src/subimagen.cpp.i
-.PHONY : estudiante/src/subimagen.cpp.i
-
-estudiante/src/subimagen.s: estudiante/src/subimagen.cpp.s
-.PHONY : estudiante/src/subimagen.s
-
-# target to generate assembly for a file
-estudiante/src/subimagen.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/subimagen.dir/build.make CMakeFiles/subimagen.dir/estudiante/src/subimagen.cpp.s
-.PHONY : estudiante/src/subimagen.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -283,9 +283,12 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... contraste"
 	@echo "... image"
 	@echo "... negativo"
-	@echo "... subimagen"
+	@echo "... estudiante/src/contraste.o"
+	@echo "... estudiante/src/contraste.i"
+	@echo "... estudiante/src/contraste.s"
 	@echo "... estudiante/src/image.o"
 	@echo "... estudiante/src/image.i"
 	@echo "... estudiante/src/image.s"
@@ -298,9 +301,6 @@ help:
 	@echo "... estudiante/src/negativo.o"
 	@echo "... estudiante/src/negativo.i"
 	@echo "... estudiante/src/negativo.s"
-	@echo "... estudiante/src/subimagen.o"
-	@echo "... estudiante/src/subimagen.i"
-	@echo "... estudiante/src/subimagen.s"
 .PHONY : help
 
 

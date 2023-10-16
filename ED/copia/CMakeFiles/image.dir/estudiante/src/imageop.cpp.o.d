@@ -1,5 +1,5 @@
 CMakeFiles/image.dir/estudiante/src/imageop.cpp.o: \
- /home/pablolinari/Escritorio/copia/estudiante/src/imageop.cpp \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/src/imageop.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/12/iostream \
  /usr/include/x86_64-linux-gnu/c++/12/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/12/bits/os_defines.h \
@@ -155,6 +155,6 @@ CMakeFiles/image.dir/estudiante/src/imageop.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /usr/include/x86_64-linux-gnu/bits/mathcalls-narrow.h \
  /usr/include/x86_64-linux-gnu/bits/iscanonical.h \
- /home/pablolinari/Escritorio/copia/estudiante/include/image.h \
- /home/pablolinari/Escritorio/copia/estudiante/include/imageIO.h \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/include/image.h \
+ /home/pablo/Escritorio/UGR/ED/copia/estudiante/include/imageIO.h \
  /usr/include/c++/12/cassert /usr/include/assert.h

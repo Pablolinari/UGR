@@ -45,5 +45,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/image.dir/DependInfo.cmake"
   "CMakeFiles/negativo.dir/DependInfo.cmake"
-  "CMakeFiles/subimagen.dir/DependInfo.cmake"
+  "CMakeFiles/contraste.dir/DependInfo.cmake"
   )

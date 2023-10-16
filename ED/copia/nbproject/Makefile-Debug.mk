@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/estudiante/src/contraste.o \
 	${OBJECTDIR}/estudiante/src/subimagen.o \
 	${OBJECTDIR}/main.o
 
@@ -62,6 +63,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/copia: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/copia ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/estudiante/src/contraste.o: estudiante/src/contraste.cpp
+	${MKDIR} -p ${OBJECTDIR}/estudiante/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Iestudiante/include -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/estudiante/src/contraste.o estudiante/src/contraste.cpp
 
 ${OBJECTDIR}/estudiante/src/subimagen.o: estudiante/src/subimagen.cpp
 	${MKDIR} -p ${OBJECTDIR}/estudiante/src
