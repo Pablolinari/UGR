@@ -1,0 +1,7 @@
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/maxstack.dir
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/maxqueue.dir
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/pila_max.dir
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/cola_max.dir
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/doc_doxygen.dir
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/edit_cache.dir
+/home/pablo/Escritorio/UGR/ED/practicas/codigo/CMakeFiles/rebuild_cache.dir
