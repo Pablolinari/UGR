@@ -1,5 +1,0 @@
-/home/pablo/Escritorio/UGR/ED/copia/CMakeFiles/image.dir
-/home/pablo/Escritorio/UGR/ED/copia/CMakeFiles/negativo.dir
-/home/pablo/Escritorio/UGR/ED/copia/CMakeFiles/contraste.dir
-/home/pablo/Escritorio/UGR/ED/copia/CMakeFiles/edit_cache.dir
-/home/pablo/Escritorio/UGR/ED/copia/CMakeFiles/rebuild_cache.dir
