@@ -8,7 +8,7 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-    // // Run the current exercise
+    // Run the current exercise
     // MaxQueue queue;
 
     // for(int i = 1; i < argc; i++){
@@ -19,5 +19,5 @@ int main(int argc, char *argv[]){
     //         queue.push(atoi(argv[i]));
     //     }
     // }
-    // return 0;
+    return 0;
 }

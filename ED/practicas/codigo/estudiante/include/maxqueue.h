@@ -4,7 +4,7 @@
  * @author
  */
 
-struct pareja
+struct element
 {
     int max;
     int num;
