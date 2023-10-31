@@ -220,7 +220,9 @@ queue<int> mergesortedqueues(queue<int> q1, queue<int> q2){
     return q3;
 }
 
-
+stack<int> coctel(stack<int> s1 , stack<int> s2){
+    
+}
 
 int main()
 {
@@ -230,6 +232,6 @@ int main()
     q3 = mergesortedqueues(q1,q2);
     imprimecola(q3);
     
-
+    
     return 0;
 }

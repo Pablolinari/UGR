@@ -13,7 +13,7 @@ bool Extraer(list<intervalo> & l1 , intervalo x , list<intervalo> & l2 ){
     while (it!=l1.end() && continua)
     {
         if(*it->first() >= x.first() && *it->second() <= x.second()){
-            continua = false;
+            continua = false; 
             pos = it;
         }
         it++;
