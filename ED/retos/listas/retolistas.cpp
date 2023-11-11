@@ -1,78 +1,109 @@
 #include <ios>
+#include <iostream>
 #include <iterator>
-#include<list>
-#include<iostream>
+#include <list>
 #include <system_error>
-#include<utility>
+#include <utility>
 #include <vector>
 
-
 using namespace std;
-typedef pair<int,int> intervalo;
+typedef pair<int, int> intervalo;
 
-bool Extraer(list<intervalo> & l1 , intervalo x , list<intervalo> & l2 ){
-bool pertenece = false;
-list<intervalo>::iterator it , it1;
-for (it = l1.begin(); it != l1.end(); ++it) {
-    if ((it->first <= x.first )&& (it->second >= x.second)) {
-        pertenece = true;
-
-        if(it->first == x.first ){
-            l1.insert(it,intervalo(x.second,it->second));
-        }        
-        if(it->second == x.second){
-            
-            l1.insert(it,intervalo(it->first,x.first-1));
-        }
-        else{
-        l1.insert(it,intervalo(it->first,x.first-1));
-        l1.insert(it,intervalo(x.second+1,it->second));
-        }
-        l1.erase(it);
-        
+bool Extraer(list<intervalo> &l1, intervalo x, list<intervalo> &l2) {
+  bool pertenece = false, continua = true;
+  list<intervalo>::iterator it, it1;
+  for (it = l1.begin(); it != l1.end() && continua; ++it) {
+    if (it->first <= x.first && it->second >= x.second) {
+      intervalo a(*it);
+      if (a.first < x.first && a.second > x.second) {
+        l1.insert(it, intervalo(a.first, x.first - 1));
+        l1.insert(it, intervalo(x.second + 1, a.second));
+      }
+      if (a.first == x.first) {
+        l1.insert(it, intervalo(x.second + 1, a.second));
+      }
+      if (a.second == x.second) {
+        l1.insert(it, intervalo(a.first, x.first - 1));
+      }
+      continua = false;
+      pertenece = true;
+      l1.erase(it);
     }
+  }
+
+  return pertenece;
 }
 
+int main() {
 
+  list<intervalo> l1, l2;
+  intervalo i;
+  i.first = 12;
+  i.second = 14;
+  intervalo l1_1, l1_2, l1_3, l1_4, l2_2, l2_1, l2_3;
+  l1_1.first = 1;
+  l1_1.second = 7;
+  l1_2.first = 10;
+  l1_2.second = 14;
+  l1_3.first = 18;
+  l1_3.second = 20;
+  l1_4.first = 25;
+  l1_4.second = 26;
+  l2_1.first = 0;
+  l2_1.second = 1;
+  l2_2.first = 14;
+  l2_2.second = 16;
+  l2_3.first = 20;
+  l2_3.second = 23;
 
-return pertenece;
-}
+  l1.push_back(l1_1);
+  l1.push_back(l1_2);
+  l1.push_back(l1_3);
+  l1.push_back(l1_4);
+  l2.push_back(l2_1);
+  l2.push_back(l2_2);
+  l2.push_back(l2_3);
 
-int main(){
+  list<intervalo>::iterator it;
+  bool extraido = Extraer(l1, i, l2);
 
-    list<intervalo> l1 , l2;
-    int n1 = 0,n2 = 0 , n = 1;
+  for (it = l1.begin(); it != l1.end(); ++it) {
+    cout << " [" << it->first << "," << it->second << "] ,";
+  }
+  cout << boolalpha << endl << extraido << endl;
+  /////////////////////////////////////////////////////
 
-    while(n2 != -1){
-        cout << "intervalo " << n << " : \n";
-        cout << "Primer numero : \n";
-        cin  >> n1;
-        cout << "Segundo numero : \n";
-        cin >>n2;
-        if(n2 != -1)
-            l1.push_back(intervalo(n1,n2));
-        n++;
-    }
-    list<intervalo>::iterator it;
-     for(it=l1.begin();it!=l1.end();++it){
-         cout <<" [" <<it->first <<","<< it->second << "] ,";
-     }
-    cout << "intervalo  a buscar : ";
-    cout << "Primer numero : \n";
-    cin  >> n1;
-    cout << "Segundo numero : \n";
-    cin >>n2;
-    intervalo i ;
-    i.first = n1;
-    i.second = n2;
-    
+  i.first = 12;
+  i.second = 20;
 
-    bool extraido = Extraer(l1, i, l2);
+  l1_1.first = 1;
+  l1_1.second = 7;
+  l1_2.first = 10;
+  l1_2.second = 22;
+  l1_3.first = 25;
+  l1_3.second = 26;
 
-     for(it=l1.begin();it!=l1.end();++it){
-         cout <<" [" <<it->first <<","<< it->second << "] ,";
-     }
-     cout <<boolalpha << endl << extraido; 
+  l2_1.first = 0;
+  l2_1.second = 1;
+  l2_2.first = 14;
+  l2_2.second = 16;
+  l2_3.first = 20;
+  l2_3.second = 23;
 
-    return 0;
+  l2.clear();
+  l1.clear();
+  l1.push_back(l1_1);
+  l1.push_back(l1_2);
+  l1.push_back(l1_3);
+  l2.push_back(l2_1);
+  l2.push_back(l2_2);
+  l2.push_back(l2_3);
+
+  extraido = Extraer(l1, i, l2);
+  for (it = l1.begin(); it != l1.end(); ++it) {
+    cout << " [" << it->first << "," << it->second << "] ,";
+  }
+  cout << boolalpha << endl << extraido << endl;
+
+  return 0;
 };
