@@ -22,12 +22,20 @@ bool Extraer(list<intervalo> &l1, intervalo x, list<intervalo> &l2) {
       if (a.first == x.first) {
         l1.insert(it, intervalo(x.second + 1, a.second));
       }
-      if (a.second == x.second) {
+      else if (a.second == x.second) {
         l1.insert(it, intervalo(a.first, x.first - 1));
       }
       continua = false;
       pertenece = true;
       l1.erase(it);
+    }
+  }
+  continua = true;
+  for(it = l2.begin(); it != l2.end() && continua ; ++it){
+    if(it->second > x.second){
+      l2.insert(it--,x);
+
+      continua =false;
     }
   }
 
@@ -71,6 +79,11 @@ int main() {
     cout << " [" << it->first << "," << it->second << "] ,";
   }
   cout << boolalpha << endl << extraido << endl;
+  
+  for (it = l2.begin(); it != l2.end(); ++it) {
+    cout << " [" << it->first << "," << it->second << "] ,";
+  }
+  cout << endl;
   /////////////////////////////////////////////////////
 
   i.first = 12;
@@ -104,6 +117,9 @@ int main() {
     cout << " [" << it->first << "," << it->second << "] ,";
   }
   cout << boolalpha << endl << extraido << endl;
-
+  for (it = l2.begin(); it != l2.end(); ++it) {
+    cout << " [" << it->first << "," << it->second << "] ,";
+  }
+  cout << endl;
   return 0;
 };
