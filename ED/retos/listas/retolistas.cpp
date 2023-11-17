@@ -33,7 +33,6 @@ bool Extraer(list<intervalo> &l1, intervalo x, list<intervalo> &l2) {
   continua = true;
   for(it = l2.begin(); it != l2.end() && continua ; ++it){
     if(it->second > x.second){
-      l2.insert(it--,x);
 
       continua =false;
     }
