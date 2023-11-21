@@ -30,14 +30,25 @@ bool Extraer(list<intervalo> &l1, intervalo x, list<intervalo> &l2) {
       l1.erase(it);
     }
   }
+  intervalo a;
   continua = true;
+
   for(it = l2.begin(); it != l2.end() && continua ; ++it){
-    if(it->second > x.second){
-
-      continua =false;
+    if(it->second < x.first){
+      l2.insert(it,intervalo(x.first,x.second));
+      l2.erase(it);
     }
-  }
+    it1 = it;
+    while(continua){
+      if(it1->second < x.second){
+        l2.erase(it1);
+        continua = 1;
+      }
+      it1++;
+    }
 
+  }
+  
   return pertenece;
 }
 
