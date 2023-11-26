@@ -27,17 +27,33 @@ bool Extraer(list<intervalo> &l1, intervalo x, list<intervalo> &l2) {
       }
       continua = false;
       pertenece = true;
-      l1.erase(it);
+      it = l1.erase(it);
     }
   }
+  intervalo a;
   continua = true;
+  it1 = l2.begin();
+  bool sigue1 =true , sigue2 = true;
+  auto it2=it1;
   for(it = l2.begin(); it != l2.end() && continua ; ++it){
-    if(it->second > x.second){
-
-      continua =false;
+    if(it->first >= x.first){
+      a.first = x.first;
+      it1 = it;
+    }   
+    if(it->second  <= x.second){
+      a.second = x.second;
+      it2 = it;
+      l2.insert(it,a);
+      continua  = false;
     }
-  }
+    
 
+
+  }
+    l2.erase(it1,it2);
+if(it1 == l2.end())
+    cout << "hola" ;
+  
   return pertenece;
 }
 
@@ -77,7 +93,7 @@ int main() {
   for (it = l1.begin(); it != l1.end(); ++it) {
     cout << " [" << it->first << "," << it->second << "] ,";
   }
-  cout << boolalpha << endl << extraido << endl;
+cout  << endl;
   
   for (it = l2.begin(); it != l2.end(); ++it) {
     cout << " [" << it->first << "," << it->second << "] ,";
@@ -110,12 +126,12 @@ int main() {
   l2.push_back(l2_1);
   l2.push_back(l2_2);
   l2.push_back(l2_3);
-
+cout << "-------------------------------------------------------------"<<endl;
   extraido = Extraer(l1, i, l2);
   for (it = l1.begin(); it != l1.end(); ++it) {
     cout << " [" << it->first << "," << it->second << "] ,";
   }
-  cout << boolalpha << endl << extraido << endl;
+  cout  << endl;
   for (it = l2.begin(); it != l2.end(); ++it) {
     cout << " [" << it->first << "," << it->second << "] ,";
   }

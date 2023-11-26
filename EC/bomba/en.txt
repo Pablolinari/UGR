@@ -1,0 +1,19 @@
+UE                  | Unión Europea
+UNESCO              | Organización de las Naciones Unidas para la Educación, la Ciencia y la Cultura
+EC                  | Comisión Europea
+OMC                 | Organización Mundial del Comercio
+CCG                 | Consejo de Cooperación del Golfo
+MSF                 | Medidas Sanitarias y Fitosanitarias
+AL                  | Amarillamiento Letal
+Profigen            | Profesionales de la Genética Vegetal
+Tropic Safe         | Programa de investigación sobre la seguridad de los cultivos tropicales
+Koppert             | Koppert Biological Systems
+CCEAG               | Consejo de Cooperación para los Estados Árabes del Golfo
+GCC                 | Consejo de Cooperación del Golfo
+PIB                 | Producto Interno Bruto
+LSD                 | Langosta del Desierto
+RAS                 | Reino de Arabia Saudita
+FAO                 | Organización de las Naciones Unidas para la Alimentación y la Agricultura
+ISPM                | Normas Internacionales para Medidas Fitosanitarias
+CIPF                | Convención Internacional de Protección Fitosanitaria
+MPF                 | Medidas de Protección Fitosanitaria
