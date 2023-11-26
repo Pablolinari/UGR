@@ -5,7 +5,7 @@
 #include <sys/time.h> // para gettimeofday(), struct timeval
 #define SIZE 100
 #define TLIM 5
-char password[] = "abracadabra\n"; // contraseña
+char password[] = "\n"; // contraseña
 int passcode = 7777;               // pin
 void boom(void) {
   printf("\n"
@@ -23,31 +23,14 @@ void defused(void) {
          "\n");
   exit(0);
 }
+int encrip1(char * cad1 , char * cad2){
+  for(int i = 0; i < strlen(cad1); i++){
+
+  }
+}
 
 int main() {
-  char pw[SIZE];
-  int pc, n;
-  struct timeval tv1, tv2; // gettimeofday() secs-usecs
-  gettimeofday(&tv1, NULL);
-  do
-    printf("\nIntroduce la contraseña: ");
-  while (fgets(pw, SIZE, stdin) == NULL);
-  if (strncmp(pw, password, sizeof(password)))
-    boom();
-  gettimeofday(&tv2, NULL);
-  if (tv2.tv_sec - tv1.tv_sec > TLIM)
-    boom();
-  do {
-    printf("\nIntroduce el pin: ");
-    if ((n = scanf("%i", &pc)) == 0)
-      scanf("%*s") == 1;
-  } while (n != 1);
-  if (pc != passcode)
-    boom();
-  gettimeofday(&tv1, NULL);
-  if (tv1.tv_sec - tv2.tv_sec > TLIM)
-    boom();
-  defused();
+
 
   return 0;
 }
