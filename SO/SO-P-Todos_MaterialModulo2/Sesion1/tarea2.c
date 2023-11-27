@@ -16,6 +16,7 @@ Trabajo con llamadas al sistema del Sistema de Archivos ''POSIX 2.10 compliant''
 #include<stdio.h>
 #include<errno.h>
 #include<string.h>
+#define MAC(st_mode)  
 
 int main(int argc, char *argv[])
 {
