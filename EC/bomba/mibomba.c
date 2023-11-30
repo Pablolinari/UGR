@@ -4,11 +4,12 @@
 #include <string.h>   // para strncmp()
 #include <sys/time.h> // para gettimeofday(), struct timeval
 #define SIZE 100
-#define TLIM 5
+#define TLIM 20
+
 char password[] = ""; // contraseña
-int base[]={132,111,327,98,388,69,335,116,690,122};
-int a =10;
-int passcode = 34567;    // pin
+int base[]={132,111,327,98,388,69,335,116,690,122}; // Contraseña a introducir  = BombaECtsz
+int a =6;
+char cont [] = "wzCbdupxFAtsoOP\0" ;   //x69 // pin    499485
 void boom(void)
 {
     printf("\n"
@@ -32,7 +33,7 @@ void defused(void)
 int main()
 {
     char pw[SIZE];
-    int pc, n;
+    int pc,pp = 0, n;
     struct timeval tv1, tv2; // gettimeofday() secs-usecs
     gettimeofday(&tv1, NULL);
     do
@@ -41,11 +42,11 @@ int main()
     int conv[10];
     int s = strlen(pw)-1;
     int div = 2;
-    if(s != a){
+    if(s != a+4){
         boom();
     }
-    for(int i = 0 ; i< a; i++){
-        if(i%2 != 0){
+    for(int i = 0 ; i< a+4; i++){
+        if(i%2 == 0){
             conv[i] = div*pw[i]; 
         }
         else{
@@ -57,14 +58,13 @@ int main()
 
     }
 
-    for(int i = 0; i!= a; ++i){
+    for(int i = 0; i!= a+4; ++i){
         if(conv[i] != base[i]){
             boom();
         }
         
     }
 
-    
    
     do
     {
@@ -72,9 +72,21 @@ int main()
         if ((n = scanf("%i", &pc)) == 0)
             scanf("%*s") == 1;
     } while (n != 1);
+
+
+    for(int i = 0 ; i<a+9 ; i++){
+        pp+=cont[i];
+    }
+    pp = base[6]*pp;
     
-    gettimeofday(&tv1, NULL);
-    if (tv1.tv_sec - tv2.tv_sec > TLIM)
+    if (pc != pp  ){
         boom();
+    }
+    gettimeofday(&tv1, NULL);
+    if (  tv2.tv_sec-tv1.tv_sec > TLIM){
+        boom();
+    }
     defused();
+
+    return 0;
 }
