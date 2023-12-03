@@ -42,6 +42,12 @@ int main()
     int conv[10];
     int s = strlen(pw)-1;
     int div = 2;
+    
+    gettimeofday(&tv1, NULL);
+    if (  tv2.tv_sec-tv1.tv_sec > TLIM){
+        boom();
+    }
+    
     if(s != a+4){
         boom();
     }
