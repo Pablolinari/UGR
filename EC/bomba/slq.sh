@@ -2,7 +2,6 @@
 
 gcc $1  -o "mibomba" -no-pie
 
-gdb ./mibomba -e "layout asm" -e "layout regs" -e "b main" -e "run" -e "set write on" -e "set { char } 0x40130d=0xeb" -e "set { char } 0x401323=0xeb" -e "set { char } 0x401323=0xeb" -e "set { char } 0x401323=0xeb" -e"set { char } 0x401323=0xeb"
-
+gdb ./mibomba -ex "layout asm" -ex "layout regs" -ex "b main" -ex "run" -ex "set write on" -ex "set { char } 0x40130d=0xeb" -ex "set { char } 0x401323=0xeb" -ex "set { char } 0x401323=0xeb" -ex "set { char } 0x401323=0xeb" -ex "set { char } 0x401323=0xeb"
 
 

@@ -1,4 +1,4 @@
-// gcc -Og bomba.c -o bomba -no-pie -fno-guess-branch-probability
+// gcc -Og 2023_PLP_v1.c -o 2023_PLP_v1 -no-pie -fno-guess-branch-probability
 #include <stdio.h>    // para printf(), fgets(), scanf()
 #include <stdlib.h>   // para exit()
 #include <string.h>   // para strncmp()
