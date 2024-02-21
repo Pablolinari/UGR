@@ -1,4 +1,0 @@
-/home/pablolinari/UGR/ED/practicas/set-map/CMakeFiles/palabras_longitud.dir
-/home/pablolinari/UGR/ED/practicas/set-map/CMakeFiles/doc_doxygen.dir
-/home/pablolinari/UGR/ED/practicas/set-map/CMakeFiles/edit_cache.dir
-/home/pablolinari/UGR/ED/practicas/set-map/CMakeFiles/rebuild_cache.dir

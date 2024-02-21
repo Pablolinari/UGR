@@ -1,6 +1,0 @@
-PROJECT_NAME           = "Práctica 2. Pilas y Colas"
-OUTPUT_DIRECTORY       = /home/pablo/Escritorio/UGR/ED/practicas/codigo/doc_doxygen/
-INPUT                  = /home/pablo/Escritorio/UGR/ED/practicas/codigo/estudiante/include /home/pablo/Escritorio/UGR/ED/practicas/codigo/estudiante/src /home/pablo/Escritorio/UGR/ED/practicas/codigo/estudiante/doc
-GENERATE_LATEX         = NO
-IMAGE_PATH             = /home/pablo/Escritorio/UGR/ED/practicas/codigo/estudiante/doc
-EXTRACT_PRIVATE	       = NO
