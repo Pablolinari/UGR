@@ -1,0 +1,81 @@
+%_________________________________________Heading_______________________________________________%
+
+\documentclass[11pt]{article}
+\input{assets/portada.tex}
+\usepackage{assets/formulas}
+\newcommand{\negrita}[1]{\textbf{#1}}
+\hbadness=10000 % Suppress Underfull \hbox warnings
+
+%_________________________________________Indice:_______________________________________________%
+\begin{document}                                                
+\portada{Algorítmica}{2023-2024}{Miguel Ángel De la Vega Rodríguez}{https://github.com/Miguevrgo/}{github.png}
+
+\tableofcontents % Índice
+
+\newpage %Salto de pagina tras el Indice
+
+%________________________________________Documento:_____________________________________________%
+\section{Participación}
+\begin{itemize}
+    \item \textbf{Miguel Ángel De la Vega Rodríguez:} 20\%
+    \begin{itemize}
+        \item Plantilla y estructura del documento \LaTeX
+        \item Cómputo de la eficiencia de los algoritmos (Resultados y Ajuste)
+    \end{itemize}
+    \item \textbf{Joaquín Avilés De la Fuente:} 20\%
+    \begin{itemize}
+        \item Descripción del Objetivo de la pŕactica
+        \item Diseño del estudio
+    \end{itemize}
+    \item \textbf{Alberto De la Vera Sánchez: } 20\%
+    \item \textbf{Manuel Gomez Rubio} 20\%
+    \item \textbf{Pablo Linari Perez:} 20\%
+\end{itemize}
+
+\section{Equipo de trabajo}
+
+\begin{itemize}
+    \item \textbf{Miguel Ángel De la Vega Rodríguez:} (Ordenador donde se ha realizado el computo)
+        \begin{itemize}
+            \item AMD Ryzen 7 2700X 8-Core
+            \item 16 GB RAM DDR4 3200 MHz
+            \item NVIDIA GeForce GTX 1660 Ti 
+            \item 1 TB SSD NvMe 
+        \end{itemize}
+\end{itemize}
+
+\section{Objetivos}
+    En esta práctica, se han implementado los siguientes algoritmos de ordenación: \negrita{quicksort, mergesort, heapsort, inserción, burbuja,}
+    y \negrita{selección}. Además, se han implementado los algoritmos de \negrita{Floyd}, que calcula el costo del camino mínimo entre cada par de nodos 
+    de un grafo dirigido, de \negrita{Fibonacci}, que calcula los números de la sucesión de Fibonacci , y de \negrita{Hanoi}, que resuelve el famoso 
+    problema de las torres de Hanoi. \\ \\
+    En primer lugar, aunque tenemos la eficiencia teórica de estos algoritmos, se realizarán los calculos necesarios para demostrar
+    como se obtiene dicha eficiencia utilizando los distintos métodos estudiados en teoría. \\
+    En segundo lugar, se pasará al estudio empírimo de los algoritmos de ordenación de vectores para distintos tipos de datos, es decir, 
+    para datos tipo \negrita{int}, \negrita{float}, \negrita{double} y \negrita{string}. Posteriormente, se creará las gráficas para
+    cada algoritmo en las que visualizaremos el tiempo de ejecución en función del tamaño del vector y del tipo de dato. Finalmente 
+    para esta parte, se hara un calculo de eficiencia híbrido que se basa en ajustar la gráfica obtenida a la función de su eficiencia
+    teórica por mínimos cuadrados, obteniendo por tanto los literales de dicha función que ajustan la gráfica.\\
+    En tercer lugar, se hará el estudio de los otros tres algoritmos de forma similar, es decir, se estudiará la eficiencia
+    de estos de modo empírica, cuyo estudio se mostrará en las gráficas, y se calculará la eficiencia híbrida de estos, a partir
+    de la eficiencia teórica.\\ 
+
+\section{Diseño del estudio}
+% Esta variable indica el algoritmo escogido para el estudio en varios ordenadores
+    \newcommand{\mivar}{ordenación de vectores quicksort}
+    
+\section{Algoritmos}
+\section{Conclusiones}
+\section{Coimparacion de las Graficas}
+    A continuacion vamos a comparar las graficas que nos dan como resultado de haber ejecutado los algoritmos con tipos de datos int , float , double y string. 
+\subsection{Burbuja}
+El algoritmo de burbuja es un algoritmo \(O(n^2)\) como ya hemos visto en apartados anteriores 
+
+\subsection{Insercion}
+\subsection{Mergesort}
+\subsection{Quicksort}
+\subsection{Seleccion}
+\subsection{Fibonacci}
+\subsection{Hanoy}
+
+\end{document}
