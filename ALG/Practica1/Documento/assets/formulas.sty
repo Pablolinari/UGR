@@ -1,0 +1,137 @@
+\ProvidesPackage{assets/formulas}
+\usepackage{bookmark}
+
+% ------------------------------------------------------------------------------
+% CONFIGURACIÓN BÁSICA DEL DOCUMENTO
+% ------------------------------------------------------------------------------
+
+
+\usepackage[spanish, es-tabla, es-lcroman, es-noquoting, es-minimal]{babel}
+\usepackage{graphicx}
+
+
+% ------------------------------------------------------------------------------
+% TIPOGRAFÍA
+% ------------------------------------------------------------------------------
+
+% Tipografía personalizada
+\usepackage[bitstream-charter]{mathdesign}
+\usepackage{tgtermes}
+\usepackage[T1]{fontenc}
+
+% Márgenes
+\usepackage[theorems, skins, breakable]{tcolorbox}
+\usepackage[paperheight=29.7cm, paperwidth=21cm,% Set the height and width of the paper
+nomarginpar,% We don't want any margin paragraphs
+textwidth=17cm,
+headheight=16pt % Set \headheight to 16pt to avoid fancyhr warnings
+]{geometry}
+\usepackage{anysize}
+\marginsize{2cm}{2cm}{2cm}{2cm}
+
+% MATEMÁTICAS
+\usepackage{mathdesign}
+\usepackage{amsmath}
+\usepackage{upgreek}
+\usepackage{amsthm}     % Teoremas
+\usepackage{cancel}
+\usepackage[utf8]{inputenc}
+
+% ------------------------------------------------------------------------------
+% HEADER Seccion y subseccion
+% ------------------------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%Reducir el espacio entre el tope de la página y el encabezado
+\fancyhf{} % Limpia los encabezados y pies de página existentes
+\fancyhead[L]{\textbf{\nouppercase{\leftmark}}} % Agrega la sección actual a la izquierda del encabezado en negrita
+\fancyhead[R]{\textbf{\thepage}} % Agrega el número de página a la derecha del encabezado en negrita
+\renewcommand{\headrulewidth}{0.4pt} % Agrega una línea debajo del encabezado
+\usepackage{titlesec}
+\titleformat{\section} % No incluir el número de sección en el encabezado
+    {\normalfont\Huge\bfseries\center}{}{0em}{} % Aumenta el tamaño de la tipografía en las se
+\titleformat{\subsection}
+    {\normalfont\Large\bfseries}{\thesubsection.}{1em}{} % Aumenta el tamaño de la tipografía en las subsecciones
+
+    
+% ------------------------------------------------------------------------------
+% Dibujos Tikz
+% ------------------------------------------------------------------------------ 
+\usepackage{pgf,tikz}
+\usepackage{tkz-euclide}
+\usetikzlibrary{arrows, calc,intersections,through,backgrounds}
+
+% Links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Apuntes}, %Nombre del PDF-Cambiar
+    pdfauthor={Miguel Angel De la Vega Rodriguez}, % Nombre del autor del PDF
+    pdfstartview={FitH}, % Ajustar la vista del PDF al ancho de la página
+}
+
+%________________________________FIN_INSERCION_PAQUETES________________________________________%
+
+% Comandos definidos
+\newcommand{\bb}[1]{\mathbb{#1}}
+
+
+\newtheoremstyle{theorem-style}
+{}
+{}
+{}
+{}
+{\bfseries}
+{:}
+{.5em}
+{\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}}
+\theoremstyle{theorem-style}
+% Theorem definition for nth environment
+\newtheorem*{teorema}{Teorema}
+\newtheorem*{corolario}{Corolario}
+\newtheorem*{lema}{Lema}
+\newtheorem*{definicion}{Definición}
+\newtheorem*{proposicion}{Proposición}
+\newtheorem*{ejemplo}{Ejemplos}
+
+% Crea un nuevo contador para los ejercicios
+\newcounter{ejercicioCounter}
+\setcounter{ejercicioCounter}{0}
+
+% Define un nuevo comando para ejercicios
+\newcommand{\ejercicio}[3][]
+{% Comandos para el ejercicio
+\vspace{0.5cm}% Espacio vertical
+  \ifx&#1&% Verifica si se proporcionó el primer argumento (número del ejercicio)
+    \stepcounter{ejercicioCounter}% Incrementa el contador si no se proporcionó
+    \def\temp{\theejercicioCounter}% Usa el contador
+  \else
+    \def\temp{#1}% Usa el número proporcionado
+  \fi
+  % Verifica si se proporcionó el segundo argumento (puntos)
+  \ifx&#2&%
+    \def\puntos{}% No se muestran puntos si no se proporcionaron
+  \else
+    \def\puntos{(#2 puntos)}% Muestra los puntos
+  \fi
+  \par\noindent\textbf{Ejercicio \temp\ \puntos:} \textit{#3}\par % Título en negrita y enunciado en cursiva
+  \addcontentsline{toc}{subsection}{Ejercicio \temp\ \puntos} % Añade al índice
+}
+
+\newtcolorbox{dem}{boxsep=5pt,
+sharp corners,coltitle=blue!5!black,colframe=blue!60!white,colback=blue!10!white,enhanced,title=\textbf{Demostración:}}
+
+% ------------------------------------------------------------------------------
+% Conjuntos Numéricos
+% ------------------------------------------------------------------------------
+
+\newcommand{\F}{{\mathcal{F}}} % Funcion
+\newcommand{\R}{{\mathbb{R}}}  % Reales
+\newcommand{\Q}{{\mathbb{Q}}}  % Racionales
+\newcommand{\Z}{{\mathbb{Z}}}  % Enteros
+\newcommand{\N}{{\mathbb{N}}}  % Naturales
+\newcommand{\C}{{\mathbb{C}}}  % Complejos
+\newcommand{\U}{{\mathcal{U}}} % Unidades
