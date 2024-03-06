@@ -1,0 +1,19 @@
+# Fdb version 4
+["pdflatex"] 1709756186 "/home/pablolinari/Escritorio/UGR/ALG/mimain.tex" "mimain.pdf" "mimain" 1709756186 2
+  "/etc/texmf/web2c/texmf.cnf" 1709750873 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/pablolinari/Escritorio/UGR/ALG/mimain.tex" 1709756185 4112 c20209eb6a512657a382e54c0da8a766 ""
+  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr10.tfm" 1136768653 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/article.cls" 1686341992 20144 fbcf51733730d8f1a62143512ff5b1fe ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo" 1686341992 8464 a4a9a859b7fd5b6c1450673c4d301348 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1693172360 40357 c95f5d5e031b5c7040b426833c11f2e0 ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1693172360 40357 c95f5d5e031b5c7040b426833c11f2e0 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1709750953 7906392 71b9834411507c5dbbc42557f11af674 ""
+  "assets/portada.tex" 0 -1 0 ""
+  "mimain.aux" 1709756186 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "mimain.tex" 1709756185 4112 c20209eb6a512657a382e54c0da8a766 ""
+  (generated)
+  "mimain.aux"
+  "mimain.log"
+  "mimain.pdf"
+  (rewritten before read)
