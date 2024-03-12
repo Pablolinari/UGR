@@ -2,20 +2,120 @@
     Para los algoritmos de ordenación se han usado entradas de datos de tipo int, float, double y string mientras que para los algoritmos de Hanoi, Floyd  y Fibonnaci solo se han usado entradas de tipo int 
     ya que no tendría sentido usar entradas de otro tipo. 
     \begin{itemize}
-        \item En los algoritmos con eficiencia  \(O(n^2)\) como los de Burbuja, Selección e Inserción los saltos usados entre los tipos de datos int, float y double generados aleatoriamente son de 5000 en 5000 empezando con una muestra de 5000 datos y llegando a
-        un máximo de 125000 datos.
-        \item En los lagoritmos con eficiencia \(O n\log(n)\) como el mergesort o el quicksort los saltos usados entre los tipos de datos int, float y double generados aleatoriamente son de 50000 en 50000 empezando con una muestra de 50000 datos y llegando a
-        un máximo de 1250000 datos.
-    \end{itemize}
+        \item En los algoritmos con eficiencia  \(O(n^2)\) como los de Burbuja, Selección e Inserción los saltos usados \section{Estudio de las gráficas}
+    En esta sección se mostrarán las gráficas obtenidas en el estudio empírico de los algoritmos. 
+    \subsection{Algoritmos  \(O(n^2)\)}
+    Comenzaremos comparando las gráficas obtenidas para los algoritmos de ordenación con eficiencia \(O(n^2)\)
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/burbuja.png}
+            \caption{Ejecución algoritmo burbuja}
+            \label{fig:burbuja}
+        \end{minipage}%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/burbujastring.png}
+            \caption{Ejecución algoritmo burbuja con string}
+            \label{fig:burbujastring}
+        \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/seleccion.png}
+            \caption{Ejecución algoritmo seleccion}
+            \label{fig:seleccion}
+        \end{minipage}%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/seleccionstring.png}
+            \caption{Ejecución algoritmo seleccion con string}
+            \label{fig:seleccionstring}
+        \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/insercion.png}
+            \caption{Ejecución algoritmo insercion}
+            \label{fig:insercion}
+        \end{minipage}%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/insercionstring.png}
+            \caption{Ejecución algoritmo inserción con string}
+            \label{fig:insercionstring}
+        \end{minipage}
+    \end{figure}
+    Comenzaremos analizando primero los casos con tipos de datos int, float y double. Si nos fijamos en los tiempos de ejecución de cada algoritmo podemos ver que el algoritmo de burbuja es el que peor se comporta
+    en todos los casos, seguido del algoritmo de Inserción y finalmente el algoritmo de selección. Dejando asi el algoritmo de burbuja como el peor de los tres y el de Inserción como el mejor.
+    En el algoritmo de burbuja y de insercion se puede ver que el tiempo de ejecución es muy similar en todos los casos llegando a ser practicamente el mismo en los casos con datos double y float . 
+    mientras que el algoritmo de seleccion si se ve mas afectado por el tipo de dato que se le pasa siendo los datos int los mas rápidos y los datos float los mas lentos.
 
-    \subsection{Otros algoritmos}
-    En los algoritmos restantes se han usado datos de tipo int generados aleatoriamente y proporcionados en la siguiente medida:
-    \begin{itemize}
-        \item Para el algoritmo de Floyd  que es de orden \(O(n^3)\) se han usado enteros aleatorios desde 50 hasta 1250 con saltos de 50 en 50.
-        \item Para el algoritmo de Fibonnaci  que es de orden \(O((\frac{1+\sqrt{5}}{2})^n\)) se han usado enteros aleatorios desde 50 hasta 1250 con saltos de 50 en 50.
-        \item Para el algoritmo de Hanoi que es de orden \(O(2^n)\) se han usado enteros aleatorios desde 3 hasta 33 con saltos de 50 en 50. 
-    \end{itemize}
+    si nos fijamos en las graficas de los algoritmos con string podemos ver que los algoritmos de burbuja y seleccion son los que peor se comportan ya que se usa com entrada el libro del quijote en español lo 
+    cual hace que haya muchas palabras repetidas y por tanto el algoritmo de burbuja y seleccion tengan que hacer mas comparaciones y por tanto mas tiempo de ejecución. En el caso del algoritmo de inserción
+    vemos que esto le favorece y su tiempo de ejecución se reduce drasticamente en comparación con los datos int, float y double.
+    \subsection{Algoritmos  \(O(n\log(n))\)}
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/quicksort.png}
+            \caption{Ejecución algoritmo insercion}
+            \label{fig:quicksort}
+        \end{minipage}%
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/quicksortstring.png}
+            \caption{Ejecución algoritmo inserción con string}
+            \label{fig:quicksortstring}
+        \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/mergesort.png}
+            \caption{Ejecución algoritmo mergesort}
+            \label{fig:mergesort}
+        \end{minipage}
+    \end{figure}
 
-    Por último para el tipo de dato string se han extraido las muestras del archivo \textit{quijote.txt} para simular una generación aleatoria de palabras, esta entrada de datos no ha sido totalmente aleatoria ya que al usar un lenguaje determinado par el texto  ,en este caso el español, se repiten con mas frecuencia algunas palabras por tanto esto se verá 
-    reflejado en el comportamiento de los  algoritmos. En este caso el Quijote tiene un total de 202308 palabras por lo que se comenzará con una muestra de 12308 palabras con saltos de 
-    10000 en 10000 hasta llegar a 202308 palabras.
+    Pasamos ahora a estudiar los algoritmos con eficiencia \(O(n\log(n))\) los cuales veremos que son mas eficientes que los \(O(n^2)\)
+    Si nos fijamos em la gráfica del quicksort veos que no hay casi diferencia entre los datos tipo float y double mientras que los datos tipo int son mas rapidos, 
+    en el mergesort pasa justamente lo contrario , los tipos de datos double y float tardan menos en ser ordenados que los datos tipo int . 
+    pero ambos son mas eficientes que los anteriormente vistos . 
+    
+    Si nos fijamos en las graficas de los algoritmos cuando los ejecutamos con datos de tipo string vemos que el mergesort gana en tiempo de ejecución al
+    quicksort ya que en los casos donde hay datos repetidos el mergesort se comporta mejor que el quicksort debido a su implementacion.
+
+    \subsection{Algoritmos Hanoi , Floyd y Fibbonaci}
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/floydint.png}
+            \caption{Ejecución algoritmo mergesort}
+            \label{fig:mergesort}
+        \end{minipage}
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/hanoiint.png}
+            \caption{Ejecución algoritmo mergesort}
+            \label{fig:mergesort}
+        \end{minipage}
+    \end{figure}
+    \begin{figure}[H]
+        \begin{minipage}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{assets/Img/fibonacciint.png}
+            \caption{Ejecución algoritmo mergesort}
+            \label{fig:mergesort}
+        \end{minipage}
+    \end{figure}
+
+    Por último pasamos a estudiar los algoritmos de Hanoi, Floyd y Fibonacci. Si nos fijamos en las gráficas de estos algoritmos vemos que el algoritmo de Floyd es el mas rapido ya que se trata de una algoritmo del orden \(O(n^3)\) por tanto 
+    supera en velocidad a el algoritmo de Hanoi que es del orden \(O(2^n)\) y al algoritmo de Fibonacci que es del orden \(O((\frac{1+\sqrt{5}}{2})^n)\) siendo este ultimo el mas lento de todos.
+
+
+    Como conclusion a este apartado hemos podido observar que los algoritmos de ordenación con eficiencia \(O(n^2)\) son mas lentos que los de eficiencia \(O(n\log(n))\) y que dependiendo del tipo de dato con el que se trabaje y de si hay datos repetidos o no habrá algoritmos a los que les afecte de manera 
+    positiva como al mergesort o el de Inserción que pasa a ser practicamente logaritmico  y otros como el de burbuja o seleccion que se vean perjudicados por estos datos. 
+
