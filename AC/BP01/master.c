@@ -67,7 +67,6 @@ int main(int argc, char **argv)
    } 
    #pragma omp atomic 
        suma += sumalocal;
-   #pragma omp barrier
    #pragma omp master
 	printf("Thread master=%d imprime suma=%d\n",tid,suma);
 }  

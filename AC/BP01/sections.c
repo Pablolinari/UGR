@@ -86,9 +86,8 @@ void funcB()
 
 int main()
 {
-#pragma omp parallel 
-{
-   #pragma omp sections 
+#pragma omp parallel sections 
+{ 
    {
       #pragma omp section
         (void) funcA();
