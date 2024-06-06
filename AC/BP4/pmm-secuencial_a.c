@@ -101,8 +101,15 @@ int main(int argc, char **argv) {
   clock_gettime(CLOCK_REALTIME, &cgt1);
   for (i = 0; i < N; i++) {
     for (j = 0; j < N; j++){
-      for (k=0;k<N;k++) {
+      for (k = 0, aux = 0; aux < N / 4; k += 4, aux++) {
         m3[i][j] += m1[i][k] * m2[k][j];
+        m3[i][j] += m1[i][k + 1] * m2[k + 1][j];
+        m3[i][j] += m1[i][k + 2] * m2[k + 2][j];
+        m3[i][j] += m1[i][k + 3] * m2[k + 3][j];
+      }
+      while (k < N) {
+        m3[i][j] += m1[i][k] * m2[k][j];
+        k++;
       }
   }
 }
