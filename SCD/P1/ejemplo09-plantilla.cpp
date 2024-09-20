@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <chrono>  // incluye now, time\_point, duration
 #include <future>
+#include <thread>
 #include <vector>
 #include <cmath>
 
@@ -34,7 +35,7 @@ double f( double x )
 double calcular_integral_secuencial(  )
 {
    double suma = 0.0 ;                        // inicializar suma
-   for( long j = 0 ; j < m ; j++ )            // para cada $j$ entre $0$ y $m-1$:
+   for( long j = 0 ; j < m/n ; j++ )            // para cada $j$ entre $0$ y $m-1$:
    {  const double xj = double(j+0.5)/m ;     //      calcular $x_j$
       suma += f( xj );                        //      añadir $f(x_j)$ a la suma actual
    }
@@ -45,14 +46,19 @@ double calcular_integral_secuencial(  )
 // función que ejecuta cada hebra: recibe $i$ ==índice de la hebra, ($0\leq i<n$)
 double funcion_hebra( long i )
 {
-   // completar ......
+   return calcular_integral_secuencial();
+   
+   
 }
 
 // -----------------------------------------------------------------------------
 // calculo de la integral de forma concurrente
 double calcular_integral_concurrente( )
 {
-  // completar .....
+	future<long> futuros[n];
+	for(int i = 0; i< n; i++){
+		futuros[i] = async(launch::async, funcion_hebra,1);
+	}
 }
 // -----------------------------------------------------------------------------
 
@@ -60,9 +66,9 @@ int main()
 {
 
   time_point<steady_clock> inicio_sec  = steady_clock::now() ;
-  const double             result_sec  = calcular_integral_secuencial(  );
+  const double             result_sec  = calcular_integral_secuencial( );
   time_point<steady_clock> fin_sec     = steady_clock::now() ;
-  double x = sin(0.4567);
+  double x = sin(0.4567); 
   time_point<steady_clock> inicio_conc = steady_clock::now() ;
   const double             result_conc = calcular_integral_concurrente(  );
   time_point<steady_clock> fin_conc    = steady_clock::now() ;
