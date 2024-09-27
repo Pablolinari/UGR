@@ -23,7 +23,7 @@ using namespace std::chrono;
 const long m  = 1024l*1024l*1024l, // número de muestras (del orden de mil millones)
            n  = 4  ;               // número de hebras concurrentes (divisor de 'm')
 
-
+future<double> hebras[n] ;
 // -----------------------------------------------------------------------------
 // evalua la función $f$ a integrar ($f(x)=4/(1+x^2)$)
 double f( double x )
@@ -32,10 +32,10 @@ double f( double x )
 }
 // -----------------------------------------------------------------------------
 // calcula la integral de forma secuencial, devuelve resultado:
-double calcular_integral_secuencial(  )
+double calcular_integral_secuencial()
 {
    double suma = 0.0 ;                        // inicializar suma
-   for( long j = 0 ; j < m/n ; j++ )            // para cada $j$ entre $0$ y $m-1$:
+   for( long j = 0; j < m ; j++ )            // para cada $j$ entre $0$ y $m-1$:
    {  const double xj = double(j+0.5)/m ;     //      calcular $x_j$
       suma += f( xj );                        //      añadir $f(x_j)$ a la suma actual
    }
@@ -45,20 +45,31 @@ double calcular_integral_secuencial(  )
 // -----------------------------------------------------------------------------
 // función que ejecuta cada hebra: recibe $i$ ==índice de la hebra, ($0\leq i<n$)
 double funcion_hebra( long i )
-{
-   return calcular_integral_secuencial();
-   
-   
+
+ {
+   double suma = 0.0 ;                        // inicializar suma
+   for( long j = i*m/n ; j < (i+1)*m/n ; j++ )            // para cada $j$ entre $0$ y $m-1$:
+   {  const double xj = double(j+0.5)/m ;     //      calcular $x_j$
+      suma += f( xj );                        //      añadir $f(x_j)$ a la suma actual
+   }
+   return suma/m ;                            // devolver valor promedio de $f$
 }
+   
+
 
 // -----------------------------------------------------------------------------
 // calculo de la integral de forma concurrente
 double calcular_integral_concurrente( )
 {
-	future<long> futuros[n];
-	for(int i = 0; i< n; i++){
-		futuros[i] = async(launch::async, funcion_hebra,1);
+	for (int i =0 ; i< n; i++){
+		hebras[i]=async(launch::async , funcion_hebra,i);
 	}
+	double sum = 0.0;
+	for(int i =0; i<n; i++){
+		sum+=hebras[i].get();
+	}
+	return sum;
+
 }
 // -----------------------------------------------------------------------------
 
