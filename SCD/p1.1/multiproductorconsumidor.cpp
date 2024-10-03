@@ -10,7 +10,8 @@ using namespace scd ;
 
 //**********************************************************************
 // Variables globales
-
+const int HEBRASCONSUMIDORAS = 4;
+const int HEBRASPRODUCTORAS = 2;
 const unsigned 
    num_items = 40 ,   // número de items
 	tam_vec   = 10 ;   // tamaño del buffer
@@ -27,7 +28,7 @@ int primera_ocupada =0,primera_libre = 0;
 // funciones comunes a las dos soluciones (fifo y lifo)
 //----------------------------------------------------------------------
 
-unsigned producir_dato()
+unsigned producir_dato(int i)
 {
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
    const unsigned dato_producido = siguiente_dato ;
@@ -38,7 +39,7 @@ unsigned producir_dato()
 }
 //----------------------------------------------------------------------
 
-void consumir_dato( unsigned dato )
+void consumir_dato( unsigned dato , int i)
 {
    assert( dato < num_items );
    cont_cons[dato] ++ ;
