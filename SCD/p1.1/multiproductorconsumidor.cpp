@@ -3,7 +3,6 @@
 #include <thread>
 #include <mutex>
 #include <random>
-#include <vector>
 #include "scd.h"
 
 using namespace std ;
@@ -79,9 +78,9 @@ void  funcion_hebra_productora(  )
       int dato = producir_dato() ;
 	  sem_wait(puede_escribir);{
 			buffer[primera_libre] = dato;
-			primera_libre++;
+			primera_libre =(primera_libre+1) %tam_vec;
 		}
-		sem_signal(puede_leer)
+		sem_signal(puede_leer);
 	
 
 
@@ -94,9 +93,13 @@ void funcion_hebra_consumidora(  )
 {
    for( unsigned i = 0 ; i < num_items ; i++ )
    {
-	sem_wait(puede_leer){
+	sem_wait(puede_leer);{
+	        consumir_dato(buffer[primera_ocupada]);
+			primera_ocupada = (primera_ocupada +1)%tam_vec;
+
 			
 		}
+		sem_signal(puede_escribir);
     }
 }
 //----------------------------------------------------------------------
