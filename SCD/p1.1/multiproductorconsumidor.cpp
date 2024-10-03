@@ -72,11 +72,11 @@ void test_contadores()
 
 //----------------------------------------------------------------------
 
-void  funcion_hebra_productora(  )
+void  funcion_hebra_productora( int i )
 {
    for( unsigned i = 0 ; i < num_items ; i++ )
    {
-      int dato = producir_dato() ;
+      int dato = producir_dato(i) ;
 	  sem_wait(puede_escribir);{
 			buffer[primera_libre] = dato;
 			primera_libre =(primera_libre+1) %tam_vec;
@@ -90,12 +90,12 @@ void  funcion_hebra_productora(  )
 
 //----------------------------------------------------------------------
 
-void funcion_hebra_consumidora(  )
+void funcion_hebra_consumidora( int i )
 {
    for( unsigned i = 0 ; i < num_items ; i++ )
    {
 	sem_wait(puede_leer);{
-	        consumir_dato(buffer[primera_ocupada]);
+	        consumir_dato(buffer[primera_ocupada],i);
 			primera_ocupada = (primera_ocupada +1)%tam_vec;
 
 			
