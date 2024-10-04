@@ -23,7 +23,7 @@ unsigned buffer[tam_vec];
 Semaphore puede_leer(0);
 Semaphore puede_escribir(tam_vec);
 int primera_ocupada =0,primera_libre = 0;
-int prducidos[HEBRASPRODUCTORAS]={0};
+int producidos[HEBRASPRODUCTORAS]={0};
 int p = num_items/HEBRASPRODUCTORAS;
 
 //**********************************************************************
@@ -37,7 +37,7 @@ unsigned producir_dato(int i)
    const unsigned dato_producido = siguiente_dato ;
    siguiente_dato++ ;
    cont_prod[dato_producido] ++ ;
-    
+
    cout << "producido: " << dato_producido << endl << flush ;
    return dato_producido ;
 }
@@ -46,8 +46,7 @@ unsigned producir_dato(int i)
 void consumir_dato( unsigned dato , int i)
 {
    assert( dato < num_items );
-   cont_cons[dato] ++ ;
-   producidos [i]=	
+   cont_cons[dato] ++ ;	
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
 	
    cout << "                  consumido: " << dato << endl ;
