@@ -37,6 +37,7 @@ unsigned producir_dato(int i)
    const unsigned dato_producido = siguiente_dato ;
    siguiente_dato++ ;
    cont_prod[dato_producido] ++ ;
+    
    cout << "producido: " << dato_producido << endl << flush ;
    return dato_producido ;
 }
@@ -46,8 +47,9 @@ void consumir_dato( unsigned dato , int i)
 {
    assert( dato < num_items );
    cont_cons[dato] ++ ;
+   producidos [i]=	
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
-
+	
    cout << "                  consumido: " << dato << endl ;
 
 }
