@@ -34,9 +34,8 @@ unsigned producir_dato(int i)
 {
 
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
-   const unsigned dato_producido = siguiente_dato ;
-   siguiente_dato++ ;
-   cont_prod[dato_producido] ++ ;
+	int dato_producido = i*p + producidos[i];
+   producidos[i]+=1
 
    cout << "producido: " << dato_producido << endl << flush ;
    return dato_producido ;
@@ -78,8 +77,7 @@ void test_contadores()
 
 void  funcion_hebra_productora( int i )
 {
-for(int j=i*p;j<i*p+(p-1);j++)
-   for( unsigned i = 0 ; i < num_items ; i++ )
+for (unsigned j = 0 ; j < num_items/HEBRASPRODUCTORAS ; j++ )
    {
       int dato = producir_dato(i) ;
 	  sem_wait(puede_escribir);{
@@ -97,7 +95,7 @@ for(int j=i*p;j<i*p+(p-1);j++)
 
 void funcion_hebra_consumidora( int i )
 {
-   for( unsigned i = 0 ; i < num_items ; i++ )
+   for( unsigned i = 0 ; i < num_items/HEBRASCONSUMIDORAS ; i++ )
    {
 	sem_wait(puede_leer);{
 	        consumir_dato(buffer[primera_ocupada],i);
@@ -118,7 +116,7 @@ int main()
         << flush ;
 
    thread hebra_productora ( funcion_hebra_productora ),
-          hebra_consumidora( funcion_hebra_consumidora );
+          hebra_consumidora1( funcion_hebra_consumidora ),hebra_consumidora2(funcion_hebra_consumidora);
 
    hebra_productora.join() ;
    hebra_consumidora.join() ;
