@@ -1,3 +1,4 @@
+#include <future>
 #include <iostream>
 #include <cassert>
 #include <thread>
@@ -35,7 +36,7 @@ unsigned producir_dato(int i)
 
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
 	int dato_producido = i*p + producidos[i];
-   producidos[i]+=1
+   producidos[i]+=1;
 
    cout << "producido: " << dato_producido << endl << flush ;
    return dato_producido ;
@@ -77,7 +78,7 @@ void test_contadores()
 
 void  funcion_hebra_productora( int i )
 {
-for (unsigned j = 0 ; j < num_items/HEBRASPRODUCTORAS ; j++ )
+for (unsigned j = i*p ; j<i*p +(p-1); j++ )
    {
       int dato = producir_dato(i) ;
 	  sem_wait(puede_escribir);{
@@ -110,16 +111,26 @@ void funcion_hebra_consumidora( int i )
 
 int main()
 {
+	thread consumidoras[HEBRASCONSUMIDORAS];
+	thread productoras[HEBRASPRODUCTORAS];
    cout << "-----------------------------------------------------------------" << endl
         << "Problema de los productores-consumidores (solución LIFO o FIFO ?)." << endl
         << "------------------------------------------------------------------" << endl
         << flush ;
 
-   thread hebra_productora ( funcion_hebra_productora ),
-          hebra_consumidora1( funcion_hebra_consumidora ),hebra_consumidora2(funcion_hebra_consumidora);
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i]=thread(funcion_hebra_productora,i);
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i]=thread(funcion_hebra_consumidora,i);
+   }
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i].join();
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i].join();
+   }
 
-   hebra_productora.join() ;
-   hebra_consumidora.join() ;
 
    test_contadores();
 }
