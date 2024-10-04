@@ -10,8 +10,8 @@ using namespace scd ;
 
 //**********************************************************************
 // Variables globales
-const int HEBRASCONSUMIDORAS = 4;
-const int HEBRASPRODUCTORAS = 2;
+const int HEBRASCONSUMIDORAS = 2;
+const int HEBRASPRODUCTORAS = 4;
 const unsigned 
    num_items = 40 ,   // número de items
 	tam_vec   = 10 ;   // tamaño del buffer
@@ -23,6 +23,8 @@ unsigned buffer[tam_vec];
 Semaphore puede_leer(0);
 Semaphore puede_escribir(tam_vec);
 int primera_ocupada =0,primera_libre = 0;
+int prducidos[HEBRASPRODUCTORAS]={0};
+int p = num_items/HEBRASPRODUCTORAS;
 
 //**********************************************************************
 // funciones comunes a las dos soluciones (fifo y lifo)
@@ -30,6 +32,7 @@ int primera_ocupada =0,primera_libre = 0;
 
 unsigned producir_dato(int i)
 {
+
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
    const unsigned dato_producido = siguiente_dato ;
    siguiente_dato++ ;
@@ -74,6 +77,7 @@ void test_contadores()
 
 void  funcion_hebra_productora( int i )
 {
+for(int j=i*p;j<i*p+(p-1);j++)
    for( unsigned i = 0 ; i < num_items ; i++ )
    {
       int dato = producir_dato(i) ;
