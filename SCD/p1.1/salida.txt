@@ -1,0 +1,75 @@
+-----------------------------------------------------------------
+Problema de los productores-consumidores (solución LIFO o FIFO ?).
+------------------------------------------------------------------
+hebra :2 producido: 20
+hebra :3 producido: 30
+hebra :1 producido: 10
+                  consumido: 20
+hebra :3 producido: 31
+hebra :1 producido: 11
+hebra :0 producido: 0
+hebra :3 producido: 32
+hebra :2 producido: 21
+hebra :1 producido: 12
+hebra :3 producido: 33
+hebra :0 producido: 1
+                  consumido: 30
+hebra :1 producido: 13
+hebra :3 producido: 34
+hebra :1 producido: 14
+hebra :2 producido: 22
+hebra :0 producido: 2
+                  consumido: 10
+                  consumido: 31
+hebra :3 producido: 35
+                  consumido: 11
+hebra :1 producido: 15
+hebra :2 producido: 23
+                  consumido: 0
+                  consumido: 32
+hebra :0 producido: 3
+                  consumido: 21
+hebra :3 producido: 36
+hebra :1 producido: 16
+                  consumido: 12
+                  consumido: 33
+hebra :2 producido: 24
+                  consumido: 1
+                  consumido: 13
+hebra :0 producido: 4
+hebra :3 producido: 37
+                  consumido: 34
+hebra :1 producido: 17
+                  consumido: 14
+                  consumido: 22
+hebra :2 producido: 25
+hebra :0 producido: 5
+hebra :3 producido: 38
+                  consumido: 2
+hebra :1 producido: 18
+                  consumido: 35
+                  consumido: 15
+hebra :2 producido: 26
+hebra :0 producido: 6
+                  consumido: 23
+                  consumido: 3
+                  consumido: 36
+                  consumido: 16
+hebra :2 producido: 27
+                  consumido: 24
+hebra :0 producido: 7
+hebra :2 producido: 28
+                  consumido: 4
+                  consumido: 37
+hebra :0 producido: 8
+                  consumido: 17
+                  consumido: 25
+                  consumido: 5
+                  consumido: 38
+                  consumido: 18
+                  consumido: 26
+                  consumido: 6
+                  consumido: 27
+                  consumido: 7
+                  consumido: 28
+                  consumido: 8

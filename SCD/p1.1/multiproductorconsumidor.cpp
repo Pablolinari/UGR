@@ -1,4 +1,4 @@
-#include <future>
+#include <atomic>
 #include <iostream>
 #include <cassert>
 #include <thread>
@@ -23,7 +23,10 @@ unsigned
 unsigned buffer[tam_vec];
 Semaphore puede_leer(0);
 Semaphore puede_escribir(tam_vec);
-int primera_ocupada =0,primera_libre = 0;
+Semaphore cambiaindice(1);
+Semaphore cambiaindice1(1);
+atomic<int> primera_ocupada(0);
+atomic<int>primera_libre(0);
 int producidos[HEBRASPRODUCTORAS]={0};
 int p = num_items/HEBRASPRODUCTORAS;
 
@@ -37,8 +40,8 @@ unsigned producir_dato(int i)
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
 	int dato_producido = i*p + producidos[i];
    producidos[i]+=1;
-
-   cout << "producido: " << dato_producido << endl << flush ;
+   cont_prod[dato_producido]++;
+   cout <<"hebra :"<<i<< " producido: " << dato_producido << endl << flush ;
    return dato_producido ;
 }
 //----------------------------------------------------------------------
@@ -78,17 +81,16 @@ void test_contadores()
 
 void  funcion_hebra_productora( int i )
 {
-for (unsigned j = i*p ; j<i*p +(p-1); j++ )
+for (unsigned j = i*p ; j<i*p +p; j++ )
    {
       int dato = producir_dato(i) ;
 	  sem_wait(puede_escribir);{
+			sem_wait(cambiaindice);
 			buffer[primera_libre] = dato;
 			primera_libre =(primera_libre+1) %tam_vec;
+			sem_signal(cambiaindice);
 		}
 		sem_signal(puede_leer);
-	
-
-
    }
 }
 
@@ -99,10 +101,10 @@ void funcion_hebra_consumidora( int i )
    for( unsigned i = 0 ; i < num_items/HEBRASCONSUMIDORAS ; i++ )
    {
 	sem_wait(puede_leer);{
+			sem_wait(cambiaindice1);
 	        consumir_dato(buffer[primera_ocupada],i);
 			primera_ocupada = (primera_ocupada +1)%tam_vec;
-
-			
+			sem_signal(cambiaindice1);
 		}
 		sem_signal(puede_escribir);
     }
