@@ -1,3 +1,4 @@
+#include <atomic>
 #include <iostream>
 #include <cassert>
 #include <thread>
@@ -10,7 +11,8 @@ using namespace scd ;
 
 //**********************************************************************
 // Variables globales
-
+const int HEBRASCONSUMIDORAS = 2;
+const int HEBRASPRODUCTORAS = 4;
 const unsigned 
    num_items = 40 ,   // número de items
 	tam_vec   = 10 ;   // tamaño del buffer
@@ -21,29 +23,35 @@ unsigned
 unsigned buffer[tam_vec];
 Semaphore puede_leer(0);
 Semaphore puede_escribir(tam_vec);
-int primera_ocupada =0,primera_libre = 0;
+Semaphore cambiaindice(1);
+Semaphore cambiaindice1(1);
+int primera_ocupada=0;
+int primera_libre = 0;
+int producidos[HEBRASPRODUCTORAS]={0};
+int p = num_items/HEBRASPRODUCTORAS;
 
 //**********************************************************************
 // funciones comunes a las dos soluciones (fifo y lifo)
 //----------------------------------------------------------------------
 
-unsigned producir_dato()
+unsigned producir_dato(int i)
 {
+
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
-   const unsigned dato_producido = siguiente_dato ;
-   siguiente_dato++ ;
-   cont_prod[dato_producido] ++ ;
-   cout << "producido: " << dato_producido << endl << flush ;
+	int dato_producido = i*p + producidos[i];
+   producidos[i]+=1;
+   cont_prod[dato_producido]++;
+   cout <<"hebra :"<<i<< " producido: " << dato_producido << endl << flush ;
    return dato_producido ;
 }
 //----------------------------------------------------------------------
 
-void consumir_dato( unsigned dato )
+void consumir_dato( unsigned dato , int i)
 {
    assert( dato < num_items );
-   cont_cons[dato] ++ ;
+   cont_cons[dato] ++ ;	
    this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
-
+	
    cout << "                  consumido: " << dato << endl ;
 
 }
@@ -71,33 +79,32 @@ void test_contadores()
 
 //----------------------------------------------------------------------
 
-void  funcion_hebra_productora(  )
+void  funcion_hebra_productora( int i )
 {
-   for( unsigned i = 0 ; i < num_items ; i++ )
+for (unsigned j = i*p ; j<i*p +p; j++ )
    {
-      int dato = producir_dato() ;
+      int dato = producir_dato(i) ;
 	  sem_wait(puede_escribir);{
+			sem_wait(cambiaindice);
 			buffer[primera_libre] = dato;
 			primera_libre =(primera_libre+1) %tam_vec;
+			sem_signal(cambiaindice);
 		}
 		sem_signal(puede_leer);
-	
-
-
    }
 }
 
 //----------------------------------------------------------------------
 
-void funcion_hebra_consumidora(  )
+void funcion_hebra_consumidora( int i )
 {
-   for( unsigned i = 0 ; i < num_items ; i++ )
+   for( unsigned i = 0 ; i < num_items/HEBRASCONSUMIDORAS ; i++ )
    {
 	sem_wait(puede_leer);{
-	        consumir_dato(buffer[primera_ocupada]);
+			sem_wait(cambiaindice1);
+	        consumir_dato(buffer[primera_ocupada],i);
 			primera_ocupada = (primera_ocupada +1)%tam_vec;
-
-			
+			sem_signal(cambiaindice1);
 		}
 		sem_signal(puede_escribir);
     }
@@ -106,16 +113,26 @@ void funcion_hebra_consumidora(  )
 
 int main()
 {
+	thread consumidoras[HEBRASCONSUMIDORAS];
+	thread productoras[HEBRASPRODUCTORAS];
    cout << "-----------------------------------------------------------------" << endl
-        << "Problema de los productores-consumidores (solución   FIFO )." << endl
+        << "Problema de los productores-consumidores (solución FIFO)." << endl
         << "------------------------------------------------------------------" << endl
         << flush ;
 
-   thread hebra_productora ( funcion_hebra_productora ),
-          hebra_consumidora( funcion_hebra_consumidora );
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i]=thread(funcion_hebra_productora,i);
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i]=thread(funcion_hebra_consumidora,i);
+   }
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i].join();
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i].join();
+   }
 
-   hebra_productora.join() ;
-   hebra_consumidora.join() ;
 
    test_contadores();
 }

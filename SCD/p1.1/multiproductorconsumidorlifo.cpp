@@ -23,10 +23,8 @@ unsigned
 unsigned buffer[tam_vec];
 Semaphore puede_leer(0);
 Semaphore puede_escribir(tam_vec);
-Semaphore cambiaindice(1);
 Semaphore cambiaindice1(1);
-atomic<int> primera_ocupada(0);
-atomic<int>primera_libre(0);
+int primera_libre =0;
 int producidos[HEBRASPRODUCTORAS]={0};
 int p = num_items/HEBRASPRODUCTORAS;
 
@@ -85,10 +83,10 @@ for (unsigned j = i*p ; j<i*p +p; j++ )
    {
       int dato = producir_dato(i) ;
 	  sem_wait(puede_escribir);{
-			sem_wait(cambiaindice);
+			sem_wait(cambiaindice1);
 			buffer[primera_libre] = dato;
-			primera_libre =(primera_libre+1) %tam_vec;
-			sem_signal(cambiaindice);
+			primera_libre++;
+			sem_signal(cambiaindice1);
 		}
 		sem_signal(puede_leer);
    }
@@ -102,8 +100,8 @@ void funcion_hebra_consumidora( int i )
    {
 	sem_wait(puede_leer);{
 			sem_wait(cambiaindice1);
-	        consumir_dato(buffer[primera_ocupada],i);
-			primera_ocupada = (primera_ocupada +1)%tam_vec;
+			primera_libre--;
+	        consumir_dato(buffer[primera_libre],i);
 			sem_signal(cambiaindice1);
 		}
 		sem_signal(puede_escribir);
@@ -116,7 +114,7 @@ int main()
 	thread consumidoras[HEBRASCONSUMIDORAS];
 	thread productoras[HEBRASPRODUCTORAS];
    cout << "-----------------------------------------------------------------" << endl
-        << "Problema de los productores-consumidores (solución LIFO o FIFO ?)." << endl
+        << "Problema de los productores-consumidores (solución LIFO)." << endl
         << "------------------------------------------------------------------" << endl
         << flush ;
 
