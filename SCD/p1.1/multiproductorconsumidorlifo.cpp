@@ -44,7 +44,7 @@ unsigned producir_dato(int i)
 }
 //----------------------------------------------------------------------
 
-void consumir_dato( unsigned dato , int i)
+void consumir_dato( unsigned dato )
 {
    assert( dato < num_items );
    cont_cons[dato] ++ ;	
@@ -94,14 +94,14 @@ for (unsigned j = i*p ; j<i*p +p; j++ )
 
 //----------------------------------------------------------------------
 
-void funcion_hebra_consumidora( int i )
+void funcion_hebra_consumidora()
 {
-   for( unsigned i = 0 ; i < num_items/HEBRASCONSUMIDORAS ; i++ )
+   for( unsigned j = 0 ; j < num_items/HEBRASCONSUMIDORAS ; j++ )
    {
 	sem_wait(puede_leer);{
 			sem_wait(cambiaindice1);
 			primera_libre--;
-	        consumir_dato(buffer[primera_libre],i);
+	        consumir_dato(buffer[primera_libre]);
 			sem_signal(cambiaindice1);
 		}
 		sem_signal(puede_escribir);
@@ -122,7 +122,7 @@ int main()
 	productoras[i]=thread(funcion_hebra_productora,i);
    } 
 	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
-		consumidoras[i]=thread(funcion_hebra_consumidora,i);
+		consumidoras[i]=thread(funcion_hebra_consumidora);
    }
    for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
 	productoras[i].join();
