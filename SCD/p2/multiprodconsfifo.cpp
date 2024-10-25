@@ -111,7 +111,8 @@ class ProdConsSU1 : public HoareMonitor
    num_celdas_total = 10;   //   núm. de entradas del buffer
  int                        // variables permanentes
    buffer[num_celdas_total],//   buffer de tamaño fijo, con los datos
-   primera_libre ;          //   indice de celda de la próxima inserción ( == número de celdas ocupadas)
+   primera_libre , primera_ocupada,          //   indice de celda de la próxima inserción ( == número de celdas ocupadas)
+n;
 
  CondVar                    // colas condicion:
    ocupadas,                //  cola donde espera el consumidor (n>0)
@@ -127,6 +128,8 @@ class ProdConsSU1 : public HoareMonitor
 ProdConsSU1::ProdConsSU1(  )
 {
    primera_libre = 0 ;
+	primera_ocupada = 0;
+	n=0;
    ocupadas      = newCondVar();
    libres        = newCondVar();
 }
@@ -136,15 +139,16 @@ ProdConsSU1::ProdConsSU1(  )
 int ProdConsSU1::leer(  )
 {
    // esperar bloqueado hasta que 0 < primera_libre
-   if ( primera_libre == 0 )
+   if ( primera_libre == primera_ocupada)
       ocupadas.wait();
 
    //cout << "leer: ocup == " << primera_libre << ", total == " << num_celdas_total << endl ;
-   assert( 0 < primera_libre  );
+   //assert( 0 < primera_libre  );
 
    // hacer la operación de lectura, actualizando estado del monitor
-   primera_libre-- ;
-   const int valor = buffer[primera_libre] ;
+   const int valor = buffer[primera_ocupada] ;
+   primera_ocupada = (primera_ocupada+1 )%num_celdas_total;
+	n--;
    
    // señalar al productor que hay un hueco libre, por si está esperando
    libres.signal();
@@ -157,15 +161,16 @@ int ProdConsSU1::leer(  )
 void ProdConsSU1::escribir( int valor )
 {
    // esperar bloqueado hasta que primera_libre < num_celdas_total
-   if ( primera_libre == num_celdas_total )
+   if (n ==  num_celdas_total-1)
       libres.wait();
 
    //cout << "escribir: ocup == " << primera_libre << ", total == " << num_celdas_total << endl ;
-   assert( primera_libre < num_celdas_total );
+   //assert( primera_libre < num_celdas_total );
 
    // hacer la operación de inserción, actualizando estado del monitor
    buffer[primera_libre] = valor ;
-   primera_libre++ ;
+   primera_libre=(primera_libre+1) %num_celdas_total;
+	n++;
 
    // señalar al consumidor que ya hay una celda ocupada (por si esta esperando)
    ocupadas.signal();
