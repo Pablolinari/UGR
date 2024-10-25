@@ -26,7 +26,7 @@ using namespace std ;
 using namespace scd ;
 
 constexpr int
-   num_items = 15 ;   // número de items a producir/consumir
+   num_items = 20 ;   // número de items a producir/consumir
 int
    siguiente_dato = 0 ; // siguiente valor a devolver en 'producir_dato'
    
@@ -40,11 +40,11 @@ mutex
 unsigned
    cont_prod[num_items] = {0}, // contadores de verificación: producidos
    cont_cons[num_items] = {0}; // contadores de verificación: consumidos
-
+const int NUMCONSUMIDORAS = 4;
+const int NUMPRODUCTORAS = 4;
 //**********************************************************************
 // funciones comunes a las dos soluciones (fifo y lifo)
 //----------------------------------------------------------------------
-
 int producir_dato(  )
 {
    
