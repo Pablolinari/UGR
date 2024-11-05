@@ -80,7 +80,12 @@ Estanco::Estanco(){
 int Estanco::poner_ingrediente(int i){
 	
 }
-
+int Estanco::obtener_ingrediente(int i){
+   
+}
+void Estanco::esperar_recogida_ingrediente(){
+   
+}
 void funcion_hebra_estanquero(){
 
 }
