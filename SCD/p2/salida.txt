@@ -1,165 +1,435 @@
-Estanquero : empieza a producir ingrediente (89 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (162 milisegundos)
-Estanquero : empieza a producir ingrediente (44 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-Estanquero : empieza a producir ingrediente (63 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-Estanquero : empieza a producir ingrediente (49 milisegundos)
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (61 milisegundos)
-Estanquero : empieza a producir ingrediente (34 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (112 milisegundos)
-Estanquero : empieza a producir ingrediente (95 milisegundos)
-Fumador 0  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (114 milisegundos)
-Estanquero : empieza a producir ingrediente (31 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-Estanquero : empieza a producir ingrediente (90 milisegundos)
-Fumador 0  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (145 milisegundos)
-Estanquero : empieza a producir ingrediente (96 milisegundos)
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-fumador coge el ingrediente 2
-Fumador 2  : empieza a fumar (23 milisegundos)
-Estanquero : empieza a producir ingrediente (39 milisegundos)
-Fumador 2  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-fumador coge el ingrediente 2
-Fumador 2  : empieza a fumar (136 milisegundos)
-Estanquero : empieza a producir ingrediente (77 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (15 milisegundos)
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (63 milisegundos)
-Fumador 2  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (148 milisegundos)
-Estanquero : empieza a producir ingrediente (30 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-Estanquero : empieza a producir ingrediente (28 milisegundos)
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (38 milisegundos)
-Estanquero : empieza a producir ingrediente (38 milisegundos)
-Fumador 0  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-fumador coge el ingrediente 2
-Fumador 2  : empieza a fumar (147 milisegundos)
-Estanquero : empieza a producir ingrediente (30 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-Estanquero : empieza a producir ingrediente (39 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (68 milisegundos)
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (34 milisegundos)
-Fumador 2  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-fumador coge el ingrediente 2
-Fumador 2  : empieza a fumar (28 milisegundos)
-Estanquero : empieza a producir ingrediente (37 milisegundos)
-Fumador 2  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-fumador coge el ingrediente 2
-Fumador 2  : empieza a fumar (73 milisegundos)
-Estanquero : empieza a producir ingrediente (62 milisegundos)
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (144 milisegundos)
-Estanquero : empieza a producir ingrediente (95 milisegundos)
-Fumador 2  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-fumador coge el ingrediente 2
-Fumador 2  : empieza a fumar (139 milisegundos)
-Estanquero : empieza a producir ingrediente (18 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (132 milisegundos)
-Estanquero : empieza a producir ingrediente (20 milisegundos)
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (32 milisegundos)
-Fumador 0  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (45 milisegundos)
-Estanquero : termina de producir ingrediente 2
-puesto el ingrediente 2
-Estanquero : empieza a producir ingrediente (30 milisegundos)
-Fumador 2  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (109 milisegundos)
-Estanquero : empieza a producir ingrediente (57 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-Estanquero : empieza a producir ingrediente (52 milisegundos)
-Fumador 0  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (173 milisegundos)
-Estanquero : empieza a producir ingrediente (22 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-Estanquero : empieza a producir ingrediente (41 milisegundos)
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-Estanquero : empieza a producir ingrediente (87 milisegundos)
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (28 milisegundos)
-Estanquero : empieza a producir ingrediente (31 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
-Fumador 0  : termina de fumar, comienza espera de ingrediente.
-Estanquero : termina de producir ingrediente 1
-puesto el ingrediente 1
-fumador coge el ingrediente 1
-Fumador 1  : empieza a fumar (40 milisegundos)
-Estanquero : empieza a producir ingrediente (24 milisegundos)
-Estanquero : termina de producir ingrediente 0
-puesto el ingrediente 0
-fumador coge el ingrediente 0
-Fumador 0  : empieza a fumar (130 milisegundos)
-Estanquero : empieza a producir ingrediente (66 milisegundos)
-Fumador 1  : termina de fumar, comienza espera de ingrediente.
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 0 empieza a leer
+Hebra 3  termina de leer
+Hebra 2 empieza a leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 0  termina de leer
+Hebra 3 empieza a leer
+Hebra 1  termina de leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 3  termina de leer
+Hebra 1 empieza a leer
+Hebra 0  termina de leer
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 2 empieza a leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3  termina de leer
+Hebra 0 empieza a leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 2 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 3 empieza a leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 0 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 0 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 3 empieza a leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 0 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 0 empieza a leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 0 empieza a leer
+Hebra 1  termina de leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0  termina de leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 3 empieza a leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 1  termina de leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 3 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 2 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2  termina de leer
+Hebra 1  termina de leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 2  termina de leer
+Hebra 0  termina de leer
+Hebra 2 empieza a leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2  termina de leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 2 empieza a leer
+Hebra 1  termina de leer
+Hebra 0 empieza a leer
+Hebra 3 empieza a leer
+Hebra 0  termina de leer
+Hebra 2  termina de leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 0 empieza a escribir
+Hebra 0 termina de escribir
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3 empieza a leer
+Hebra 2  termina de leer
+Hebra 0  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 1 empieza a escribir
+Hebra 1 termina de escribir
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 3  termina de leer
+Hebra 2  termina de leer
+Hebra 0  termina de leer
+Hebra 1  termina de leer
+Hebra 2 empieza a escribir
+Hebra 2 termina de escribir
+Hebra 3 empieza a leer
+Hebra 0 empieza a leer
+Hebra 1 empieza a leer
+Hebra 2 empieza a leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 3 empieza a escribir
+Hebra 3 termina de escribir
+Hebra 3 empieza a leer
+Hebra 2 empieza a leer
+Hebra 1 empieza a leer
+Hebra 0 empieza a leer
+Hebra 2  termina de leer
+Hebra 3  termina de leer
+Hebra 1  termina de leer
+Hebra 0  termina de leer
+Hebra 0 empieza a escribir

@@ -44,28 +44,28 @@ void lectorescritor::ini_lectura(int i){
 }
 
 void lectorescritor::fin_lectura(int i){
+	cout<<"Hebra "<<i<<"  termina de leer"<<endl;
 	n_lec--;
 	if(n_lec ==0){
 		escritura.signal();
 	}
-	cout<<"Hebra "<<i<<"  termina de leer"<<endl;
 }
 
 void lectorescritor::ini_escritura(int i){
 	if(n_lec>0 || escrib){
 		escritura.wait();
 	}
-	escrib=true;
 	cout<<"Hebra "<<i<<" empieza a escribir"<<endl;
+	escrib=true;
 }
 void lectorescritor::fin_escritura(int i){
+	cout<<"Hebra "<<i<<" termina de escribir"<<endl;
 	escrib=false;
 	if(!lectura.empty()){
 		lectura.signal();
 	}else{
 		escritura.signal();
 	}
-	cout<<"Hebra "<<i<<" termina de escribir"<<endl;
 }
 void lector(MRef<lectorescritor>monitor,int i){
 	while(true){
