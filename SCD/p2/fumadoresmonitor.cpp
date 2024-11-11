@@ -62,7 +62,7 @@ void fumar( int num_fumador )
 class Estanco : public HoareMonitor{
 private:
 	int ingrediente;
-	 CondVar estanquero //cola donde espera el estanquero 
+	 CondVar  mostrador//cola donde espera el estanquero 
 	,fumador[num_fumadores];// cola donde esperan los fumadores 
 public:
 	Estanco();
@@ -72,7 +72,7 @@ public:
 };
 
 Estanco::Estanco(){
-	estanquero = newCondVar();
+	 mostrador= newCondVar();
 	for(int i=0;i<num_fumadores;i++){
 		fumador[i]=newCondVar();
 	}
@@ -89,12 +89,12 @@ void Estanco::obtener_ingrediente(int i){
 		fumador[i].wait();
 	}
 	ingrediente =-1;
-	cout << "fumador coge el ingrediente " << i << endl;
-	estanquero.signal();
+	cout << "fumador "<<i<<" coge el ingrediente " << i << endl;
+	mostrador.signal();
 }
 void Estanco::esperar_recogida_ingrediente(){
    if(ingrediente >=0){
-		estanquero.wait();
+		mostrador.wait();
 	}
 }
 void funcion_hebra_estanquero(MRef<Estanco>monitor){
