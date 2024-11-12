@@ -52,7 +52,7 @@ void lectorescritor::fin_lectura(int i){
 }
 
 void lectorescritor::ini_escritura(int i){
-	if(n_lec>0 || escrib){
+	if(n_lec>0 || !escrib){
 		escritura.wait();
 	}
 	cout<<"Hebra "<<i<<" empieza a escribir"<<endl;

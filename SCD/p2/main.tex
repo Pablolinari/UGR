@@ -1,0 +1,394 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{listings} % Para incluir y resaltar código fuente
+\usepackage{xcolor}   % Para definir colores en el código fuente
+
+\title{Práctica 2}
+\author{Pablo Linari Pérez}
+\date{Noviembre 2024}
+
+\lstset{
+    language=C++,                % Lenguaje del código
+    basicstyle=\ttfamily\small,   % Estilo básico del código
+    keywordstyle=\color{blue}\bfseries, % Color para palabras clave
+    stringstyle=\color{red},      % Color para cadenas
+    commentstyle=\color{gray}\itshape, % Color y estilo para comentarios
+    numbers=left,                 % Números de línea a la izquierda
+    numberstyle=\tiny\color{gray}, % Estilo de los números de línea
+    stepnumber=1,                 % Numerar cada línea
+    frame=single,                 % Añadir un marco al código
+    breaklines=true,              % Partir líneas largas
+    tabsize=4                     % Tamaño del tabulador
+}
+
+\begin{document}
+
+\maketitle
+% Insertar imagen debajo del nombre
+\begin{center}
+    \includegraphics[width=1\textwidth]{UGR-Logo.png} % Ajusta la ruta y el tamaño de la imagen
+\end{center}
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{Introducción}
+En esta práctica se van a realizar dos implementaciones de tres problemas de sincronización usando librerías abiertas para programación multihebra y monitores, y así conocer el problema del \textit{productor-consumidor} y gestionar la sincronización de varias hebras. 
+\section{Productor consumidor FIFO}
+En esta sección veremos la implementación de el problema del productor consumidor FIFO , veamos la implementación de los métodos de la clase monitor
+
+\begin{lstlisting}[language=C++,caption=Función leer productor consumidor ] 
+int ProdConsSU1::leer(  )
+{
+   // esperar bloqueado hasta que 0 < primera_libre
+   if ( primera_libre == primera_ocupada )
+      ocupadas.wait();
+
+   //cout << "leer: ocup == " << primera_libre << ", total == " << num_celdas_total << endl ;
+   //assert( primera_libre == primera_ocupada);
+
+   // hacer la operación de lectura, actualizando estado del monitor
+   const int valor = buffer[primera_ocupada] ;
+   primera_ocupada = (primera_ocupada+1 )%num_celdas_total;
+	n--;
+   
+   // señalar al productor que hay un hueco libre, por si está esperando
+   libres.signal();
+
+   // devolver valor
+   return valor ;
+}
+\end{lstlisting}
+Este método del monitor usado en este programa consiste en comprobar que el búfer de lectura tenga espacio. Si no es así, se debe esperar; de lo contrario, se continúa y se lee el valor del búfer en la posición de la primera unidad ocupada. Esta variable se incrementa en 1 unidad, teniendo en cuenta la longitud del búfer, y se decrementa la variable n, la cual nos indicará en el método de escritura si el búfer está lleno o no.
+\begin{lstlisting}[language=C++,caption=Función escribir productor consumidor ] 
+void ProdConsSU1::escribir( int valor )
+{
+   // esperar bloqueado hasta que primera_libre < num_celdas_total
+   if ( n==num_celdas_total-1)
+      libres.wait();
+
+   //cout << "escribir: ocup == " << primera_libre << ", total == " << num_celdas_total << endl ;
+   //assert(primera_libre==-1);
+
+   // hacer la operación de inserción, actualizando estado del monitor
+   buffer[primera_libre] = valor ;
+   primera_libre=(primera_libre+1) %num_celdas_total;
+	n++;
+
+   // señalar al consumidor que ya hay una celda ocupada (por si esta esperando)
+   ocupadas.signal();
+}
+
+\end{lstlisting}
+
+Este método se encarga de escribir en el búfer. Para ello, primero comprueba que haya espacio en el búfer, haciendo uso de la variable \texttt{n}, que indica la cantidad de celdas ocupadas en el búfer. Si el búfer está lleno, la cola de libres deberá esperar. Cuando haya espacio, se escribe en el búfer y se incrementa la variable \texttt{primera\_libre}, teniendo en cuenta el tamaño del búfer, y se envía una señal a ``ocupadas'' para que puedan ejecutarse. Podemos observar que la variable \texttt{n} se incrementa en una unidad; esta variable es la que hemos mencionado antes y que utilizaremos para saber cuántas celdas están ocupadas en cada momento.
+
+
+\section{Múltiples productores y consumidores}
+
+\subsection{FIFO}
+Primero analizaremos la implementación FIFO, la cual es muy parecida a la del programa anterior, pero teniendo en cuenta que ahora hay múltiples consumidores y productores.
+
+Los métodos de escritura y lectura funcionan de la misma manera; la única diferencia la encontramos en las funciones \texttt{funcion\_hebra\_productora} y \texttt{funcion\_hebra\_consumidora}, donde tenemos que considerar el número de hebras disponibles.
+
+\begin{lstlisting}[language=C++,caption=función hebra productora ] 
+void funcion_hebra_productora( MRef<ProdConsSU1> monitor ,int i)
+{
+   for( unsigned j = p*i; j < p*i +p ; j++ )
+   {
+      int valor = producir_dato(i) ;
+      monitor->escribir( valor );
+   }
+}
+\end{lstlisting}
+En \texttt{funcion\_hebra\_productora} vemos que tenemos como argumentos el monitor y un entero \texttt{i} que hace referencia al identificador de la hebra que ejecuta la función. El código consiste en un bucle \texttt{for} que cada hebra ejecutará desde \texttt{p*i} hasta \texttt{p*i + p}, siendo \texttt{p = num\_items / NUMPRODUCTORAS}. Esto hace que cada hebra productora produzca una única vez un conjunto de números enteros. Dentro de este \texttt{for}, las hebras producirán un dato y ejecutarán la función \texttt{escribir} con ese valor generado.
+
+
+\begin{lstlisting}[language=C++,caption=función producir dato para varias hebras ] 
+unsigned producir_dato(int i)
+{
+   this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
+	int dato_producido = i*p + producidos[i];
+   producidos[i]+=1;
+   cont_prod[dato_producido]++;
+   cout <<"hebra :"<<i<< "producido:" << dato_producido << endl << flush ;
+   return dato_producido ;
+}
+\end{lstlisting}
+En la función \textit{producir\_dato} se añade el índice \textit{i} para saber qué dato generar, ya que cada hebra productora \textit{i} debe generar \textit{i * p + p - 1} datos. Para llevar un registro de qué dato debe generar cada hebra en cada momento, cada hebra guarda en una posición del vector el número \textit{n} que ya ha generado, de modo que, la próxima vez, se genere el número \textit{n + 1}.
+
+
+\begin{lstlisting}[language=C++,caption=función hebra consumidora multiple ] 
+
+void funcion_hebra_consumidora( MRef<ProdConsSU1>  monitor )
+{
+   for( unsigned i = 0 ; i < c ; i++ )
+   {
+      int valor = monitor->leer();
+      consumir_dato( valor ) ;
+   }
+}
+\end{lstlisting}
+La función \textit{hebra\_productora} consiste en un bucle \texttt{for} que se repite \texttt{c} veces, siendo \texttt{c} el valor de \texttt{num\_items / NUMCONSUMIDORAS}. Dentro de este bucle se ejecuta la función \texttt{leer} del objeto monitor. Este \texttt{for} limita a cada hebra a un número \texttt{c} de consumiciones, de modo que todas tengan la misma carga.
+
+
+
+\subsection{LIFO}
+Veamos ahora la implementación LIFO. A diferencia de la primera práctica, las funciones que ejecutan las hebras tanto de consumo como de producción se mantienen igual, ya que lo único que cambia es la implementación en la clase del monitor de los métodos \texttt{escribir} y \texttt{leer}.
+
+
+
+\begin{lstlisting}[language=C++,caption=función leer monitor LIFO ] 
+
+
+int ProdConsSU1::leer(  )
+{
+   // esperar bloqueado hasta que 0 < primera_libre
+   if ( primera_libre == 0 )
+      ocupadas.wait();
+
+   //cout << "leer: ocup == " << primera_libre << ", total == " << num_celdas_total << endl ;
+   assert( 0 < primera_libre  );
+
+   // hacer la operación de lectura, actualizando estado del monitor
+   primera_libre-- ;
+   const int valor = buffer[primera_libre] ;
+   
+   // señalar al productor que hay un hueco libre, por si está esperando
+   libres.signal();
+
+   // devolver valor
+   return valor ;
+}
+\end{lstlisting}
+La implementación del método no varía demasiado respecto a su versión FIFO; lo único que se debe cambiar es la variable que indica en qué casilla del búfer leer. Para ello, primero comprobamos que esta variable no tenga valor 0, de manera que no se intente leer antes de que se haya escrito. Si el valor es 0, la hebra tendrá que esperar; si el valor es mayor que 0, decrementamos en una unidad \texttt{primera\_libre} y leemos el búfer en la posición indicada. A continuación, enviamos una señal a \texttt{libres} y devolvemos el valor leído.
+
+\newpage
+\begin{lstlisting}[language=C++,caption=función escribir monitor  LIFO ] 
+
+
+void ProdConsSU1::escribir( int valor )
+{
+   // esperar bloqueado hasta que primera_libre < num_celdas_total
+   if ( primera_libre == num_celdas_total )
+      libres.wait();
+
+   //cout << "escribir: ocup == " << primera_libre << ", total == " << num_celdas_total << endl ;
+   assert( primera_libre < num_celdas_total );
+
+   // hacer la operación de inserción, actualizando estado del monitor
+   buffer[primera_libre] = valor ;
+   primera_libre++ ;
+
+   // señalar al consumidor que ya hay una celda ocupada (por si esta esperando)
+   ocupadas.signal();
+}
+\end{lstlisting}
+El método \texttt{escribir} sigue un esquema similar al de \texttt{leer}. Primero, comprueba si el búfer está libre; si lo está, inserta el valor pasado como argumento en el búfer, incrementa el valor de \texttt{primera\_libre} y envía una señal a la variable de condición \texttt{ocupadas}. De lo contrario, si 
+
+\begin{lstlisting}[language=C++,caption=función main multiproductor consumidor  (FIFO y LIFO) ] 
+
+int main()
+{
+	thread consumidoras[HEBRASCONSUMIDORAS];
+	thread productoras[HEBRASPRODUCTORAS];
+
+
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i]=thread(funcion_hebra_productora,i);
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i]=thread(funcion_hebra_consumidora);
+   }
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i].join();
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i].join();
+   }
+
+
+   test_contadores();
+}
+\end{lstlisting}
+
+La función \textit{main} es común a ambos programas (FIFO y LIFO). En ella encontramos dos vectores, uno de hebras productoras y otro de hebras consumidoras, los cuales se inician cada uno en su propio bucle \textit{for}, ejecutando en cada uno su respectiva función. 
+
+Los últimos dos bucles \textit{for} se encargan de hacer un \textit{join} en todas las hebras de cada vector para que, una vez finalicen todas, se pase a ejecutar la función \textit{test\_contadores}.
+
+\section{Fumadores}
+Pasemos a ver el problema de los fumadores, donde una hebra hace de estanquero y tres hebras hacen de fumadores. Cada fumador necesita un ingrediente para poder fumar (cerillas, tabaco o papel). Identificando cada ingrediente con un índice \(i\), podemos asignar, por ejemplo, el fumador 0 con el ingrediente 0, el fumador 1 con el ingrediente 1, y así sucesivamente.
+
+Para sincronizar a los fumadores con el estanquero, debemos usar dos variables de condición en la clase del monitor. La variable \texttt{mostrador} se encargará de indicar cuándo el mostrador está libre, y la variable \texttt{fumador} será un array de variables de condición, el cual nos indicará qué fumador tiene que esperar y cuál puede fumar.
+
+
+\begin{lstlisting}[language=C++,caption=función poner_ingrediente]
+
+void Estanco::poner_ingrediente(int i){
+	cout<<"puesto el ingrediente "<< i <<endl;
+	if(!fumador[i].empty()){
+		fumador[i].signal();
+	}
+}
+\end{lstlisting}
+La función \texttt{poner\_ingrediente} se encarga de colocar el ingrediente en el mostrador e indicar al fumador correspondiente que ya puede consumirlo. Para ello, primero comprobamos si el fumador está esperando, y en ese caso le damos la señal para que recoja el ingrediente.
+
+\begin{lstlisting}[language=C++,caption=función obtener_ingrediente ] 
+void Estanco::obtener_ingrediente(int i){
+   if(ingrediente!=i){
+		fumador[i].wait();
+	}
+	ingrediente =-1;
+	cout << "fumador "<<i<<" coge el ingrediente " << i << endl;
+	mostrador.signal();
+}
+\end{lstlisting}
+En primer lugar, la función comprueba si el ingrediente que se encuentra en el mostrador se corresponde con el fumador que ejecuta la hebra. Si no es así, el fumador debe esperar; en caso contrario, el fumador puede coger el ingrediente, y se envía una señal al \texttt{mostrador} para notificar que ya se ha cogido el ingrediente y que ha quedado vacío.
+
+
+\begin{lstlisting}[language=C++,caption=función recogida_ingrediente] 
+void Estanco::esperar_recogida_ingrediente(){
+   if(ingrediente >=0){
+		mostrador.wait();
+	}
+}
+\end{lstlisting}
+Por último, la función \texttt{esperar\_recogida\_ingrediente} consiste en esperar si el ingrediente sigue en el mostrador; es decir, si el ingrediente es mayor o igual a 0, ya que en la función anterior la variable \texttt{ingrediente} pasa a valer -1 cuando se retira el ingrediente.
+\begin{lstlisting}[language=C++,caption=función fumadores] 
+void funcion_hebra_fumador(int num_fumador,MRef<Estanco>monitor){
+	while(true){
+		monitor->obtener_ingrediente(num_fumador);
+		fumar(num_fumador);
+	}
+}
+\end{lstlisting}
+Las hebras fumadoras ejecutan una función que consiste en un bucle \texttt{while} infinito en el cual se ejecuta el método \texttt{obtener\_ingrediente} y, acto seguido, la función \texttt{fumar}.
+
+\begin{lstlisting}[language=C++,caption=función estanquero] 
+void funcion_hebra_estanquero(MRef<Estanco>monitor){
+	int ingrediente;
+	while (true) {
+ 		ingrediente = producir_ingrediente();
+		monitor->poner_ingrediente(ingrediente);
+		monitor->esperar_recogida_ingrediente();
+	}
+}
+\end{lstlisting}
+Por parte de la función del estanquero, esta consiste en ejecutar un bucle infinito en el cual produce un ingrediente y ejecuta los métodos \texttt{poner\_ingrediente} y \texttt{esperar\_recogida\_ingrediente}.
+
+
+\section{Lectores y escritores}
+
+En este problema, dos tipos de procesos acceden concurrentemente a datos compartidos: los escritores, que no deben ejecutarse concurrentemente con ningún otro escritor o lector, y los lectores, que no modifican la estructura de datos, pero que pueden ejecutarse concurrentemente con otros lectores de forma arbitraria.
+
+A continuación, veremos cómo se han implementado los métodos de la clase del monitor que hemos utilizado para resolver el problema.\\
+
+Para este monitor usaremos dos variables de condición que nos indicarán cuándo debemos leer o escribir, una variable booleana para indicar si se está escribiendo o no, y un entero que nos indica el número de lectores que están leyendo en un momento dado.
+
+
+
+\begin{lstlisting}[language=C++,caption=función inicio de lectura] 
+void lectorescritor::ini_lectura(int i){
+	if(escrib){
+		lectura.wait();
+	}
+		cout<<"Hebra "<<i<<" empieza a leer"<<endl;
+	n_lec++;
+	lectura.signal();
+}
+\end{lstlisting}
+
+En esta función, primero comprobamos si se está escribiendo. Si esto ocurre, hacemos \texttt{wait} a la variable \texttt{lectura}, ya que no podemos leer mientras se escribe. Si no se está escribiendo, la hebra puede comenzar a leer y se incrementa en una unidad el número de lectores. También se envía una señal a la variable \texttt{lectura} para indicar que, si hay otro proceso esperando, puede leer.
+
+\begin{lstlisting}[language=C++,caption=función fin de lectura] 
+void lectorescritor::fin_lectura(int i){
+	cout<<"Hebra "<<i<<"  termina de leer"<<endl;
+	n_lec--;
+	if(n_lec ==0){
+		escritura.signal();
+	}
+}
+\end{lstlisting}
+La función \texttt{fin\_de\_lectura} se encarga de que las hebras terminen de leer. Decrementa en una unidad la cantidad de lectores, y cuando el número de lectores sea 0, envía una señal a la variable \texttt{escritura} para indicar que no hay nadie leyendo y, por tanto, se puede escribir.
+
+
+\begin{lstlisting}[language=C++,caption=función inicio de escritura ] 
+
+void lectorescritor::ini_escritura(int i){
+	if(n_lec>0 || escrib){
+		escritura.wait();
+	}
+	cout<<"Hebra "<<i<<" empieza a escribir"<<endl;
+	escrib=true;
+}
+\end{lstlisting}
+Esta función se encarga de iniciar la escritura de la hebra. Primero, comprueba si hay lectores o si la variable \texttt{escrib} es verdadera en caso de que ya haya un escritor escribiendo. En este caso, el proceso escritor deberá esperar; de lo contrario, podrá escribir, por lo tanto, comienza a escribir y asigna el valor \texttt{true} a la variable \texttt{escrib}.
+
+
+\begin{lstlisting}[language=C++,caption=función fin de escritura ] 
+void lectorescritor::fin_escritura(int i){
+	cout<<"Hebra "<<i<<" termina de escribir"<<endl;
+	escrib=false;
+	if(!lectura.empty()){
+		lectura.signal();
+	}else{
+		escritura.signal();
+	}
+}
+\end{lstlisting}
+Esta función se encarga de finalizar la escritura. Para ello, asigna a la variable \texttt{escrib} el valor \texttt{false} y comprueba si hay lectores. En caso de haberlos, envía una señal a los lectores mediante la variable de condición \texttt{lectura}; en caso contrario, envía una señal a la variable de condición \texttt{escritura} para indicar que se puede volver a escribir.
+\begin{lstlisting}[language=C++,caption=función lector] 
+void lector(MRef<lectorescritor>monitor,int i){
+	while(true){
+		monitor->ini_lectura(i);
+   		this_thread::sleep_for( chrono::milliseconds( aleatorio<min_ms,max_ms>() ));
+		monitor->fin_lectura(i);
+   this_thread::sleep_for( chrono::milliseconds( aleatorio<min_ms,max_ms>() ));
+	}
+
+}
+\end{lstlisting}
+\begin{lstlisting}[language=C++,caption=función escritor] 
+void  escritor(MRef<lectorescritor>monitor,int i){
+	while(true){
+		monitor->ini_escritura(i);
+   this_thread::sleep_for( chrono::milliseconds( aleatorio<min_ms,max_ms>() ));
+
+		monitor->fin_escritura(i);
+   this_thread::sleep_for( chrono::milliseconds( aleatorio<min_ms,max_ms>() ));
+	}
+
+}
+\end{lstlisting}
+
+Como podemos observar, las funciones de lector y escritor son muy parecidas; ambas tienen la misma estructura: un bucle \texttt{while} infinito que ejecuta los métodos del monitor correspondientes en cada caso. El lector ejecuta \texttt{ini\_lectura} y \texttt{fin\_lectura}, separados por tiempos aleatorios, y en el caso del escritor se procede ig
+
+\section{Main}
+En esta ultima seccion se hara una breve explicacion de los metodos main usados en estos programas , he decidido usar como ejemplo el de los lectores pero los otros main se han escrito con el mismo metodo  . En este caso se declaran dos arrays de hebras uno de lectoras y otro de escritoras y tambien se declara un objeto monitor de la clase que se ha definido previamente . Ambos arrays de hebras se inicializan en un bucle for que recorre el array al completo iniciando cada hebra con su funcion y argumentos correspondientes . 
+Los dos siguientes bucles for se usan para aplicar el metodo join sobre todas las hebras de los arrays para que unas esperen a otras a la hora de finalizar , en el caso de los lectores y los fumadores  nunca terminan ya que son programas infinitos . 
+
+\begin{lstlisting}[language=C++,caption=función main lectores ] 
+int main (int argc, char *argv[]) {
+	int numlec=4,numesc=4;
+	thread lectoras[numlec],escritoras[numesc];
+	
+   MRef<lectorescritor> monitor = Create<lectorescritor>() ;	
+	for(int i = 0; i< numesc; i++){
+		escritoras[i]=thread(escritor,monitor,i);
+	}	
+
+	for(int i = 0; i< numlec; i++){
+		lectoras[i]=thread(lector,monitor,i);
+	}
+	for(int i = 0; i< numlec; i++){
+		lectoras[i].join();
+	}
+	for(int i = 0; i< numesc; i++){
+		escritoras[i].join();
+	}
+
+	return 0;
+}
+\end{lstlisting}
+\end{document}
