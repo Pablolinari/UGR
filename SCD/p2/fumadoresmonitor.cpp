@@ -11,14 +11,7 @@
 using namespace std ;
 using namespace scd ;
 
-
-const int num_fumadores = 3;
-
-
-
-//-------------------------------------------------------------------------
-// Función que simula la acción de producir un ingrediente, como un retardo
-// aleatorio de la hebra (devuelve número de ingrediente producido)
+const int num_fumadores = 3 ; 
 
 int producir_ingrediente()
 {
@@ -58,71 +51,68 @@ void fumar( int num_fumador )
     cout << "Fumador " << num_fumador << "  : termina de fumar, comienza espera de ingrediente." << endl;
 
 }
-
-class Estanco : public HoareMonitor{
+class estanco : public HoareMonitor{
 private:
 	int ingrediente;
-	 CondVar  mostrador//cola donde espera el estanquero 
-	,fumador[num_fumadores];// cola donde esperan los fumadores 
+	CondVar mostrador;
+	CondVar fumadores[num_fumadores];
 public:
-	Estanco();
-	void poner_ingrediente(int i);
-	void obtener_ingrediente(int  i);
-	void esperar_recogida_ingrediente();
+	void obteneringrediente(int i);
+	void poneringrediente(int i );
+	void esperarecogidaingrediente();
+	estanco();
 };
-
-Estanco::Estanco(){
-	 mostrador= newCondVar();
-	for(int i=0;i<num_fumadores;i++){
-		fumador[i]=newCondVar();
+estanco::estanco(){
+	ingrediente = -1;
+	for (int i = 0; i<num_fumadores;i++){
+		fumadores[i]= newCondVar();
+	}
+	mostrador = newCondVar();
+}
+void estanco::obteneringrediente(int i){
+	if(ingrediente != i){
+		fumadores[i].wait();
 	}
 	ingrediente = -1;
-}
-void Estanco::poner_ingrediente(int i){
-	cout<<"puesto el ingrediente "<< i <<endl;
-	if(!fumador[i].empty()){
-		fumador[i].signal();
-	}
-}
-void Estanco::obtener_ingrediente(int i){
-   if(ingrediente!=i){
-		fumador[i].wait();
-	}
-	ingrediente =-1;
-	cout << "fumador "<<i<<" coge el ingrediente " << i << endl;
 	mostrador.signal();
 }
-void Estanco::esperar_recogida_ingrediente(){
-   if(ingrediente >=0){
+void estanco::poneringrediente(int i){
+	ingrediente=i;
+	fumadores[i].signal();
+}
+void estanco::esperarecogidaingrediente(){
+	while(ingrediente != -1){
 		mostrador.wait();
 	}
 }
-void funcion_hebra_estanquero(MRef<Estanco>monitor){
+
+void hebraestanquero(MRef<estanco>monitor){
 	int ingrediente;
 	while (true) {
- 		ingrediente = producir_ingrediente();
-		monitor->poner_ingrediente(ingrediente);
-		monitor->esperar_recogida_ingrediente();
+
+		ingrediente = producir_ingrediente();
+		monitor->poneringrediente(ingrediente);
+		monitor->esperarecogidaingrediente();
 	}
 }
-void funcion_hebra_fumador(int num_fumador,MRef<Estanco>monitor){
-	while(true){
-		monitor->obtener_ingrediente(num_fumador);
-		fumar(num_fumador);
+void hebrafumador(int i,MRef<estanco>monitor){
+	while (true) {
+		monitor->obteneringrediente(i);
+		fumar(i);
+	
 	}
 }
 
 int main (int argc, char *argv[]) {
-	MRef<Estanco>monitor = Create<Estanco>();
+	MRef<estanco> monitor = Create<estanco>();
+	thread estanquero = thread(hebraestanquero,monitor);
 	thread fumadores[num_fumadores];
-	thread estanquero = thread(funcion_hebra_estanquero,monitor);
-	for (int i = 0; i < num_fumadores; i++){
-		fumadores[i]=thread(funcion_hebra_fumador,i,monitor);
+	for (int i = 0; i< num_fumadores;i++){
+		fumadores[i] = thread(hebrafumador,i,monitor);
 	}
-	for (int i = 0; i < num_fumadores; i++){
+	for (int i = 0; i< num_fumadores;i++){
 		fumadores[i].join();
 	}
 	estanquero.join();
-
 	return 0;
 }

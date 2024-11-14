@@ -202,7 +202,7 @@ int main()
 {
 	thread productoras[NUMPRODUCTORAS],consumidoras[NUMCONSUMIDORAS];
    cout << "--------------------------------------------------------------------" << endl
-        << "Problema del productor-consumidor únicos (Monitor SU, buffer LIFO). " << endl
+        << "Problema del productor-consumidor únicos (Monitor SU, buffer FIFO). " << endl
         << "--------------------------------------------------------------------" << endl
         << flush ;
 
