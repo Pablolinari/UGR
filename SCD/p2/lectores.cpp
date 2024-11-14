@@ -52,7 +52,7 @@ void lectorescritor::fin_lectura(int i){
 }
 
 void lectorescritor::ini_escritura(int i){
-	if(n_lec>0 || !escrib){
+	if(n_lec>0 || escrib){
 		escritura.wait();
 	}
 	cout<<"Hebra "<<i<<" empieza a escribir"<<endl;
@@ -85,8 +85,9 @@ void lector(MRef<lectorescritor>monitor,int i){
 	}
 
 }
+
+	const int numlec=4,numesc=4;
 int main (int argc, char *argv[]) {
-	int numlec=4,numesc=4;
 	thread lectoras[numlec],escritoras[numesc];
 	
    MRef<lectorescritor> monitor = Create<lectorescritor>() ;	
