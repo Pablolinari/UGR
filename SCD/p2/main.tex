@@ -34,7 +34,7 @@
 \newpage
 
 \section{Introducción}
-En esta práctica se van a realizar dos implementaciones de tres problemas de sincronización usando librerías abiertas para programación multihebra y monitores, y así conocer el problema del \textit{productor-consumidor} y gestionar la sincronización de varias hebras. 
+En esta práctica se van a realizar las implementaciones de cuatro problemas de sincronización usando librerías abiertas para programación multihebra y monitores, y así conocer el problema del \textit{productor-consumidor} y gestionar la sincronización de varias hebras. 
 \section{Productor consumidor FIFO}
 En esta sección veremos la implementación de el problema del productor consumidor FIFO , veamos la implementación de los métodos de la clase monitor
 
@@ -225,31 +225,28 @@ Para sincronizar a los fumadores con el estanquero, debemos usar dos variables d
 
 \begin{lstlisting}[language=C++,caption=función poner_ingrediente]
 
-void Estanco::poner_ingrediente(int i){
-	cout<<"puesto el ingrediente "<< i <<endl;
-	if(!fumador[i].empty()){
-		fumador[i].signal();
-	}
+void estanco::poner_ingrediente(int i){
+	ingrediente=i;
+	fumadores[i].signal();
 }
 \end{lstlisting}
-La función \texttt{poner\_ingrediente} se encarga de colocar el ingrediente en el mostrador e indicar al fumador correspondiente que ya puede consumirlo. Para ello, primero comprobamos si el fumador está esperando, y en ese caso le damos la señal para que recoja el ingrediente.
+La función \texttt{poner\_ingrediente} se encarga de colocar el ingrediente en el mostrador e indicar al fumador correspondiente que ya puede consumirlo. 
 
 \begin{lstlisting}[language=C++,caption=función obtener_ingrediente ] 
-void Estanco::obtener_ingrediente(int i){
-   if(ingrediente!=i){
-		fumador[i].wait();
+void estanco::obtener_ingrediente(int i){
+	if(ingrediente != i){
+		fumadores[i].wait();
 	}
-	ingrediente =-1;
-	cout << "fumador "<<i<<" coge el ingrediente " << i << endl;
+	ingrediente = -1;
 	mostrador.signal();
 }
 \end{lstlisting}
 En primer lugar, la función comprueba si el ingrediente que se encuentra en el mostrador se corresponde con el fumador que ejecuta la hebra. Si no es así, el fumador debe esperar; en caso contrario, el fumador puede coger el ingrediente, y se envía una señal al \texttt{mostrador} para notificar que ya se ha cogido el ingrediente y que ha quedado vacío.
 
 
-\begin{lstlisting}[language=C++,caption=función recogida_ingrediente] 
-void Estanco::esperar_recogida_ingrediente(){
-   if(ingrediente >=0){
+\begin{lstlisting}[language=C++,caption=función esperar_recogida_ingrediente] 
+void estanco::esperarecogidaingrediente(){
+	while(ingrediente != -1){
 		mostrador.wait();
 	}
 }
@@ -275,7 +272,7 @@ void funcion_hebra_estanquero(MRef<Estanco>monitor){
 	}
 }
 \end{lstlisting}
-Por parte de la función del estanquero, esta consiste en ejecutar un bucle infinito en el cual produce un ingrediente y ejecuta los métodos \texttt{poner\_ingrediente} y \texttt{esperar\_recogida\_ingrediente}.
+Por parte de la función del estanquero, esta consiste en ejecutar un bucle infinito en el cual produce un ingrediente y ejecuta los métodos \texttt{poner\_ingrediente} y \texttt{esperar\_recogida\_ingrediente}, cabe destacar que la función que produce el ingrediente es igual que la de la práctica anterior .
 
 
 \section{Lectores y escritores}
