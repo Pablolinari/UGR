@@ -5,7 +5,6 @@ using namespace std;
 const int nlimite =14;
 
 void procesostart(){
-
 }
 
 void procesoprinter(){
