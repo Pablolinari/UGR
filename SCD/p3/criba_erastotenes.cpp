@@ -2,21 +2,21 @@
 #include <iostream>
 using namespace std;
 
-const int nlimit = 35;
+const int nlimit = 2000;
 const int idprinter=0;
 
 void procesostart(){
 	int num = 2;
 	MPI_Send(&num, 1,MPI_INT,idprinter,0, MPI_COMM_WORLD);
-		cout<<"start imprime"<<endl;
+	//	cout<<"start imprime"<<endl;
 	for (int i = 3;i<nlimit; i+=2) {
-		cout<<"start manda "<< i<<endl;
+		//cout<<"start manda "<< i<<endl;
 		num = i;
 		MPI_Send(&num,1, MPI_INT,2,0, MPI_COMM_WORLD);
 	}
 	num=-1;
 	MPI_Send(&num,1, MPI_INT,2,0, MPI_COMM_WORLD);
-	cout<<"start termina"<< endl;
+	//cout<<"start termina"<< endl;
 
 }
 
@@ -26,18 +26,23 @@ void procesofilter(int id ){
 	bool continua =true;
 	MPI_Recv(&primo,1, MPI_INT , id-1 ,0, MPI_COMM_WORLD, &estado);
 	MPI_Send(&primo,1, MPI_INT,idprinter,0, MPI_COMM_WORLD);
-
+	if(primo ==-1){continua=false;
+	
+			MPI_Send(&primo,1, MPI_INT,id+1,0, MPI_COMM_WORLD);
+	}
+	
 	while (continua) {
 		MPI_Recv(&valor,1, MPI_INT , id-1 ,0, MPI_COMM_WORLD, &estado);
-		cout<<"proceso  "<< id<<" recibe "<<valor<<endl;
+		//cout<<"proceso  "<< id<<" recibe "<<valor<<endl;
 		if(valor%primo!=0){
 			MPI_Send(&valor,1, MPI_INT,id+1,0, MPI_COMM_WORLD);
 		}
 		if(valor == -1){
+			MPI_Send(&valor,1, MPI_INT,id+1,0, MPI_COMM_WORLD);
 			continua = false;
 		}
 	}
-	cout << "proceso con id termina "<<id<< endl;
+	//cout << "proceso con id termina "<<id<< endl;
 }
 
 void procesofinal(int id){
@@ -47,34 +52,36 @@ void procesofinal(int id){
 	bool continua = true;
 	MPI_Recv(&primo,1, MPI_INT ,id-1,0, MPI_COMM_WORLD, &estado);
 	MPI_Send(&primo,1, MPI_INT,idprinter,0, MPI_COMM_WORLD);
-		cout<<"proceso final "<<endl;
+		//cout<<"proceso final "<<endl;
+	if(primo ==-1 ){continua=false;}
 	while (continua) {
 		MPI_Recv(&primo,1, MPI_INT ,id-1,0, MPI_COMM_WORLD, &estado);
-		cout<<"proceso final recibe "<<primo<<endl;
+		//cout<<"proceso final recibe "<<primo<<endl;
 		if(primo == -1){
 			continua=false;
-			MPI_Send(&primo,1, MPI_INT,idprinter,0, MPI_COMM_WORLD);
 		}	
 	}
-	cout << "proceso final termina "<< endl;
+	//cout << "proceso final termina "<< endl;
 
 }
 
-void procesoprinter(){
-	bool continua = true;
+void procesoprinter(int tope){
+	bool continua =true;
+	int cont=0;
 	MPI_Status estado;
 	int primo ;
-	while (continua){		
+	while (continua&& cont <tope){		
 		
 		MPI_Recv(&primo,1, MPI_INT,MPI_ANY_SOURCE,0, MPI_COMM_WORLD, &estado);
-		
-		if(primo == -1){
-			continua = false;
+		if (primo ==-1) {
+			continua =false;
 		}else{
-			cout <<"NUMERO PRIMO "<< primo<<" ENCONTRADO POR "<<estado.MPI_SOURCE<<endl;
+
+		cout <<"NUMERO PRIMO "<< primo<<" ENCONTRADO POR "<<estado.MPI_SOURCE<<endl;
 		}
+		cont++;
 	}
-	cout << "proceso printer termina "<< endl;
+	cout << "------------------------"<< endl;
 	
 }
 
@@ -83,12 +90,11 @@ int main (int argc, char *argv[]) {
 	int id_propio , num_procesos_actual;
   MPI_Comm_rank( MPI_COMM_WORLD, &id_propio );
   MPI_Comm_size( MPI_COMM_WORLD, &num_procesos_actual );
-
 	if (id_propio == 1) {
 		procesostart();
 	}
 	else if(id_propio ==0){
-		procesoprinter();
+		procesoprinter(num_procesos_actual-1);
 	}
 	else if (id_propio == num_procesos_actual-1) {
 		procesofinal(id_propio);
