@@ -50,13 +50,13 @@ void funcion_filosofos( int id ){
 
   while ( true ){
 		if (id ==0){
-    cout <<"Filósofo " <<id << " solicita ten. izq." <<id_ten_izq <<endl;
+    cout <<"Filósofo " <<id << " solicita ten. izq." <<id_ten_der<<endl;
     
-		MPI_Ssend(&msg,1,MPI_INT,id_ten_izq,0,MPI_COMM_WORLD);
-
-    cout <<"Filósofo " <<id <<" solicita ten. der." <<id_ten_der <<endl;
-		
 		MPI_Ssend(&msg,1,MPI_INT,id_ten_der,0,MPI_COMM_WORLD);
+
+    cout <<"Filósofo " <<id <<" solicita ten. der." <<id_ten_izq <<endl;
+		
+		MPI_Ssend(&msg,1,MPI_INT,id_ten_izq,0,MPI_COMM_WORLD);
 		}
 		cout <<"Filósofo " <<id << " solicita ten. izq." <<id_ten_izq <<endl;
     
