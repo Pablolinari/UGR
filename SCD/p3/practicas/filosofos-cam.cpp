@@ -51,12 +51,13 @@ void funcion_filosofos( int id ){
 	int msg=id; 
 
   while ( true ){
-
+		//sentarse a la mesa 
+		//
 		cout <<"Filósofo " <<id << " solicita sentarse a la mesa"  <<endl;
 		
 		MPI_Ssend(&msg,1, MPI_INT,id_camarero,etiq_filosofo_sentado, MPI_COMM_WORLD);
 		
-
+		//solicitar tenedores
 		cout <<"Filósofo " <<id << " solicita ten. izq." <<id_ten_izq <<endl;
     
 		MPI_Ssend(&msg,1,MPI_INT,id_ten_izq,0,MPI_COMM_WORLD);
@@ -68,6 +69,8 @@ void funcion_filosofos( int id ){
     cout <<"Filósofo " <<id <<" comienza a comer" <<endl ;
     sleep_for( milliseconds( aleatorio<10,100>() ) );
 
+		//soltar tenedores 
+		//
     cout <<"Filósofo " <<id <<" suelta ten. izq. " <<id_ten_izq <<endl;
     // ... soltar el tenedor izquierdo (completar)
 		MPI_Ssend(&msg,1,MPI_INT,id_ten_izq,0,MPI_COMM_WORLD);
@@ -78,10 +81,10 @@ void funcion_filosofos( int id ){
 		MPI_Ssend(&msg,1,MPI_INT,id_ten_der,0,MPI_COMM_WORLD);
 
 
-		MPI_Ssend(&msg,1, MPI_INT,id_camarero,etiq_filosofo_levantado, MPI_COMM_WORLD);
-
+		//levantarse de la mesa
     cout << "Filosofo " << id << " se levanta de la mesa" << endl;
 
+		MPI_Ssend(&msg,1, MPI_INT,id_camarero,etiq_filosofo_levantado, MPI_COMM_WORLD);
     cout << "Filosofo " << id << " comienza a pensar" << endl;
     sleep_for( milliseconds( aleatorio<10,100>() ) );
  }
@@ -110,21 +113,29 @@ void funcion_tenedores( int id ){
 void funcion_camarero(){
 	int sentados =0;
 	int idfilosofo;
+	int aceptado;
 	MPI_Status estado;
 	while (true ) {
+		
 		if(sentados < 4){
-			MPI_Recv(&idfilosofo, 1, MPI_INT,MPI_ANY_SOURCE, etiq_filosofo_sentado, MPI_COMM_WORLD,&estado);
-			sentados++;
-			cout<<"se ocupa el hueco del filosofo "<< idfilosofo<< "en la mesa"<<endl;
+			aceptado=MPI_ANY_TAG;
 		}else{
-			
-			MPI_Recv(&idfilosofo, 1, MPI_INT,MPI_ANY_SOURCE, etiq_filosofo_levantado, MPI_COMM_WORLD,&estado);
-			sentados--;
-			cout<<"se libera el hueco del filosofo "<< idfilosofo<< "en la mesa"<<endl;
+			aceptado = etiq_filosofo_levantado;
 		}
 	
+			MPI_Recv(&idfilosofo, 1, MPI_INT,MPI_ANY_SOURCE,aceptado , MPI_COMM_WORLD,&estado);
+		if (estado.MPI_TAG == etiq_filosofo_sentado) {
+			sentados++;
+			cout<<"CAMARERO : El filosofo " << estado.MPI_SOURCE<< " se sienta a la mesa"<<endl;
+		}
+		else if (estado.MPI_TAG == etiq_filosofo_levantado) {
+			sentados--;
+			cout<<"CAMARERO : El filosofo " << estado.MPI_SOURCE<< " se levanta de la mesa"<<endl;
+		
+		}
 	}
 }
+
 
 int main( int argc, char** argv )
 {
