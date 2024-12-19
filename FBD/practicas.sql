@@ -68,32 +68,38 @@ insert into ventas values('S7', 'P1', 'J1', '340', to_date('10/02/2006', 'dd/mm/
 insert into ventas values('S7', 'P1', 'J2', '340', to_date('10/02/2006', 'dd/mm/yyyy'));
 insert into ventas values('S7', 'P1', 'J3', '340', to_date('10/02/2006', 'dd/mm/yyyy'));
 insert into ventas values('S7', 'P1', 'J4', '340', to_date('10/02/2006', 'dd/mm/yyyy'));
+--Ejercicio 27 
+SELECT nompie ,MAX(peso)
+from pieza ;
 
 
+--Ejercicio 30
 
-
-SELECT v.codpro ,p.nompro,sum(v.cantidad)
+SELECT v.codpro
+FROM ventas v
+GROUP BY v.codpro
+HAVING COUNT(DISTINCT v.codpie) > 3;
+--Ejercicio 35
+SELECT p.nompro ,SUM(v.cantidad)
 from ventas v , proveedor p
 where v.codpro = p.codpro
 GROUP BY p.nompro
-HAVING SUM(v.cantidad) > 1000;
+HAVING SUM(cantidad) > 1000;
 
-SELECT codpie, sum(cantidad)
-FROM ventas
-GROUP BY codpie
-HAVING SUM(cantidad) = (SELECT MAX(SUM(V1.cantidad))
-FROM ventas V1
-GROUP BY V1.codpie);
+
+--Ejercicio 36 
+SELECT p.nompie --,sum(v.cantidad)
+FROM pieza p ,ventas v
+where p.codpie = v.codpie 
+group by p.nompie 
+having sum(v.cantidad) = (select max(sum(cantidad)) 
+                            from ventas
+                            group by codpie);
  
-
-
-
-
-SELECT 
-    (SELECT p.nompro FROM proveedores p WHERE p.codpro = v.codpro) AS nombre_proveedor,
-    SUM(v.cantidad) AS total_cantidad
-FROM ventas v
-GROUP BY v.codpro
-HAVING SUM(v.cantidad) > 1000;
-
-SELECT * from ventas where fecha BETWEEN '01-JAN-2023' AND '05-JAN-2024';
+/*
+select p.nompie , sum(v.cantidad) 
+from pieza p , ventas v 
+where v.codpie = p.codpie
+group by p.nompie;
+*/
+COMMIT;

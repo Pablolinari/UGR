@@ -12,6 +12,31 @@
 // -----------------------------------------------------------------------------
 
 
+// Funciones MPI
+// MPI_Send(*buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm) -> envio asincrono seguro
+// MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status) -> espera a recibir el mensaje
+// MPI_Ssend(*buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm) -> Envio sincrono seguro 
+// MPI_Iprobe(int source, int tag, MPI_Comm comm, int *flag, MPI_Status *status) -> consultar si hay o no un mensaje pendiente
+// MPI_Probe(int source, int tag, MPI_Comm comm, MPI_Status *status) -> espera bloqueado hasta que haya un mensaje pendiente
+// MPI_Get_count(MPI_Status *status, MPI_Datatype datatype, int *count) -> Obtiene el numero de valores recibidos. Se suele usar en conjuncion de Probe o Iprobe
+// MPI_Isend(*buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request) -> Inicia envio pero retorna antes de leer el buffer
+// MPI_Irecv(*buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request) -> Recibe mensaje pero no queda bloqueado. Para saber acerca del mensaje si se ha recibido o no se utilizan las siguiente funciones
+// MPI_Wait(MPI_Request *request, MPI_Status *status) -> Queda bloqueado hasta que se termine el envio o recepcion
+// MPI_Test(MPI_Request *request, int *flag, MPI_Status *status) -> Ve si el envio o recepcion han terminado. No bloqueante
+//
+// Miscelaneo: MPI_ANY_SOURCE, MPI_ANY_TAG se utilizan en las recepciones de mensajes para indicar que puede ser desde cualquier
+// source o tag respectivamente.
+// Estructuras:
+	// MPI_Status status: status.MPI_SOURCE y status.MPI_TAG
+	// MPI_Request: sirve solamente para pasarlo a las funciones Wait y Test para ver el estado del envio o recepcion
+// En general cuando flag > 0 significa que se ha completado lo que ha consultado la funcion.
+
+
+// Para compilar y ejecutar y fichero ejemplo.cpp:
+	// mpicxx -std=c++11 -o ejemplo ejemplo.cpp
+	// mpirun -oversubscribe -np 4 ./ejemplo
+
+
 #include <mpi.h>
 #include <thread> // this_thread::sleep_for
 #include <random> // dispositivos, generadores y distribuciones aleatorias
