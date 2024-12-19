@@ -75,12 +75,18 @@ from pieza ;
 
 --Ejercicio 30
 
-SELECT v.codpro
+SELECT *
 FROM ventas v
 GROUP BY v.codpro
 HAVING COUNT(DISTINCT v.codpie) > 3;
+
+
+
+
+
+
 --Ejercicio 35
-SELECT p.nompro ,SUM(v.cantidad)
+SELECT p.nompro 
 from ventas v , proveedor p
 where v.codpro = p.codpro
 GROUP BY p.nompro
@@ -88,14 +94,22 @@ HAVING SUM(cantidad) > 1000;
 
 
 --Ejercicio 36 
-SELECT p.nompie --,sum(v.cantidad)
+SELECT p.nompie 
 FROM pieza p ,ventas v
 where p.codpie = v.codpie 
 group by p.nompie 
-having sum(v.cantidad) = (select max(sum(cantidad)) 
+having sum(v.cantidad) >= all (select sum(cantidad) 
                             from ventas
                             group by codpie);
  
+
+
+--------
+select max(sum(cantidad)) 
+from ventas
+group by codpie;
+
+
 /*
 select p.nompie , sum(v.cantidad) 
 from pieza p , ventas v 
@@ -106,20 +120,18 @@ group by p.nompie;
 
 --ejercicio 40
 
-SELECT t.owner , t.table_name ,u.username , u.user_id
-from all_tables t 
-join all_users u on t.owner=u.username 
-where t.table_name like '%ventas%';
+SELECT t.owner, t.table_name, u.username, u.user_id
+FROM all_tables t , all_users u 
+where t.owner=u.username and t.table_name LIKE '%VENTAS%';
 
---ejercicio 42 
+DESCRIBE all_tables;
+SELECT * from all_tables;
+SELECT * from all_users;
+---ejercicio 45----
 
-SELECT p.codpro 
-from proveedores p ,ventas v 
-where sum(v.cantidad) > (SELECT codpro 
-                            from ventas
-                            where cnatidad = MAX(cantidad));
-
-
-
+select codpro 
+from ventas 
+group by codpro
+having count(codpro)>=10;
 
 COMMIT;
