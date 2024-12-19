@@ -102,4 +102,24 @@ from pieza p , ventas v
 where v.codpie = p.codpie
 group by p.nompie;
 */
+
+
+--ejercicio 40
+
+SELECT t.owner , t.table_name ,u.username , u.user_id
+from all_tables t 
+join all_users u on t.owner=u.username 
+where t.table_name like '%ventas%';
+
+--ejercicio 42 
+
+SELECT p.codpro 
+from proveedores p ,ventas v 
+where sum(v.cantidad) > (SELECT codpro 
+                            from ventas
+                            where cnatidad = MAX(cantidad));
+
+
+
+
 COMMIT;
