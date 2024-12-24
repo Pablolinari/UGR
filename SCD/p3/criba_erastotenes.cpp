@@ -9,7 +9,6 @@ using namespace std;
 
 const int nlimit = 100;
 const int idprinter=0; 
-
 void procesostart(){
 	int num = 2;
 	//enviar el numero 2 al proceso printer
