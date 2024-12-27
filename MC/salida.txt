@@ -1,0 +1,40 @@
+
+<<!DOCTYPE html>
+<html lang="es">
+<body>
+    <header>
+        # Página HTML de Prueba
+
+    </header>
+    <main>
+        Bienvenido a mi página HTML de prueba. Aquí hay algunos elementos básicos de HTML:
+
+        
+        ## Lista de Ejemplo
+
+        
+						<h1>hola papi</h1>
+            
+ -Elemento de lista 1
+            
+ -Elemento de lista 2
+            
+ -Elemento de lista 3
+        
+
+        
+        ## Enlace de Ejemplo
+
+        Puedes visitar <a href="https://www.ejemplo.com" target="_blank">Ejemplo.com</a> para más información.
+
+    </main>
+    <footer>
+        &copy; 2024 Mi Página de Prueba
+
+    </footer>
+</body>
+</html>
+
+Líneas: 0
+Palabras: 0
+Caracteres: 0
