@@ -68,6 +68,21 @@ insert into ventas values('S7', 'P1', 'J1', '340', to_date('10/02/2006', 'dd/mm/
 insert into ventas values('S7', 'P1', 'J2', '340', to_date('10/02/2006', 'dd/mm/yyyy'));
 insert into ventas values('S7', 'P1', 'J3', '340', to_date('10/02/2006', 'dd/mm/yyyy'));
 insert into ventas values('S7', 'P1', 'J4', '340', to_date('10/02/2006', 'dd/mm/yyyy'));
+
+
+
+
+------ parte 3 ------
+
+--ejercicio 1
+
+
+
+
+
+
+
+
 --Ejercicio 27 
 SELECT nompie ,MAX(peso)
 from pieza ;
