@@ -7,10 +7,6 @@ using namespace std;
 
 // Variables para contar líneas, palabras y caracteres
 ifstream infile;
-bool in_tag =false;
-int num_chars=0,num_words=0,num_lines=0;
-string tag_content;
-string current_tag;
 void processtag(string c);
 void processorderedlist(string c);
 void processunorderedlist(string c);
@@ -19,6 +15,8 @@ void processtitle(string c);
 %}
 
 texto (.|\s)*
+htmltag <html.*>
+htmltagc <\/html>
 etiq1 <h1>
 etiq1c <\/h1>
 etiq2 <h2>
@@ -35,8 +33,8 @@ olist <ol>
 olistc <\/ol>
 main <main>
 mainc <\/main>
-header <header>
-headerc <\/header>
+header <head>
+headerc <\/head>
 any (\t|\n)*
 tagh1 {etiq1}{texto}{etiq1c}
 tagh2 {etiq2}{texto}{etiq2c}			
@@ -45,11 +43,14 @@ tagtext {plaintext}{texto}{plaintextc}
 unorderedlist {ulist}({any}|{texto})*{ulistc}
 orderedlist {olist}({any}|{texto})*{olistc}
 titulo {header}({any}|{texto})*{headerc}
-
+doctype <!DOCTYPE.*>
 
 %%
 
 
+
+{doctype}								{cout << "";}
+({htmltag}|{htmltagc})	{cout << "";}
 {titulo}								{processtitle(yytext);}
 {tagh1}							    {processtag(yytext);}
 {tagh2}									{processtag(yytext);}
@@ -78,7 +79,6 @@ void processtag(string c) {
 		}
 		cout << replace << cad<<endl; 
 }
-//list ({ulist}|{olist})(\s*)({tagli}\s*)*({ulistc}|{olistc})(\s*)
 void processunorderedlist(string c) {
 	int pos = c.find("<ul>");
 	string cad =c;
@@ -120,9 +120,9 @@ void processorderedlist(string c) {
 	cout << cad << endl;
 }
 void processtitle(string c){
-	int pos = c.find("<header>");
+	int pos = c.find("<head>");
 	c.erase(pos,8);
-	pos =c.find("</header>");
+	pos =c.find("</head>");
 	c.erase(pos,9);
 	pos = c.find("<h");
 	c.erase(pos,4);	
@@ -148,10 +148,6 @@ int main(int argc, char **argv) {
 		flujo.yylex();
     infile.close();
 
-    // Mostrar los conteos
-    cout << "\nLíneas: " << num_lines << endl;
-    cout << "Palabras: " << num_words << endl;
-    cout << "Caracteres: " << num_chars << endl;
 
     return 0;
 }

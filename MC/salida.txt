@@ -1,40 +1,63 @@
 
-<<!DOCTYPE html>
-<html lang="es">
-<body>
-    <header>
-        # Página HTML de Prueba
 
-    </header>
-    <main>
-        Bienvenido a mi página HTML de prueba. Aquí hay algunos elementos básicos de HTML:
 
-        
-        ## Lista de Ejemplo
 
-        
-						<h1>hola papi</h1>
-            
- -Elemento de lista 1
-            
- -Elemento de lista 2
-            
- -Elemento de lista 3
-        
+--------------------------------------------------------------
+   Ejemplo Extenso de HTML
 
-        
-        ## Enlace de Ejemplo
+--------------------------------------------------------------
 
-        Puedes visitar <a href="https://www.ejemplo.com" target="_blank">Ejemplo.com</a> para más información.
 
-    </main>
-    <footer>
-        &copy; 2024 Mi Página de Prueba
+	
+	# Este es un ejemplo de un archivo html 
 
-    </footer>
-</body>
-</html>
+	vamos a ver el funcionamiento de este programa  el cual
 
-Líneas: 0
-Palabras: 0
-Caracteres: 0
+	se encarga de pasar un archivo html a markdown
+
+
+	# Este es un texto h1
+
+	En markdown el texto h1 se indica con #
+
+	## Este es un texto h2
+
+	En markdown el texto h2 se indica con ##
+
+	<h3>Este es un texto h3</h2>
+	En markdown el texto h3 se indica con ###
+
+	
+	## Listas desordenadas
+
+	las listas desordenadas se ven con - en markdown
+
+	
+		
+ -Primer elemento desordenado 
+		
+ -Segundo elemento desordenado 
+		
+ - Tercero elemento desordenado 
+		
+ - Cuarto elemento desordenado 
+	
+
+	## Listas ordenadas
+
+	las listas ordenadas se ven con 1. en markdown
+
+	
+		
+1. Primer elemento ordenado 
+		
+2. Segundo elemento ordenado 
+		
+3.  Tercero elemento ordenado 
+		
+4.  Cuarto elemento ordenado 
+	
+
+
+
+
