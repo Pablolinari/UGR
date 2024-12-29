@@ -49,15 +49,12 @@ doctype <!DOCTYPE.*>
 
 
 
-{doctype}								{cout << "";}
-({htmltag}|{htmltagc})	{cout << "";}
+{doctype}|({main}|{mainc})|({body}|{bodyc})|({htmltag}|{htmltagc})	{cout << "";}
 {titulo}								{processtitle(yytext);}
 {tagh1}							    {processtag(yytext);}
 {tagh2}									{processtag(yytext);}
 {tagh3}									{processtag(yytext);}
 {tagtext}								{processtag(yytext);}
-({body}|{bodyc})				{cout << "";}
-({main}|{mainc})				{cout << "";}
 {orderedlist}						{processorderedlist(yytext);}
 {unorderedlist}					{processunorderedlist(yytext);}
 

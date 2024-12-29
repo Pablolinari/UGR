@@ -3,7 +3,7 @@
 
 
 --------------------------------------------------------------
-   Ejemplo Extenso de HTML
+   Ejemplo  de HTML
 
 --------------------------------------------------------------
 
@@ -24,7 +24,8 @@
 
 	En markdown el texto h2 se indica con ##
 
-	<h3>Este es un texto h3</h2>
+	### Este es un texto h3
+
 	En markdown el texto h3 se indica con ###
 
 	

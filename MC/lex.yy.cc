@@ -313,8 +313,8 @@ int yyFlexLexer::yywrap() { return 1; }
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 12
-#define YY_END_OF_BUFFER 13
+#define YY_NUM_RULES 9
+#define YY_END_OF_BUFFER 10
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -324,19 +324,19 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[121] =
     {   0,
-        0,    0,   13,   12,   12,    0,    0,    0,    0,    0,
+        0,    0,   10,    9,    9,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    8,    0,    0,    0,    0,
-        0,    2,    9,    0,    0,    0,    0,    2,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    7,    0,    0,
+        0,    0,    0,    0,    0,    1,    0,    0,    0,    0,
+        0,    1,    1,    0,    0,    0,    0,    1,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    6,    0,    0,
 
-        0,    0,    0,    0,    0,    0,    0,    4,    5,    6,
-        0,   10,   11,    0,    1,    0,    0,    0,    3,    0
+        0,    0,    0,    0,    0,    0,    0,    3,    4,    5,
+        0,    7,    8,    0,    1,    0,    0,    0,    2,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -552,8 +552,8 @@ static const flex_int16_t yy_chk[555] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "programa1.l"
-#line 3 "programa1.l"
+#line 1 "htmltomd.l"
+#line 3 "htmltomd.l"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -699,7 +699,7 @@ YY_DECL
 		}
 
 	{
-#line 48 "programa1.l"
+#line 48 "htmltomd.l"
 
 
 
@@ -763,68 +763,53 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 52 "programa1.l"
+#line 52 "htmltomd.l"
 {cout << "";}
 	YY_BREAK
 case 2:
+/* rule 2 can match eol */
 YY_RULE_SETUP
-#line 53 "programa1.l"
-{cout << "";}
+#line 53 "htmltomd.l"
+{processtitle(yytext);}
 	YY_BREAK
 case 3:
-/* rule 3 can match eol */
 YY_RULE_SETUP
-#line 54 "programa1.l"
-{processtitle(yytext);}
+#line 54 "htmltomd.l"
+{processtag(yytext);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 55 "programa1.l"
+#line 55 "htmltomd.l"
 {processtag(yytext);}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 56 "programa1.l"
+#line 56 "htmltomd.l"
 {processtag(yytext);}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 57 "programa1.l"
+#line 57 "htmltomd.l"
 {processtag(yytext);}
 	YY_BREAK
 case 7:
+/* rule 7 can match eol */
 YY_RULE_SETUP
-#line 58 "programa1.l"
-{processtag(yytext);}
+#line 58 "htmltomd.l"
+{processorderedlist(yytext);}
 	YY_BREAK
 case 8:
+/* rule 8 can match eol */
 YY_RULE_SETUP
-#line 59 "programa1.l"
-{cout << "";}
+#line 59 "htmltomd.l"
+{processunorderedlist(yytext);}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 60 "programa1.l"
-{cout << "";}
-	YY_BREAK
-case 10:
-/* rule 10 can match eol */
-YY_RULE_SETUP
-#line 61 "programa1.l"
-{processorderedlist(yytext);}
-	YY_BREAK
-case 11:
-/* rule 11 can match eol */
-YY_RULE_SETUP
-#line 62 "programa1.l"
-{processunorderedlist(yytext);}
-	YY_BREAK
-case 12:
-YY_RULE_SETUP
-#line 64 "programa1.l"
+#line 61 "htmltomd.l"
 ECHO;
 	YY_BREAK
-#line 827 "lex.yy.cc"
+#line 812 "lex.yy.cc"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1787,7 +1772,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 64 "programa1.l"
+#line 61 "htmltomd.l"
 
 
 void processtag(string c) {
