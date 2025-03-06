@@ -1,0 +1,311 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{listings} % Para incluir y resaltar código fuente
+\usepackage{xcolor}   % Para definir colores en el código fuente
+
+\title{Práctica 1}
+\author{Pablo Linari Pérez}
+\date{Octubre 2024}
+
+\lstset{
+    language=C++,                % Lenguaje del código
+    basicstyle=\ttfamily\small,   % Estilo básico del código
+    keywordstyle=\color{blue}\bfseries, % Color para palabras clave
+    stringstyle=\color{red},      % Color para cadenas
+    commentstyle=\color{gray}\itshape, % Color y estilo para comentarios
+    numbers=left,                 % Números de línea a la izquierda
+    numberstyle=\tiny\color{gray}, % Estilo de los números de línea
+    stepnumber=1,                 % Numerar cada línea
+    frame=single,                 % Añadir un marco al código
+    breaklines=true,              % Partir líneas largas
+    tabsize=4                     % Tamaño del tabulador
+}
+
+\begin{document}
+
+\maketitle
+% Insertar imagen debajo del nombre
+\begin{center}
+    \includegraphics[width=1\textwidth]{UGR-Logo.png} % Ajusta la ruta y el tamaño de la imagen
+\end{center}
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{Introducción}
+En esta práctica se van a realizar dos implementaciones de tres problemas de sincronización usando librerías abiertas para programación multihebra y semáforos, y así conocer el problema del \textit{productor-consumidor} y gestionar la sincronización de varias hebras. 
+
+\section{Productor-consumidor}
+En este problema tenemos una hebra productora y otra consumidora. Debemos implementar una estructura de semáforos que haga que primero se produzca y después se lea el dato para evitar incoherencias en el programa. En este primer programa se ha elegido una estructura FIFO para el buffer de lectura y escritura.
+
+\begin{lstlisting}[language=C++,caption=Variables globales para el problema productor-consumidor]
+// Variables globales
+
+const unsigned 
+   num_items = 40 ,   // número de items
+	tam_vec   = 10 ;   // tamaño del buffer
+unsigned  
+   cont_prod[num_items] = {0}, // contadores de verificación: para cada dato, número de veces que se ha producido.
+   cont_cons[num_items] = {0}, // contadores de verificación: para cada dato, número de veces que se ha consumido.
+   siguiente_dato       = 0 ; // siguiente dato a producir en 'producir_dato' (solo se usa ahí)
+unsigned buffer[tam_vec];
+Semaphore puede_leer(0);
+Semaphore puede_escribir(tam_vec);
+int primera_ocupada =0,primera_libre = 0;
+\end{lstlisting}
+
+Al principio del programa vemos la declaración de varias variables globales, las cuales tienen los siguientes usos: 
+\begin{itemize}
+    \item \textbf{unsigned buffer[tam\_vec]}: este vector es usado como buffer donde se escriben o se leen los datos producidos.
+    \item \textbf{Semaphore puede\_leer(0)}: semáforo que indica si la hebra consumidora puede leer. El dato se inicia a cero, ya que inicialmente no hay datos disponibles, por tanto no debe leer. 
+    \item \textbf{Semaphore puede\_escribir(tam\_vec)}: semáforo que indica si la hebra productora puede escribir. El dato se inicia a \textit{tam\_vec} ya que al principio puede producir tantos datos como huecos haya en el vector.
+    \item \textbf{int primera\_libre = 0}: entero que indica la posición donde la hebra productora puede escribir.
+    \item \textbf{int primera\_ocupada = 0}: entero que indica la posición de donde la hebra consumidora puede leer.
+\end{itemize}
+\begin{lstlisting}[language=C++,caption=función hebra productora]
+void  funcion_hebra_productora(  )
+{
+   for( unsigned i = 0 ; i < num_items ; i++ )
+   {
+      int dato = producir_dato() ;
+	  sem_wait(puede_escribir);{
+			buffer[primera_libre] = dato;
+			primera_libre =(primera_libre+1) %tam_vec;
+		}
+		sem_signal(puede_leer);
+   }
+}
+\end{lstlisting}
+Mirando la función \textit{funcion\_hebra\_productora}, podemos ver una estructura en la cual se aplica un \textit{sem\_wait()} al semáforo \textit{puede\_escribir}. Esto reduce en una unidad la cantidad de veces que se podrá volver a pasar por ese semáforo estando abierto. Acto seguido, se ejecutan dos líneas de código: en la primera se inserta el dato en la primera posición libre del buffer y en la segunda se recalcula la primera posición libre (el incremento de la variable se hace módulo \textit{tam\_vec} ya que una vez el buffer esté lleno se comienza a reutilizar desde la posición 0). La última línea del código aplica \textit{sem\_signal()} al semáforo \textit{puede\_leer}; de esta manera, se incrementa en una unidad su valor, lo que indicará que puede pasar con el semáforo abierto una vez. 
+
+Con esta estructura de semáforos se pretende indicar a cada hebra cuándo y cuántas veces puede leer o escribir. Este proceso se repite el número de veces \textit{num\_items}.
+
+
+\begin{lstlisting}[language=C++,caption=función hebra consumidora ]
+
+void funcion_hebra_consumidora( )
+{
+   for( unsigned j = 0 ; j < num_items ; j++ )
+   {
+	sem_wait(puede_leer);{
+	        consumir_dato(buffer[primera_ocupada]);
+			primera_ocupada = (primera_ocupada +1)%tam_vec;
+		}
+		sem_signal(puede_escribir);
+    }
+}
+\end{lstlisting}
+
+La función \textit{hebra\_consumidora} es la encargada de hacer que la hebra lea del buffer. Para ello, se utiliza una estructura de semáforos similar a la de la función productora, pero esta vez \textit{sem\_wait()} se aplica sobre \textit{puede\_leer}, ya que cada vez que la hebra consumidora lee un dato del buffer, se debe disminuir en una unidad la posibilidad de volver a leer. Esto garantiza que la hebra solo lea tantas veces como datos producidos haya en ese momento, evitando que lea datos que aún no han sido producidos.
+
+Entre \textit{sem\_signal()} y \textit{sem\_wait()}, la función se encarga de consumir un dato de la primera posición ocupada del buffer y de actualizar la posición de consumo de manera análoga a la función anterior, utilizando el operador módulo para poder reutilizar el buffer una vez llegado al final.
+
+
+
+\section{Múltiples productores y consumidores}
+
+\subsection{FIFO}
+Primero analizaremos la implementacion fifo la cual es muy parecida a la del programa anterior pero teniendo en cuenta que ahora hay multiples consumidores y productores.
+
+Respecto a la anterior declaracion de variables globales quedan todas igual y se aniaden las siguientes para poder gestionar las multiples hebras .
+\begin{lstlisting}[language=C++,caption=Variables globales para el problema multi productor consumidor ] // Variables globales
+const int HEBRASCONSUMIDORAS = 2;
+const int HEBRASPRODUCTORAS = 4;
+Semaphore cambiaindice(1);
+Semaphore cambiaindice1(1);
+int producidos[HEBRASPRODUCTORAS]={0};
+int p = num_items/HEBRASPRODUCTORAS;
+\end{lstlisting}
+\begin{itemize}
+    \item \textbf{HEBRAS\_CONSUMIDORAS}: constante que indica el número de hebras consumidoras.
+    \item \textbf{HEBRAS\_PRODUCTORAS}: constante que indica el número de hebras productoras.
+    \item \textbf{Semaphore cambia\_indice(1)}: semáforo que se usa como cerrojo para indicar cuándo una hebra puede o no cambiar el índice del buffer FIFO.
+    \item \textbf{Semaphore cambia\_indice1(1)}: semáforo que se usa como cerrojo para indicar cuándo una hebra puede o no cambiar el índice del buffer FIFO.
+    \item \textbf{int producidos[HEBRAS\_PRODUCTORAS] = \{0\}}: vector de enteros que indica qué número ha producido ya la hebra \(i\).
+    \item \textbf{int p = num\_items / HEBRAS\_PRODUCTORAS;}: variable usada para no calcular siempre el cociente en la distribución de los cálculos.
+\end{itemize}
+
+\begin{lstlisting}[language=C++,caption=función producir dato para varias hebras ] 
+unsigned producir_dato(int i)
+{
+   this_thread::sleep_for( chrono::milliseconds( aleatorio<20,100>() ));
+	int dato_producido = i*p + producidos[i];
+   producidos[i]+=1;
+   cont_prod[dato_producido]++;
+   cout <<"hebra :"<<i<< "producido:" << dato_producido << endl << flush ;
+   return dato_producido ;
+}
+\end{lstlisting}
+En la función \textit{producir\_dato} se añade el índice \textit{i} para saber qué dato generar, ya que cada hebra productora \textit{i} debe generar \textit{i * p + p - 1} datos. Para llevar un registro de qué dato debe generar cada hebra en cada momento, cada hebra guarda en una posición del vector el número \textit{n} que ya ha generado, de modo que, la próxima vez, se genere el número \textit{n + 1}.
+
+
+\begin{lstlisting}[language=C++,caption=función hebra productora multiple (FIFO) ] 
+
+void  funcion_hebra_productora( int i )
+{
+for (unsigned j = i*p ; j<i*p +p; j++ )
+   {
+      int dato = producir_dato(i) ;
+	  sem_wait(puede_escribir);{
+			sem_wait(cambiaindice);
+			buffer[primera_libre] = dato;
+			primera_libre =(primera_libre+1) %tam_vec;
+			sem_signal(cambiaindice);
+		}
+		sem_signal(puede_leer);
+   }
+}
+\end{lstlisting}
+La función \textit{hebra\_productora} tiene como argumento el índice \textit{i} para poder asignar a cada hebra que ejecuta la función un rango de valores a generar. La estructura que siguen los semáforos \textit{puede\_escribir} y \textit{puede\_leer} es la misma que en el programa anterior y sigue la misma lógica, solo que ahora encontramos un nuevo semáforo dentro de esta estructura. El semáforo \textit{cambia\_indice} se usa como cerrojo para no permitir que dos hebras realicen a la vez la operación de modificar el índice o asignar el dato. Por tanto, cada vez que una hebra llega a este semáforo, si está abierto, lo cierra, ejecuta su código, y al salir lo vuelve a abrir para modificar las variables sin error.
+ 
+\begin{lstlisting}[language=C++,caption=función hebra consumidora multiple (FIFO) ] 
+void funcion_hebra_consumidora(  )
+{
+   for( unsigned j = 0 ; j < num_items/HEBRASCONSUMIDORAS ; j++ )
+   {
+	sem_wait(puede_leer);{
+			sem_wait(cambiaindice1);
+	        consumir_dato(buffer[primera_ocupada]);
+			primera_ocupada = (primera_ocupada +1)%tam_vec;
+			sem_signal(cambiaindice1);
+		}
+		sem_signal(puede_escribir);
+    }
+}
+\end{lstlisting}
+
+Por último, en la función hebra consumidora se pasa como argumento el índice de una hebra consumidora. El bucle se ejecuta $\frac{num\_items}{\text{HEBRASCONSUMIDORAS}}$ para que el trabajo se distribuya uniformemente entre cada hebra consumidora. Los semáforos \textit{puede\_leer} y \textit{puede\_escribir} funcionan de igual modo que en el primer programa y se utiliza el semáforo \textit{cambiaindice1} como cerrojo para lograr el mismo objetivo que en la función anterior, es decir, mantener la atomicidad a la hora de cambiar los índices y los datos.
+
+
+\subsection{LIFO}
+
+
+
+\begin{lstlisting}[language=C++,caption=función hebra productora multiple (LIFO) ] 
+
+void  funcion_hebra_productora( int i )
+{
+for (unsigned j = i*p ; j<i*p +p; j++ )
+   {
+      int dato = producir_dato(i) ;
+	  sem_wait(puede_escribir);{
+			sem_wait(cambiaindice1);
+			buffer[primera_libre] = dato;
+			primera_libre++;
+			sem_signal(cambiaindice1);
+		}
+		sem_signal(puede_leer);
+   }
+}
+\end{lstlisting}
+\newpage
+\begin{lstlisting}[language=C++,caption=función hebra consumidora multiple (LIFO) ] 
+
+
+void funcion_hebra_consumidora(  )
+{
+   for( unsigned j = 0 ; j < num_items/HEBRASCONSUMIDORAS ; j++)
+   {
+	sem_wait(puede_leer);{
+			sem_wait(cambiaindice1);
+			primera_libre--;
+	        consumir_dato(buffer[primera_libre],i);
+			sem_signal(cambiaindice1);
+		}
+		sem_signal(puede_escribir);
+    }
+}
+\end{lstlisting}
+
+Como se puede observar, la diferencia entre el FIFO y el LIFO se encuentra únicamente en el modo de uso del \textit{buffer}, ya que en el caso del LIFO este adopta una estructura de pila, pasando así de necesitar dos índices a usar solamente uno, el cual indicará dónde escribe y de dónde lee cada hebra. 
+
+Dado esto, podemos usar un único cerrojo, ya que solo empleamos una variable de índice. (El funcionamiento del cerrojo es igual que en el FIFO, pero esta vez con una sola variable).
+
+
+\begin{lstlisting}[language=C++,caption=función main multiproductor consumidor  (FIFO y LIFO) ] 
+
+int main()
+{
+	thread consumidoras[HEBRASCONSUMIDORAS];
+	thread productoras[HEBRASPRODUCTORAS];
+
+
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i]=thread(funcion_hebra_productora,i);
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i]=thread(funcion_hebra_consumidora);
+   }
+   for (int i= 0; i< HEBRASPRODUCTORAS; i++) {
+	productoras[i].join();
+   } 
+	for (int i= 0; i< HEBRASCONSUMIDORAS; i++) {
+		consumidoras[i].join();
+   }
+
+
+   test_contadores();
+}
+\end{lstlisting}
+
+La función \textit{main} es común a ambos programas (FIFO y LIFO). En ella encontramos dos vectores, uno de hebras productoras y otro de hebras consumidoras, los cuales se inician cada uno en su propio bucle \textit{for}, ejecutando en cada uno su respectiva función. 
+
+Los últimos dos bucles \textit{for} se encargan de hacer un \textit{join} en todas las hebras de cada vector para que, una vez finalicen todas, se pase a ejecutar la función \textit{test\_contadores}.
+
+\section{Fumadores}
+Pasemos a ver el problema de los fumadores, donde una hebra hace de estanquero y tres hebras hacen de fumadores. Cada fumador necesita un ingrediente para poder fumar (cerillas, tabaco o papel). Identificando cada ingrediente con un índice \(i\), podemos asignar, por ejemplo, el fumador 0 con el ingrediente 0, el fumador 1 con el ingrediente 1, y así sucesivamente.
+
+Para sincronizar los fumadores con el estanquero, debemos usar un semáforo para indicar cuándo el mostrador está vacío, y un array de semáforos para indicar cuándo está disponible cada ingrediente para ser consumido.
+
+
+\begin{lstlisting}[language=C++,caption=función hebra estanquero ] 
+
+
+void funcion_hebra_estanquero(  )
+{
+	int i ;
+	while (true) {
+		i = producir_ingrediente();
+		sem_wait(mostrador_vacio);{
+			cout<<"puesto ingrediente "<<i<<endl;
+		}sem_signal(ingredientes[i]);
+	
+	}
+
+}
+\end{lstlisting}
+La función \textit{hebra\_estanquero} tiene una estructura de semáforos que le permite saber si el mostrador está vacío. \\
+Primero, se le aplica \textit{sem\_wait} al semáforo \textit{mostrador\_vacio}, el cual está inicializado en 1, y por tanto, comienza vacío. Cuando se le aplica el primer \textit{sem\_wait}, su valor pasa a 0, indicando que el mostrador está lleno. Si el mostrador está vacío, se coloca el ingrediente y se aplica \textit{sem\_signal} al semáforo \textit{ingredientes[i]} (estos se inicializan en 0, ya que si el mostrador está vacío los fumadores no pueden consumir), para indicar que el ingrediente del fumador \textit{i} puede ser recogido. Tras esto, el valor del semáforo \textit{ingredientes[i]} se incrementa en una unidad, indicando así que se podrá ejecutar el código del fumador \textit{i}.
+
+
+\begin{lstlisting}[language=C++,caption=función hebra fumador ] 
+void  funcion_hebra_fumador( int num_fumador )
+{
+   while( true )
+   {
+		sem_wait(ingredientes[num_fumador]);{
+			cout<<"Retirado el ingrediente "<<num_fumador<<endl;
+		}sem_signal(mostrador_vacio);
+		fumar(num_fumador);
+
+   }
+}
+\end{lstlisting}
+Esta función recibe como parámetro el número del fumador que va a ejecutar dicha función y, dependiendo de este índice, se utilizará un semáforo u otro. \\
+En la estructura de semáforos, primero se aplica un \textit{sem\_wait} al semáforo en la posición \textit{num\_fumador} del array. Si este tiene un valor superior a cero, el fumador \textit{num\_fumador} puede comenzar a fumar. A continuación, se aplica \textit{sem\_signal} al semáforo \textit{mostrador\_vacio}, lo que disminuye en una unidad el valor del semáforo e indica a la hebra del estanquero que puede depositar un nuevo ingrediente en el mostrador.
+
+\begin{lstlisting}[language=C++,caption=función main] 
+int main()
+{
+   thread vendedor( funcion_hebra_estanquero ),fumador1(funcion_hebra_fumador,0),fumador2(funcion_hebra_fumador,1),fumador3(funcion_hebra_fumador,2);
+	vendedor.join();
+	fumador1.join();
+	fumador2.join();
+	fumador3.join();
+    return 0;
+}
+\end{lstlisting}
+Por último, la función \textit{main} de este programa se encarga de activar las cuatro hebras que participan: la del estanquero y las tres de fumadores, las cuales se inicializan con los índices 0, 1 y 2 como argumento a las funciones que ejecutan. Finalmente, se realiza un \textit{join} de todas las hebras para que todas esperen a las demás antes de terminar. Sin embargo, dado que no se ejecuta ninguna función o código después, y la ejecución de todas las funciones es infinita, este \textit{join} no tendrá efecto.
+
+\end{document}
