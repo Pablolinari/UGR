@@ -37,12 +37,20 @@ analisis de fourier
 
 ### posibles equivalencias 
 
-Stochastic Processes Applied to Financial Models
+Stochastic Processes https://studieinfo.liu.se/en/kurs/TAMS32/ht-2025#syllabus
+Partial Differential Equations:https://studieinfo.liu.se/en/kurs/TATA27/vt-2025
+
+inferencia estadistica:https://studieinfo.liu.se/en/kurs/TAMS17/ht-2025#syllabus
 
 
+ informatica grafica : https://studieinfo.liu.se/en/kurs/TSBK11/vt-2025#overview
+vision por computador : https://studieinfo.liu.se/en/kurs/TSBB33/vt-2025#syllabus
 
+Aprendizaje automatico :https://studieinfo.liu.se/en/kurs/tdde15/#syllabus oooo https://studieinfo.liu.se/en/kurs/732a78/#syllabus 00000 https://studieinfo.liu.se/en/kurs/tdde01/#syllabus
 
+Deep learning :https://studieinfo.liu.se/en/kurs/732a90/#syllabus
 
+estadistica computacional :https://studieinfo.liu.se/en/kurs/732a90/#syllabus
 
 
 
