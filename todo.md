@@ -1,4 +1,4 @@
-
+https://liu.se/en/research/ai/ai-education
 ## ERASMUS 
 # informatica
 
