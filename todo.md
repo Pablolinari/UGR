@@ -2,36 +2,36 @@ https://liu.se/en/research/ai/ai-education
 ## ERASMUS 
 # informatica
 
-Aprendizaje automatico
+-Aprendizaje automatico
 ingenieria del conocimiento 
 metaheuristicas 
 modelos avanzados de computacion
-tecnicas de los sistemas inteligentes 
+-tecnicas de los sistemas inteligentes 
 nuevos paradigmas de interaccion 
-procesadores de lenguajes 
-vision por computador 
+-procesadores de lenguajes 
+-vision por computador 
 
 # obigatorias 
-Informatica grafica 
+-Informatica grafica 
 disenio y dessarrollo de sistemas de informacion 
 
 # matematicas 
 
 # obligatorias
-Analisis funcional 
-Inferencia Estadistica 
+-Analisis funcional 
+-Inferencia Estadistica 
 Topologia 2 
 algebra 3 
-Curvas y superficies 
+-Curvas y superficies 
 ED 2 
 MM 2 
 
 # optativas 
 
-Estadistica computacional 
-Estadistica multivariante 
-Procesos estocasticos 
-Ecuaciones en derivadas parciales 
+-Estadistica computacional 
+-Estadistica multivariante 
+-Procesos estocasticos 
+-Ecuaciones en derivadas parciales 
 analisis de fourier 
 
 
@@ -58,7 +58,7 @@ estadistica multivariante :https://studieinfo.liu.se/en/kurs/TAMS39/ht-2025#syll
 
 curvas y superficies : https://studieinfo.liu.se/en/kurs/TATA74/ht-2025#overview
 
+procesadores de lenguaje : https://studieinfo.liu.se/en/kurs/TDDE09#syllabus
 
 
-
-
+tecnicas de los sistemas inteligentes : https://studieinfo.liu.se/en/kurs/TDDE05#overview
