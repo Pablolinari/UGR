@@ -53,6 +53,14 @@ Deep learning :https://studieinfo.liu.se/en/kurs/732a90/#syllabus
 estadistica computacional :https://studieinfo.liu.se/en/kurs/732a90/#syllabus
 
 
+analisis funcional : https://studieinfo.liu.se/en/kurs/TATM85/ht-2020#syllabus
+
+estadistica multivariante :https://studieinfo.liu.se/en/kurs/TAMS39/ht-2025#syllabus
+
+
+curvas y superficies : https://studieinfo.liu.se/en/kurs/TATA74/ht-2025#overview
+
+
 
 
 
