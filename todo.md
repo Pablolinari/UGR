@@ -44,7 +44,8 @@ inferencia estadistica:https://studieinfo.liu.se/en/kurs/TAMS17/ht-2025#syllabus
 
 
  informatica grafica : https://studieinfo.liu.se/en/kurs/TSBK11/vt-2025#overview
-vision por computador : https://studieinfo.liu.se/en/kurs/TSBB33/vt-2025#syllabus
+
+vision por computador : https://studieinfo.liu.se/en/kurs/TSBB21#overview
 
 Aprendizaje automatico :https://studieinfo.liu.se/en/kurs/TDDE70#syllabus
 
