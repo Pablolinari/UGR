@@ -3,8 +3,8 @@ https://liu.se/en/research/ai/ai-education
 # informatica
 
 -Aprendizaje automatico
-----ingenieria del conocimiento 
-metaheuristicas 
+ingenieria del conocimiento 
+metaheuristicas ?????
 modelos avanzados de computacion
 -tecnicas de los sistemas inteligentes 
 nuevos paradigmas de interaccion 
@@ -13,12 +13,12 @@ procesadores de lenguajes
 
 # obigatorias 
 Informatica grafica 
-disenio y dessarrollo de sistemas de informacion 
+-disenio y dessarrollo de sistemas de informacion 
 
 # matematicas 
 
 # obligatorias
--Analisis funcional 
+Analisis funcional 
 -Inferencia Estadistica 
 Topologia 2 
 algebra 3 
@@ -28,12 +28,12 @@ MM 2
 
 # optativas 
 
--Estadistica computacional 
+Estadistica computacional 
 -Estadistica multivariante 
 -Procesos estocasticos 
--Ecuaciones en derivadas parciales 
+Ecuaciones en derivadas parciales 
 analisis de fourier 
-
+// financil markkets
 
 ### posibles equivalencias 
 
