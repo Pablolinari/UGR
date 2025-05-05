@@ -1,0 +1,26 @@
+--- 
+- name: Crear usuario con privilegios sudo sin contrasenia
+  hosts: mvrocky
+  become: true
+  vars:
+    username: admin
+ 
+- name: Crear usuario 
+  user: 
+    name: "{{username}}"
+    state: present
+    create_home: true
+
+- name: Ejecutar comandos sin contrasenia
+  lineinfile:
+    path: /etc/sudoers
+    line: "{{username}} ALL=(ALL) NOPASSWD: ALL "
+    state: present
+- name: Dar acceso por SSH al usuario admin con llave publica 
+
+- name: 
+  group:
+    name: "{{groupname}}"
+    state: present
+
+
