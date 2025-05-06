@@ -1,9 +1,10 @@
 --- 
-- name: Crear usuario con privilegios sudo sin contrasenia
-  hosts: mvrocky
+- name: variables
+  hosts: mvise
   become: true
   vars:
     username: admin
+    groupname: wheel
  
 - name: Crear usuario 
   user: 
@@ -16,11 +17,31 @@
     path: /etc/sudoers
     line: "{{username}} ALL=(ALL) NOPASSWD: ALL "
     state: present
-- name: Dar acceso por SSH al usuario admin con llave publica 
 
+- name: copiar llave publica al usuario 
+  ansible.posix.authorized_key:
+    user: "{{username}}"
+    key: "{{lookup('file','~/.ssh/id_rsa.pub')}}"
+    state: present
+- name: descomentar archivo sshdconfig 
+  lineinfile:
+  path: /etc/ssh/sshd_config
+  line: "PubkeyAuthentication yes"
+  state: present
+- name: descomentar archivo sshdconfig otra linea
+  lineinfile:
+  path: /etc/ssh/sshd_config
+  line: "AuthorizedKeysFile .ssh/authorized_keys"
+  state: present
 - name: 
   group:
     name: "{{groupname}}"
     state: present
+- name: Reiniciar sshd
+  service: 
+    name: sshd
+    state: restarted
+
+
 
 
