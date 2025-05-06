@@ -1,6 +1,8 @@
 from numpy import sign
-
-def secante(f, x0, x1, nmax, prec, tol):
+nmax=100
+prec=10**(-20)
+tol=10**(-10)
+def secante(f, x0, x1, nmax=nmax, prec=prec, tol=tol):
     """
     Implementa el método de la secante para encontrar una raíz de la función f.
 
@@ -52,7 +54,7 @@ def secante(f, x0, x1, nmax, prec, tol):
         print(f'Se llegó al número máximo de iteraciones ')
     return xn1, niter, exit
 
-def wittaker(f, x0, m, nmax, prec, tol):
+def wittaker(f, x0, m, nmax=nmax, prec=prec, tol=tol):
     """
     Implementa el método de Whittaker para encontrar una raíz de la función f.
 
@@ -103,7 +105,7 @@ def wittaker(f, x0, m, nmax, prec, tol):
         print(f'Se llegó al número máximo de iteraciones ')
     return xn, niter, exit
 
-def NewtonRaphson(f, df, x0, nmax, prec, tol):
+def NewtonRaphson(f, df, x0, nmax=nmax, prec=prec, tol=tol):
     """
     Implementa el método de Newton-Raphson para encontrar una raíz de la función f.
 
@@ -154,7 +156,7 @@ def NewtonRaphson(f, df, x0, nmax, prec, tol):
         print(f'Se llegó al número máximo de iteraciones ')
     return xn, niter, exit
 
-def biseccion(f, a, b, nmax, tol, prec):
+def biseccion(f, a, b, nmax=nmax, prec=prec, tol=tol):
     """
     Implementa el método de bisección para encontrar una raíz de la función f en el intervalo [a, b].
 
@@ -207,3 +209,52 @@ def biseccion(f, a, b, nmax, tol, prec):
     else:
         print('Se llegó al número máximo de iteraciones')
     return c, niter, exit
+
+def Steffensen(f,x0, nmax=nmax, prec=prec, tol=tol):
+    """
+    Implementa el método de Steffensen para encontrar una raíz de la función f.
+
+    Parámetros:
+    -----------
+    f : función
+        La función cuya raíz se desea encontrar.
+    x0 : float
+        Aproximación inicial para la raíz.
+    nmax : int
+        Número máximo de iteraciones.
+    prec : float
+        Criterio de precisión; se detiene si |f(xn)| < prec.
+    tol : float
+        Criterio de tolerancia; se detiene si |x0 - xn| < tol.
+
+    Retorna:
+    --------
+    xn : float
+        Raíz aproximada.
+    niter : int
+        Número de iteraciones realizadas.
+    exit : str
+        Condición de salida ('precision', 'tolerancia' o máximo de iteraciones alcanzado).
+    """
+    niter = 0
+    cont = True
+    exit = ''
+    while niter < nmax and cont:
+        niter += 1
+        xn = x0 - ((f(x0)**2) / (f(x0+f(x0))-f(x0)))
+
+        if abs(f(xn)) < prec:
+            exit = 'precision'
+            cont = False
+        else:
+            x0 = xn
+        if abs(x0 - xn) < tol:
+            exit = 'tolerancia'
+            cont = False
+    if exit == 'precision':
+        print(f'Posiblemente solución exacta: {xn}')
+    elif exit == 'tolerancia':
+        print(f'Aproximación solicitada: {xn}')
+    else:
+        print(f'Se llegó al número máximo de iteraciones ')
+    return xn, niter, exit
