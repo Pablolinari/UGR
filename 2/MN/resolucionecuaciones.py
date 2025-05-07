@@ -1,4 +1,12 @@
 from numpy import sign
+from Decimal import *
+
+def todecimal(x):
+    if isinstance(x, Decimal):
+        return x
+    else:
+        return Decimal(str(x))
+
 nmax=100
 prec=10**(-20)
 tol=10**(-10)
@@ -33,9 +41,12 @@ def secante(f, x0, x1, nmax=nmax, prec=prec, tol=tol):
     niter = 0
     cont = True
     exit = ''
+    x0 = todecimal(x0)
+    x1=todecimal(x1)
     while niter < nmax and cont:
         niter += 1
-        xn1 = x1 - (((x1 - x0) / (f(x1) - (f(x0)))) * f(x1))
+        xn1 = x1 - (((x1 - x0) / (todecimal(f(x1)) - (todecimal(f(x0))))) * f(x1))
+        xn1 = todecimal(xn1)
 
         if abs(f(xn1)) < prec:
             exit = 'precision'
@@ -45,8 +56,8 @@ def secante(f, x0, x1, nmax=nmax, prec=prec, tol=tol):
             exit = 'tolerancia'
             cont = False
         
-        x0 = x1
-        x1 = xn1
+        x0 = todecimal(x1)
+        x1 = todecimal(xn1)
 
     if exit == 'precision':
         print(f'Posiblemente solución exacta: {xn1}')
@@ -268,7 +279,7 @@ def aceleracionStefffensen(f,x0,x1,x2, nmax=nmax, prec=prec, tol=tol):
     x_1=f(x0)
     x_2=f(x1)
 
-        niter = 0
+    niter = 0
     cont = True
     exit = ''
     while niter < nmax and cont:
