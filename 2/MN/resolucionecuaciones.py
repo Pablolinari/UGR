@@ -40,12 +40,14 @@ def secante(f, x0, x1, nmax=nmax, prec=prec, tol=tol):
         if abs(f(xn1)) < prec:
             exit = 'precision'
             cont = False
-        else:
-            x0 = x1
-            x1 = xn1
+        
         if abs(x1 - xn1) < tol:
             exit = 'tolerancia'
             cont = False
+        
+        x0 = x1
+        x1 = xn1
+
     if exit == 'precision':
         print(f'Posiblemente solución exacta: {xn1}')
     elif exit == 'tolerancia':
@@ -92,11 +94,11 @@ def wittaker(f, x0, m, nmax=nmax, prec=prec, tol=tol):
         if abs(f(xn)) < prec:
             exit = 'precision'
             cont = False
-        else:
-            x0 = xn
+
         if abs(x0 - xn) < tol:
             exit = 'tolerancia'
             cont = False
+        x0=xn
     if exit == 'precision':
         print(f'Posiblemente solución exacta: {xn}')
     elif exit == 'tolerancia':
@@ -140,14 +142,15 @@ def NewtonRaphson(f, df, x0, nmax=nmax, prec=prec, tol=tol):
         niter += 1
         xn = x0 - (f(x0) / df(x0))
 
-        if abs(f(xn)) < prec:
-            exit = 'precision'
-            cont = False
-        else:
-            x0 = xn
         if abs(x0 - xn) < tol:
             exit = 'tolerancia'
             cont = False
+        if abs(f(xn)) < prec:
+            exit = 'precision'
+            cont = False
+
+        x0 = xn
+
     if exit == 'precision':
         print(f'Posiblemente solución exacta: {xn}')
     elif exit == 'tolerancia':
@@ -246,11 +249,11 @@ def Steffensen(f,x0, nmax=nmax, prec=prec, tol=tol):
         if abs(f(xn)) < prec:
             exit = 'precision'
             cont = False
-        else:
-            x0 = xn
+
         if abs(x0 - xn) < tol:
             exit = 'tolerancia'
             cont = False
+        x0=xn
     if exit == 'precision':
         print(f'Posiblemente solución exacta: {xn}')
     elif exit == 'tolerancia':
@@ -258,3 +261,33 @@ def Steffensen(f,x0, nmax=nmax, prec=prec, tol=tol):
     else:
         print(f'Se llegó al número máximo de iteraciones ')
     return xn, niter, exit
+
+
+def aceleracionStefffensen(f,x0,x1,x2, nmax=nmax, prec=prec, tol=tol):
+    x_0=x0
+    x_1=f(x0)
+    x_2=f(x1)
+
+        niter = 0
+    cont = True
+    exit = ''
+    while niter < nmax and cont:
+        niter += 1
+        x_n = x_0 -(((x_1-x_0)**2)/(x_2 - 2*x_1 +x_0))
+
+        if abs(f(x_n)) < prec:
+            exit = 'precision'
+            cont = False
+        if abs(x0 - xn) < tol:
+            exit = 'tolerancia'
+            cont = False
+        x_0=x_n
+        x_1=f(x_n)
+        x_2=f(x_1)
+    if exit == 'precision':
+        print(f'Posiblemente solución exacta: {xn}')
+    elif exit == 'tolerancia':
+        print(f'Aproximación solicitada: {xn}')
+    else:
+        print(f'Se llegó al número máximo de iteraciones ')
+    return x_n,niter,exit
