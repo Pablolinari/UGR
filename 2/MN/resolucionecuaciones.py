@@ -1,11 +1,5 @@
 from numpy import sign
 
-def todecimal(x):
-    if isinstance(x, Decimal):
-        return x
-    else:
-        return Decimal(str(x))
-
 nmax=100
 prec=10**(-20)
 tol=10**(-10)
@@ -28,24 +22,15 @@ def secante(f, x0, x1, nmax=nmax, prec=prec, tol=tol):
     tol : float
         Criterio de tolerancia; se detiene si |x1 - xn1| < tol.
 
-    Retorna:
-    --------
-    xn1 : float
-        Raíz aproximada.
-    niter : int
-        Número de iteraciones realizadas.
-    exit : str
-        Condición de salida ('precision', 'tolerancia' o máximo de iteraciones alcanzado).
-    """
+"""
     niter = 0
     cont = True
     exit = ''
-    x0 = todecimal(x0)
-    x1=todecimal(x1)
+
     while niter < nmax and cont:
         niter += 1
-        xn1 = x1 - (((x1 - x0) / (todecimal(f(x1)) - (todecimal(f(x0))))) * f(x1))
-        xn1 = todecimal(xn1)
+        xn1 = x1 - ((((x1 - x0) / (f(x1) - f(x0)))) * f(x1))
+     
 
         if abs(f(xn1)) < prec:
             exit = 'precision'
@@ -55,8 +40,8 @@ def secante(f, x0, x1, nmax=nmax, prec=prec, tol=tol):
             exit = 'tolerancia'
             cont = False
         
-        x0 = todecimal(x1)
-        x1 = todecimal(xn1)
+        x0 = x1
+        x1 = xn1
 
     if exit == 'precision':
         print(f'Posiblemente solución exacta: {xn1}')
