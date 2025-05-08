@@ -1,5 +1,4 @@
 from numpy import sign
-from Decimal import *
 
 def todecimal(x):
     if isinstance(x, Decimal):
