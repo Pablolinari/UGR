@@ -1,10 +1,65 @@
-- name: segundo Playbook
+- name: Maquina con nginx
+  host: nginxserver
+
   tasks:
     - name: instalar nginx
       ansible.builtin.dnf:
         name: nginx
         state: latest ## lo instal y si no es la version mas nueva lo actualiza.
+    - name: Habilitar nginx
+      ansible.builtin.service: 
+        name: nginx
+        state: started
+        enabled: yes
+    - name: Aniadir nginx al firewall y habilitarlo 
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        inmediate: true
+        offline: true
+
+
+- name: Maquina con HTTPD
+  host: httpdserver
+
+  task: 
+    - name: instalar httpd
+      ansible.builtin.dnf: 
+        name: httpd
+        state: latest
+    - name: editar nombre del servidor
+      ansible.builtin.lineinfile: 
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^#ServerName'
+        line: 'ServerName www.pablolinari.com:80'
+        state:present
+    - name: Habilitar httpd
+      ansible.builtin.service: 
+        name: httpd
+        state: started
+        enabled: yes
+    - name: Aniadir httpd al firewall y habilitarlo 
+      ansible.posix.firewalld:
+        service: httpd
+        state: enabled
+        permanent: true
+        inmediate: true
+        offline: true
+    - name: Creo el archivo index.html si no estaba previamente creado
+      ansible.builtin.file
+      path: "{{indexpath}}"
+      state: touch
+    
+    - name: Pongo el contenido html en el archivo
+      dest: "{{indexpath}}"
+      content: "{{htmlconten}}"
 
       
+
+
+
+
+
     
      
