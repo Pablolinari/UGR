@@ -1,0 +1,10 @@
+- name: segundo Playbook
+  tasks:
+    - name: instalar nginx
+      ansible.builtin.dnf:
+        name: nginx
+        state: latest ## lo instal y si no es la version mas nueva lo actualiza.
+
+      
+    
+     
