@@ -1,47 +1,72 @@
---- 
 - name: variables
   hosts: mvise
   become: true
   vars:
     username: admin
     groupname: wheel
- 
-- name: Crear usuario 
-  user: 
-    name: "{{username}}"
-    state: present
-    create_home: true
+    userlist: 
+      - admin1
+      - admin2
+      - admin3
+    pathsudo: /etc/sudoers
 
-- name: Ejecutar comandos sin contrasenia
-  lineinfile:
-    path: /etc/sudoers
-    line: "{{username}} ALL=(ALL) NOPASSWD: ALL "
-    state: present
+  tasks: 
+    # Creo el usuario admin 
+    - name: Crear usuario
+      ansible.builtin.user:
+        name: "{{username}}"
+        state: present
+        create_home: true
+    # permito que ejecute comandos sin contrasenia aniadiendo la 
+    # siguiente linea al archivo 
+    - name: Ejecutar comandos sin contrasenia
+      ansible.builtin.lineinfile:
+        path: "{{pathsudo}}"
+        line: "{{username}} ALL=(ALL) NOPASSWD: ALL "
+        state: present
 
-- name: copiar llave publica al usuario 
-  ansible.posix.authorized_key:
-    user: "{{username}}"
-    key: "{{lookup('file','~/.ssh/id_rsa.pub')}}"
-    state: present
-- name: descomentar archivo sshdconfig 
-  lineinfile:
-  path: /etc/ssh/sshd_config
-  line: "PubkeyAuthentication yes"
-  state: present
-- name: descomentar archivo sshdconfig otra linea
-  lineinfile:
-  path: /etc/ssh/sshd_config
-  line: "AuthorizedKeysFile .ssh/authorized_keys"
-  state: present
-- name: 
-  group:
-    name: "{{groupname}}"
-    state: present
-- name: Reiniciar sshd
-  service: 
-    name: sshd
-    state: restarted
+    # copio la llave publica del host en el archivo authorized keys 
+    # del usuario indicado
+    - name: copiar llave publica al usuario
+      ansible.posix.authorized_key:
+        user: "{{username}}"
+        key: "{{lookup('file','~/.ssh/id_rsa.pub')}}"
+        state: present
 
+    - name: crear grupo wheel
+      ansible.builtin.group:
+        name: "{{groupname}}"
+        state: present
+    # compruebo que esten creados y los aniado al grupo wheel 
+    # si no estan creados los creo 
+    - name: aniadir lista de usuarios a wheel 
+      ansible.builtin.user:
+        name: "{{item}}"
+        append: yes # para aniadirlo al grupo indicado en groups 
+        groups: "{{groupname}}"
+        state: present
+      loop: "{{userlist}}"
+    # permito que ejecute comandos sudo los usuarios del grupo wheel
+    - name: Ejecutar comandos sudo para el grupo wheel
+      ansible.builtin.lineinfile:
+        path: "{{pathsudo}}"
+        line: "%{{groupname}} ALL=(ALL) ALL"
+        state: present
+    - name: Dar acceso por ssh con llave publica a la lista de usuarios
+      ansible.posix.authorized_key:
+        user: "{{item}}"
+        key: "{{lookup('file','~/.ssh/id_rsa.pub')}}"
+        state: present
+      loop: "{{userlist}}"
 
+    - name: Deshabilitar acceso por ssh con contrasenia para root
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "PermitRootLogin prohibit-password"
+        state: present
 
-
+    #reiniciar servicio 
+    - name: Reiniciar sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
