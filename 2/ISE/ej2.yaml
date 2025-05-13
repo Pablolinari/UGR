@@ -1,5 +1,11 @@
 - name: Maquina con nginx
-  host: nginxserver
+  hosts: nginxserver
+  vars: 
+    servername: pablolinari
+    configpath: /etc/nginx/conf.d/
+    indexpath: /var/www/{{servername}}/html/
+    port: 80
+    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Prácticas ISE</h1></html>
 
   tasks:
     - name: instalar nginx
@@ -13,27 +19,75 @@
         enabled: yes
     - name: Aniadir nginx al firewall y habilitarlo 
       ansible.posix.firewalld:
-        service: http
+        service: nginx
         state: enabled
         permanent: true
-        inmediate: true
+        immediate: true
         offline: true
+    - name: Creo la carpeta de mi servidor de nginx
+      ansible.builtin.file:
+        path: "{{indexpath}}"
+        state: directory
+    - name: Creo el archivo html
+      ansible.builtin.file:
+        path: "{{indexpath}}/index.html"
+        state: touch
 
+    - name: Pongo el contenido html en el archivo
+      ansible.builtin.copy:
+      dest: "{{ indexpath }}/index.html"
+      content: "{{htmlcontent}}"
+ 
+    - name: Creo la carpeta configuracion
+      ansible.builtin.file:
+        path: "{{configpath}}"
+        state: directory
+    - name: Creo el archivo html
+      ansible.builtin.file:
+        path: "{{configpath}}/{{servername}}.conf"
+        state: touch
+    - name: Pongo la configuracion del servidor
+      ansible.builtin.copy:
+      dest: "{{configpath}}/{{servername}}"
+      content: "server {
+        listen {{port}};
+        listen [::]:{{port}};
+
+        root {{indexpath}};
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name {{servername}} www.{{servername}};
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+          }"
+    - name: Reiniciar nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restart
 
 - name: Maquina con HTTPD
-  host: httpdserver
+  hosts: httpdserver
+  vars: 
+    configpath: /etc/httpd/conf/httpd.conf
+    indexpath: /var/www/html
+    servername: pablolinari
+    port: 80
+    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Prácticas ISE</h1></html>
+    
 
-  task: 
+  tasks: 
     - name: instalar httpd
       ansible.builtin.dnf: 
         name: httpd
         state: latest
     - name: editar nombre del servidor
       ansible.builtin.lineinfile: 
-        path: /etc/httpd/conf/httpd.conf
+        path: "{{configpath}}"
         regexp: '^#ServerName'
-        line: 'ServerName www.pablolinari.com:80'
-        state:present
+        line: "ServerName www.{{servername}}.com:{{port}}"
+        state: present
     - name: Habilitar httpd
       ansible.builtin.service: 
         name: httpd
@@ -44,22 +98,14 @@
         service: httpd
         state: enabled
         permanent: true
-        inmediate: true
+        immediate: true
         offline: true
     - name: Creo el archivo index.html si no estaba previamente creado
-      ansible.builtin.file
-      path: "{{indexpath}}"
+      ansible.builtin.file:
+      path: "{{indexpath}}/index.html"
       state: touch
     
     - name: Pongo el contenido html en el archivo
-      dest: "{{indexpath}}"
-      content: "{{htmlconten}}"
-
-      
-
-
-
-
-
-    
-     
+      ansible.builtin.copy:
+      dest: "{{indexpath}}/index.html"
+      content: "{{htmlcontent}}"
