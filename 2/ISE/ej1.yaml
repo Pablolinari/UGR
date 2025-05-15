@@ -1,5 +1,5 @@
 - name: variables
-  hosts: mvise
+  hosts: all
   become: true
   vars:
     username: admin
@@ -30,13 +30,14 @@
     - name: copiar llave publica al usuario
       ansible.posix.authorized_key:
         user: "{{username}}"
-        key: "{{lookup('file','~/.ssh/id_rsa.pub')}}"
+        key: "{{lookup('file','~/.ssh/id_ed25519.pub')}}"
         state: present
 
     - name: crear grupo wheel
       ansible.builtin.group:
         name: "{{groupname}}"
         state: present
+
     # compruebo que esten creados y los aniado al grupo wheel 
     # si no estan creados los creo 
     - name: aniadir lista de usuarios a wheel 
@@ -56,7 +57,7 @@
     - name: Dar acceso por ssh con llave publica a la lista de usuarios
       ansible.posix.authorized_key:
         user: "{{item}}"
-        key: "{{lookup('file','~/.ssh/id_rsa.pub')}}"
+        key: "{{lookup('file','~/.ssh/id_ed25519.pub')}}"
         state: present
       loop: "{{userlist}}"
 
