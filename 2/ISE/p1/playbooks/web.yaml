@@ -5,7 +5,7 @@
     servername: pablolinari
     configpath: /etc/nginx/conf.d/
     indexpath: /var/www/{{servername}}/html/
-    port: 80
+    puerto: 80
     htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Prácticas ISE</h1></html>
 
   tasks:
@@ -47,8 +47,8 @@
       ansible.builtin.copy:
         content: |
           server {
-            listen {{port}};
-            listen [::]:{{port}};
+            listen {{puerto}};
+            listen [::]:{{puerto}};
 
             root {{indexpath}};
             index index.html index.htm index.nginx-debian.html;
@@ -73,7 +73,7 @@
     configpath: /etc/httpd/conf/httpd.conf
     indexpath: /var/www/html
     servername: pablolinari
-    port: 80
+    puerto: 80
     htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Prácticas ISE</h1></html>
     
 
@@ -86,7 +86,7 @@
       ansible.builtin.lineinfile: 
         path: "{{configpath}}"
         regexp: '^#ServerName'
-        line: "ServerName www.{{servername}}.com:{{port}}"
+        line: "ServerName www.{{servername}}.com:{{puerto}}"
         state: present
     - name: Habilitar http
       ansible.builtin.service: 

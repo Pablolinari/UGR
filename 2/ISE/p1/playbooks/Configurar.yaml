@@ -1,5 +1,5 @@
 - name: variables
-  hosts: all
+  hosts: servidoresconfig
   become: true
   vars:
     username: admin
@@ -9,6 +9,7 @@
       - admin2
       - admin3
     pathsudo: /etc/sudoers
+    pathkeys: ./llaves/id_rsa.pub
 
   tasks: 
     # Creo el usuario admin 
@@ -30,7 +31,7 @@
     - name: copiar llave publica al usuario
       ansible.posix.authorized_key:
         user: "{{username}}"
-        key: "{{lookup('file','~/.ssh/id_ed25519.pub')}}"
+        key: "{{lookup('file',pathkeys)}}"
         state: present
 
     - name: crear grupo wheel
@@ -57,7 +58,7 @@
     - name: Dar acceso por ssh con llave publica a la lista de usuarios
       ansible.posix.authorized_key:
         user: "{{item}}"
-        key: "{{lookup('file','~/.ssh/id_ed25519.pub')}}"
+        key: "{{lookup('file',pathkeys)}}"
         state: present
       loop: "{{userlist}}"
 
