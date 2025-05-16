@@ -6,7 +6,7 @@
     configpath: /etc/nginx/conf.d/
     indexpath: /var/www/{{servername}}/html/
     puerto: 80
-    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Prácticas ISE</h1></html>
+    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Practicas ISE (nginx)</h1></html>
 
   tasks:
     - name: instalar nginx
@@ -28,6 +28,9 @@
     - name: Creo la carpeta de mi servidor de nginx
       ansible.builtin.file:
         path: "{{indexpath}}"
+        owner: nginx
+        group: nginx
+        mode: '0755'
         state: directory
 
     - name: Pongo el contenido html en el archivo
@@ -42,6 +45,9 @@
     - name: Creo el archivo html
       ansible.builtin.file:
         path: "{{configpath}}/{{servername}}.conf"
+        owner: nginx
+        group: nginx
+        mode: '0755'
         state: touch
     - name: Pongo la configuracion del servidor
       ansible.builtin.copy:
@@ -66,15 +72,15 @@
         name: nginx
         state: restarted
 
-- name: Maquina con HTTPD
-  hosts: httpdserver
+- name: Maquina con apache
+  hosts: apacheserver
   become: true
   vars: 
     configpath: /etc/httpd/conf/httpd.conf
     indexpath: /var/www/html
     servername: pablolinari
     puerto: 80
-    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Prácticas ISE</h1></html>
+    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Practicas ISE (apache)</h1></html>
     
 
   tasks: 

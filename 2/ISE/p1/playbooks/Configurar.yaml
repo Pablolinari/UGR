@@ -9,7 +9,7 @@
       - admin2
       - admin3
     pathsudo: /etc/sudoers
-    pathkeys: ./llaves/id_rsa.pub
+    pathkeys: ../llaves/id_rsa.pub
 
   tasks: 
     # Creo el usuario admin 
