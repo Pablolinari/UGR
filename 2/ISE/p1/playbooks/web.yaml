@@ -70,13 +70,14 @@
     - name: Reiniciar nginx
       ansible.builtin.service:
         name: nginx
-        state: restarted
+        state: reloaded
 
 - name: Maquina con apache
   hosts: apacheserver
   become: true
   vars: 
     configpath: /etc/httpd/conf/httpd.conf
+    defaultpath: /etc/httpd/conf.d/welcome.conf
     indexpath: /var/www/html
     servername: pablolinari
     puerto: 80
@@ -88,11 +89,38 @@
       ansible.builtin.dnf: 
         name: httpd
         state: latest
+    - name: elimino configuracion por defecto
+      ansible.builtin.file:
+        path: "{{defaultpath}}"
+        state: absent
     - name: editar nombre del servidor
       ansible.builtin.lineinfile: 
         path: "{{configpath}}"
         regexp: '^#ServerName'
         line: "ServerName www.{{servername}}.com:{{puerto}}"
+        state: present
+    - name: Cambiar linea 147 
+      ansible.builtin.lineinfile: 
+        path: "{{configpath}}"
+        regexp: 'Options Indexes FollowSymLinks'
+        line: "Options FollowSymLinks"
+        state: present
+    - name: Cambiar linea 154 override all 
+      ansible.builtin.lineinfile: 
+        path: "{{configpath}}"
+        regexp: 'AllowOverride None'
+        line: "AllowOverride All"
+        state: present
+    - name: Cambiar linea 167 
+      ansible.builtin.lineinfile: 
+        path: "{{configpath}}"
+        regexp: 'DirectoryIndex index.html'
+        line: "DirectoryIndex index.html index.php index.cgi"
+        state: present
+    - name: Aniado server tokens al final 
+      ansible.builtin.lineinfile: 
+        path: "{{configpath}}"
+        line: "ServerTokens Prod"
         state: present
     - name: Habilitar http
       ansible.builtin.service: 
@@ -111,3 +139,11 @@
       ansible.builtin.copy:
         content: "{{htmlcontent}}"
         dest: "{{indexpath}}/index.html"
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Reiniciar httpd
+      ansible.builtin.service:
+        name: httpd
+        state: reloaded
