@@ -1,0 +1,14 @@
+nginx:
+  servername: pablolinari
+  indexpath: /usr/share/nginx/html/
+  puerto: 80
+  htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Practicas ISE (nginx)</h1></html>
+
+apache:
+  configpath: /etc/httpd/conf/httpd.conf
+  indexpath: /var/www/html
+  servername: pablolinari
+  puerto: 80
+  htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Practicas ISE (apache)</h1></html>
+    
+

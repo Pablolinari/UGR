@@ -1,13 +1,8 @@
 - name: Maquina con nginx
   hosts: nginxserver
   become: true
-  vars: 
-    servername: pablolinari
-    configpath: /etc/nginx/conf.d/
-    indexpath: /var/www/{{servername}}/html/
-    puerto: 80
-    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Practicas ISE (nginx)</h1></html>
-
+  vars_files: 
+    - ../vars/vars2.yml   
   tasks:
     - name: instalar nginx
       ansible.builtin.dnf:
@@ -25,48 +20,37 @@
         permanent: true
         immediate: true
         offline: true
-    - name: Creo la carpeta de mi servidor de nginx
-      ansible.builtin.file:
-        path: "{{indexpath}}"
-        owner: nginx
-        group: nginx
-        mode: '0755'
-        state: directory
+    - name: Instalar el servicio policycoreutils-python-utils
+      ansible.builtin.package:
+        name: "policycoreutils-python-utils"
+        state: present
+    - name: Aplicamos el comando semanage
+      community.general.seport:
+        ports: "{{nginx.puerto}}"
+        proto: tcp
+        setype: http_port_t
+        state: present
+
+    - name: Puerto en el que está escuchando el servidor Nginx
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: "^\\s*listen\\s+[^[\\s].*$"
+        line: "\tlisten\t{{nginx.puerto}};"
+        state: present
+
+    - name: Ubicación del Root
+      ansible.builtin.lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: "^\\s*root\\s+"
+        line: "\troot\t {{nginx.indexpath}};"
 
     - name: Pongo el contenido html en el archivo
       ansible.builtin.copy:
-        content: "{{htmlcontent}}"
-        dest: "{{ indexpath }}/index.html"
- 
-    - name: Creo la carpeta configuracion
-      ansible.builtin.file:
-        path: "{{configpath}}"
-        state: directory
-    - name: Creo el archivo html
-      ansible.builtin.file:
-        path: "{{configpath}}/{{servername}}.conf"
+        content: "{{nginx.htmlcontent}}"
+        dest: "{{nginx.indexpath}}/index.html"
         owner: nginx
         group: nginx
-        mode: '0755'
-        state: touch
-    - name: Pongo la configuracion del servidor
-      ansible.builtin.copy:
-        content: |
-          server {
-            listen {{puerto}};
-            listen [::]:{{puerto}};
-
-            root {{indexpath}};
-            index index.html index.htm index.nginx-debian.html;
-
-            server_name {{servername}} www.{{servername}};
-
-            location / {
-                  try_files $uri $uri/ =404;
-            }
-          }
-        dest: "{{configpath}}/{{servername}}.conf"
-    
+        mode: preserve
     - name: Reiniciar nginx
       ansible.builtin.service:
         name: nginx
@@ -75,52 +59,25 @@
 - name: Maquina con apache
   hosts: apacheserver
   become: true
-  vars: 
-    configpath: /etc/httpd/conf/httpd.conf
-    defaultpath: /etc/httpd/conf.d/welcome.conf
-    indexpath: /var/www/html
-    servername: pablolinari
-    puerto: 80
-    htmlcontent: <html><h1>Bienvenidos a la web de Pablo Linari Perez en Practicas ISE (apache)</h1></html>
-    
+  vars_files: 
+    - ../vars/vars2.yml   
 
   tasks: 
     - name: instalar httpd
       ansible.builtin.dnf: 
         name: httpd
         state: latest
-    - name: elimino configuracion por defecto
-      ansible.builtin.file:
-        path: "{{defaultpath}}"
-        state: absent
-    - name: editar nombre del servidor
-      ansible.builtin.lineinfile: 
-        path: "{{configpath}}"
-        regexp: '^#ServerName'
-        line: "ServerName www.{{servername}}.com:{{puerto}}"
+    - name: Puerto en el que está escuchando el servidor HTTP
+      ansible.builtin.lineinfile:
+        path: "{{apache.configpath}}"
+        regexp: '^Listen'
+        line: "Listen\t{{apache.puerto}}"
         state: present
-    - name: Cambiar linea 147 
-      ansible.builtin.lineinfile: 
-        path: "{{configpath}}"
-        regexp: 'Options Indexes FollowSymLinks'
-        line: "Options FollowSymLinks"
-        state: present
-    - name: Cambiar linea 154 override all 
-      ansible.builtin.lineinfile: 
-        path: "{{configpath}}"
-        regexp: 'AllowOverride None'
-        line: "AllowOverride All"
-        state: present
-    - name: Cambiar linea 167 
-      ansible.builtin.lineinfile: 
-        path: "{{configpath}}"
-        regexp: 'DirectoryIndex index.html'
-        line: "DirectoryIndex index.html index.php index.cgi"
-        state: present
-    - name: Aniado server tokens al final 
-      ansible.builtin.lineinfile: 
-        path: "{{configpath}}"
-        line: "ServerTokens Prod"
+    - name: Ubicación del documento html
+      ansible.builtin.lineinfile:
+        path: "{{apache.configpath}}"
+        regexp: '^DocumentRoot'
+        line: "DocumentRoot {{apache.indexpath}}"
         state: present
     - name: Habilitar http
       ansible.builtin.service: 
@@ -134,14 +91,24 @@
         permanent: true
         immediate: true
         offline: true
-    
+    - name: Instalar el servicio policycoreutils-python-utils
+      ansible.builtin.package:
+        name: "policycoreutils-python-utils"
+        state: present
+
+    - name: Aplicamos el comando semanage
+      community.general.seport:
+        ports: "{{apache.puerto}}"
+        proto: tcp
+        setype: http_port_t
+        state: present
     - name: Pongo el contenido html en el archivo
       ansible.builtin.copy:
-        content: "{{htmlcontent}}"
-        dest: "{{indexpath}}/index.html"
+        content: "{{apache.htmlcontent}}"
+        dest: "{{apache.indexpath}}/index.html"
         owner: apache
         group: apache
-        mode: '0644'
+        mode: preserve
 
     - name: Reiniciar httpd
       ansible.builtin.service:

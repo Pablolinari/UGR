@@ -1,16 +1,7 @@
-- name: variables
+- name: Configurar servidores 
   hosts: servidoresconfig
-  become: true
-  vars:
-    username: admin
-    groupname: wheel
-    userlist: 
-      - admin1
-      - admin2
-      - admin3
-    pathsudo: /etc/sudoers
-    pathkeys: ../llaves/id_rsa.pub
-
+  vars_files:
+    - ../vars/vars.yml
   tasks: 
     # Creo el usuario admin 
     - name: Crear usuario
@@ -31,7 +22,7 @@
     - name: copiar llave publica al usuario
       ansible.posix.authorized_key:
         user: "{{username}}"
-        key: "{{lookup('file',pathkeys)}}"
+        key: "{{lookup('file',adminkey)}}"
         state: present
 
     - name: crear grupo wheel
@@ -43,11 +34,13 @@
     # si no estan creados los creo 
     - name: aniadir lista de usuarios a wheel 
       ansible.builtin.user:
-        name: "{{item}}"
+        name: "{{item.key}}"
         append: yes # para aniadirlo al grupo indicado en groups 
         groups: "{{groupname}}"
+        shell: /bin/bash
+        password: "{{ '123' | password_hash('sha512') }}" #asigno passwd por defecto , encripto por que si no ansible no la reconoce
         state: present
-      loop: "{{userlist}}"
+      loop: "{{userlist | dict2items}}"
     # permito que ejecute comandos sudo los usuarios del grupo wheel
     - name: Ejecutar comandos sudo para el grupo wheel
       ansible.builtin.lineinfile:
@@ -57,10 +50,10 @@
         state: present
     - name: Dar acceso por ssh con llave publica a la lista de usuarios
       ansible.posix.authorized_key:
-        user: "{{item}}"
-        key: "{{lookup('file',pathkeys)}}"
+        user: "{{item.key}}"
+        key: "{{lookup('file',item.value)}}" # todos usan la misma llave pero se puede cambiar individualmente en el archivo vars
         state: present
-      loop: "{{userlist}}"
+      loop: "{{userlist | dict2items}}"
 
     - name: Deshabilitar acceso por ssh con contrasenia para root
       ansible.builtin.lineinfile:

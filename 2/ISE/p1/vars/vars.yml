@@ -1,0 +1,8 @@
+username: admin
+groupname: wheel
+userlist:
+  user1: ../llaves/id_rsa.pub 
+  user2: ../llaves/id_rsa.pub
+  user3: ../llaves/id_rsa.pub
+pathsudo: /etc/sudoers
+adminkey: ../llaves/id_rsa.pub
