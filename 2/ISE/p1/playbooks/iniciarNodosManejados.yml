@@ -4,9 +4,11 @@
     - ../vars/vars.yml
   tasks: 
     # Creo el usuario admin 
-    - name: Crear usuario
+    - name: Crear usuario admin
       ansible.builtin.user:
         name: "{{username}}"
+        password: "{{ '123' | password_hash('sha512') }}" #asigno passwd por defecto , encripto por que si no ansible no la reconoce
+        shell: /bin/bash
         state: present
         create_home: true
     # permito que ejecute comandos sin contrasenia aniadiendo la 
@@ -38,6 +40,7 @@
         append: yes # para aniadirlo al grupo indicado en groups 
         groups: "{{groupname}}"
         shell: /bin/bash
+        create_home: true
         password: "{{ '123' | password_hash('sha512') }}" #asigno passwd por defecto , encripto por que si no ansible no la reconoce
         state: present
       loop: "{{userlist | dict2items}}"

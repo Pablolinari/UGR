@@ -20,16 +20,6 @@
         permanent: true
         immediate: true
         offline: true
-    - name: Instalar el servicio policycoreutils-python-utils
-      ansible.builtin.package:
-        name: "policycoreutils-python-utils"
-        state: present
-    - name: Aplicamos el comando semanage
-      community.general.seport:
-        ports: "{{nginx.puerto}}"
-        proto: tcp
-        setype: http_port_t
-        state: present
 
     - name: Puerto en el que está escuchando el servidor Nginx
       ansible.builtin.lineinfile:
@@ -91,17 +81,6 @@
         permanent: true
         immediate: true
         offline: true
-    - name: Instalar el servicio policycoreutils-python-utils
-      ansible.builtin.package:
-        name: "policycoreutils-python-utils"
-        state: present
-
-    - name: Aplicamos el comando semanage
-      community.general.seport:
-        ports: "{{apache.puerto}}"
-        proto: tcp
-        setype: http_port_t
-        state: present
     - name: Pongo el contenido html en el archivo
       ansible.builtin.copy:
         content: "{{apache.htmlcontent}}"
