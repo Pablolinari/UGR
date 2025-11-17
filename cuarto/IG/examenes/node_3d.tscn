@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://c7il2xorq35as"]
+
+[ext_resource type="Script" uid="uid://bq3afehesw34y" path="res://scripts/nodos/camara_3d_orbital_simple.gd" id="1_a0tk4"]
+[ext_resource type="Script" uid="uid://txohecmj1tjr" path="res://scripts/nodos/ejes3D.gd" id="2_r3fl7"]
+[ext_resource type="Script" uid="uid://t4pntkd7dfqg" path="res://ej_1.gd" id="3_jka67"]
+[ext_resource type="Script" uid="uid://dnvsh62f0ifp0" path="res://nodoej1.1.gd" id="4_r3fl7"]
+[ext_resource type="Script" uid="uid://s0ytp24mqboj" path="res://ej_21.gd" id="5_jka67"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+script = ExtResource("1_a0tk4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+
+[node name="ejes3D" type="Node3D" parent="."]
+script = ExtResource("2_r3fl7")
+
+[node name="ej12" type="MeshInstance3D" parent="."]
+script = ExtResource("3_jka67")
+
+[node name="ej11" type="MeshInstance3D" parent="."]
+visible = false
+script = ExtResource("4_r3fl7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+script = ExtResource("5_jka67")
