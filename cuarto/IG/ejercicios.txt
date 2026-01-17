@@ -1,0 +1,82 @@
+##Problema 2.1 
+
+extends MeshInstance3D
+
+const n : int = 8
+const r : float = 2.0 # Lo hacemos un poco más grande
+const COLOR_NARANJA = Color(1.0, 0.5, 0.0)
+
+func _ready():
+	var st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	# IMPORTANTE: Definimos un material básico por código si no hay uno
+	var material = StandardMaterial3D.new()
+	material.shading_mode = StandardMaterial3D.SHADING_MODE_UNSHADED # No necesita luces
+	material.vertex_color_use_as_albedo = true # Permite ver el naranja del código
+	self.material_override = material
+
+	var paso_angulo = TAU / n
+	
+	for i in range(n):
+		var angulo1 = i * paso_angulo
+		var angulo2 = (i + 1) * paso_angulo
+		
+		# Vértices (invertimos el orden de v1 y v2 para que mire a cámara)
+		var v0 = Vector3.ZERO
+		var v1 = Vector3(cos(angulo1) * r, sin(angulo1) * r, 0)
+		var v2 = Vector3(cos(angulo2) * r, sin(angulo2) * r, 0)
+		
+		st.set_color(COLOR_NARANJA)
+		st.add_vertex(v0)
+		st.add_vertex(v2) 
+		st.add_vertex(v1)
+	
+	# Genera normales automáticamente para que responda a la luz si cambias el material
+	st.generate_normals()
+	mesh = st.commit()
+    
+    
+    
+Problema 2.2   
+    
+Cambiar el codigo del 2.1 , la seccion de st.add_vertex , antes de 
+aniadir el vertice hacer st.set_color(Color("el que sea")) y eso pone 
+el vertice que vas a insertar de dicho color. 
+
+		st.set_color(rojo)
+		st.add_vertex(v0)
+		st.set_color(azul)
+		st.add_vertex(v2) 
+		st.set_color(negro)
+		st.add_vertex(v1)
+
+Problema 2.3
+extends MeshInstance3D
+
+const n : int = 8
+const r : float = 0.8
+const COLOR_NARANJA = Color(1.0, 0.7, 0.0)
+
+func _ready():
+	var st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	# 1. DEFINIR VÉRTICES ÚNICOS (n + 1)
+	st.set_color(COLOR_NARANJA)
+	st.add_vertex(Vector3.ZERO) # Índice 0 (Centro)
+	
+	for i in range(n):
+		var angulo = i * (TAU / n)
+		var v = Vector3(cos(angulo) * r, sin(angulo) * r, 0)
+		st.add_vertex(v) # Índices del 1 al n
+	
+	# 2. DEFINIR ÍNDICES (3 * n)
+	for i in range(1, n + 1):
+		st.add_index(0) # Centro
+		st.add_index(i) # Vértice actual
+		# El último triángulo debe cerrar con el primer vértice del contorno (índice 1)
+		var siguiente = i + 1 if i < n else 1
+		st.add_index(siguiente)
+	
+	mesh = st.commit()
