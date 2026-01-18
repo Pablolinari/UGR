@@ -80,3 +80,84 @@ func _ready():
 		st.add_index(siguiente)
 	
 	mesh = st.commit()
+
+### PROBLEMA 5.1#####
+
+extends Node2D
+
+func _ready():
+	# Configuración de escala para que el "lado 2" sea visible en pantalla
+	scale = Vector2(100, 100) 
+	position = get_viewport_rect().size / 2 # Centrar en pantalla
+
+	# 1. Crear el cuadrado
+	var cuadrado = Polygon2D.new()
+	cuadrado.polygon = PackedVector2Array([
+		Vector2(-1, -1), Vector2(1, -1), 
+		Vector2(1, 1), Vector2(-1, 1)
+	])
+	cuadrado.color = Color.LIGHT_BLUE
+	add_child(cuadrado)
+
+	# 2. Crear el triángulo
+	var triangulo = Polygon2D.new()
+	triangulo.polygon = PackedVector2Array([
+		Vector2(-0.8, 0.8), Vector2(-0.2, 0.8), Vector2(-0.5, -0.2)
+	])
+	triangulo.color = Color.WHITE
+	add_child(triangulo)
+
+	# 3. Dibujar aristas (usando una función auxiliar)
+	crear_bordes(cuadrado.polygon, true)
+	crear_bordes(triangulo.polygon, true)
+
+func crear_bordes(puntos: PackedVector2Array, cerrado: bool):
+	var lineas = Line2D.new()
+	for p in puntos:
+		lineas.add_point(p)
+	if cerrado:
+		lineas.add_point(puntos[0]) # Cerrar el ciclo
+	lineas.width = 0.05 # Línea fina proporcional a la escala
+	lineas.default_color = Color.DARK_BLUE
+	add_child(lineas)
+
+##PROBLEMA 5.2####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
