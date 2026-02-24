@@ -1,10 +1,10 @@
 #import "@preview/basic-resume:0.2.9": *
 
 // Put your personal information here, replacing mine
-#let name = "Stephen Xu"
+#let name = "Pablo Linair Pérez"
 #let location = "San Diego, CA"
-#let email = "stxu@hmc.edu"
-#let github = "github.com/stuxf"
+#let email = "linariperez@gmail.com"
+#let github = "github.com/Pablolinari"
 #let linkedin = "linkedin.com/in/stuxf"
 #let phone = "+1 (xxx) xxx-xxxx"
 #let personal-site = "stuxf.dev"
@@ -44,9 +44,9 @@
 
 #edu(
   institution: "University of Granada",
-  location: "Claremont, CA",
-  dates: dates-helper(start-date: "Aug 2023", end-date: "May 2027"),
-  degree: "Bachelor's of Science, Computer Science and Mathematics",
+  location: "Granada, Spain",
+  dates: dates-helper(start-date: "Sep 2022", end-date: "Jun 2027"),
+  degree: "Double degree computer science and mathemathics ",
 
   // Uncomment the line below if you want edu formatting to be consistent with everything else
   // consistent: true
