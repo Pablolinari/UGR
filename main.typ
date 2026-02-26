@@ -1,12 +1,10 @@
 #import "@preview/basic-resume:0.2.9": *
-
 // Put your personal information here, replacing mine
 #let name = "Pablo Linair Pérez"
-#let location = "San Diego, CA"
 #let email = "linariperez@gmail.com"
 #let github = "github.com/Pablolinari"
-#let linkedin = "linkedin.com/in/stuxf"
-#let phone = "+1 (xxx) xxx-xxxx"
+#let linkedin = "linkedin.com/in/Pablolinari"
+#let phone = "+34 674668690"
 #let personal-site = "stuxf.dev"
 
 #show: resume.with(
@@ -14,7 +12,6 @@
   // All the lines below are optional.
   // For example, if you want to to hide your phone number:
   // feel free to comment those lines out and they will not show.
-  location: location,
   email: email,
   github: github,
   linkedin: linkedin,
@@ -27,6 +24,7 @@
   personal-info-position: left,
 )
 
+#set text(size: 9pt)
 /*
 * Lines that start with == are formatted into section headings
 * You can use the specific formatting functions if needed
@@ -45,82 +43,98 @@
 #edu(
   institution: "University of Granada",
   location: "Granada, Spain",
-  dates: dates-helper(start-date: "Sep 2022", end-date: "Jun 2027"),
-  degree: "Double degree computer science and mathemathics ",
+  dates: dates-helper(start-date: "Sep 2022", end-date: "present (fourth year) "),
+  degree: "Double degree in Computer science and Math ",
 
   // Uncomment the line below if you want edu formatting to be consistent with everything else
   // consistent: true
 )
-- Cumulative GPA: 4.0\/4.0 | Dean's List, Harvey S. Mudd Merit Scholarship, National Merit Scholarship
-- Relevant Coursework: Data Structures, Program Development, Microprocessors, Abstract Algebra I: Groups and Rings, Linear Algebra, Discrete Mathematics, Multivariable & Single Variable Calculus, Principles and Practice of Comp Sci
+- Relevant Coursework:Artificial intelligence , Machine Learning , Data structures , Object oriented programming,Concurrent and Parallel programming , Metaheuristics , Probability and statistics , Mathemathical Analysis , Mthematical Models , Diferential ecuations , Geometry.
+#edu(
+  institution: "Colegio inmacuadad Niña",
+  location: "Granada, Spain",
+  dates: dates-helper(start-date: "Sep 2022", end-date: "Jun 2022"),
+  degree: "Bachillerato Ciencias Tecnológicas ",
+
+  // Uncomment the line below if you want edu formatting to be consistent with everything else
+  // consistent: true
+)
+- Attained an average grade 9.8/10 in the Título de Bachiller in  Technological Sciences  (school diploma).
+#edu(
+  institution: "Federación Española de Rugby ",
+  location: "Granada, Spain",
+  dates: dates-helper(start-date: " 2021"),
+  degree: "Sports technician , High-performance rugby player",
+
+  // Uncomment the line below if you want edu formatting to be consistent with everything else
+  // consistent: true
+)
+- Formed in rugby coaching  , sports event planning and first aid  in sports.
+#edu(
+  institution: "Conservatorio Profesional de Música Ángel Barrios",
+  location: "Granada, Spain",
+  dates: dates-helper(start-date: " 2013",end-date: "2020"),
+  degree: "Musician",
+
+  // Uncomment the line below if you want edu formatting to be consistent with everything else
+  // consistent: true
+)
+- Studied percussion for several years and participated in various wind bands . 
+
+
 
 == Work Experience
 
 #work(
-  title: "Subatomic Shepherd and Caffeine Connoisseur",
-  location: "Atomville, CA",
-  company: "Microscopic Circus, Schrodinger's University",
-  dates: dates-helper(start-date: "May 2024", end-date: "Present"),
+  title: "Rugby coach",
+  location: "Granada , Spain",
+  company: "University of Granada",
+  dates: dates-helper(start-date: "Sep 2021", end-date: "Jul 2024"),
 )
-- Played God with tiny molecules, making them dance to uncover the secrets of the universe
-- Convinced high-performance computers to work overtime without unions, reducing simulation time by 50%
-- Wowed a room full of nerds with pretty pictures of invisible things and imaginary findings
+- Categories from 4 to 16 years.
+- Organization of training sessions, competitions, and rugby events.
 
 #work(
-  title: "AI Wrangler and Code Ninja",
-  location: "Silicon Mirage, CA",
-  company: "Organic Stupidity Startup",
-  dates: dates-helper(start-date: "Dec 2023", end-date: "Mar 2024"),
+  title: "Recepcionist",
+  location: "Tau , Norway",
+  company: "Vaulali Hostel",
+  dates: dates-helper(start-date: "Jun 2022", end-date: "Sep 2022"),
 )
-- Taught robots to predict when (and how much!) humans will empty their wallets at the doctor's office
-- Developed HIPAA-compliant digital signatures, because doctors' handwriting wasn't illegible enough already
-- Turned spaghetti code into a gourmet dish, making other interns drool with envy
-
-#work(
-  title: "Digital Playground Architect",
-  location: "The Cloud",
-  company: "Pixels & Profit Interactive",
-  dates: dates-helper(start-date: "Jun 2020", end-date: "May 2023"),
-)
-- Scaled user base from 10 to 2000+, accidentally becoming a small wealthy nation in the process
-- Crafted Bash scripts so clever they occasionally made other engineers weep with joy
-- Automated support responses, reducing human interaction to a level that would make introverts proud
-- Built a documentation site that actually got read, breaking the ancient RTFM curse
-
-#work(
-  title: "Code Conjurer Intern",
-  location: "Silicon Suburb, CA",
-  company: "Bits & Bytes Consulting",
-  dates: dates-helper(start-date: "Jun 2022", end-date: "Aug 2022"),
-)
-- Developed a cross-platform mobile app that turned every user into a potential paparazzi
-- Led a security overhaul, heroically saving the company from the menace of "password123"
+- Tourist orientation, room assignment, and exterior maintenance of the hotel.
 
 == Projects
 
 #project(
-  name: "Hyperschedule",
-  // Role is optional
-  role: "Maintainer",
+  name: "Ai Rescuers",
   // Dates is optional
-  dates: dates-helper(start-date: "Nov 2023", end-date: "Present"),
+  dates: dates-helper(start-date: "Feb 2025", end-date: "Apr 2025"),
   // URL is also optional
-  url: "hyperschedule.io",
 )
-- Maintain open-source scheduler used by 7000+ users at the Claremont Consortium with TypeScript, React and MongoDB
-  - Manage PR reviews, bug fixes, and coordinate with college for releasing scheduling data and over \$1500 of yearly funding
-- Ensure 99.99% uptime during peak loads of 1M daily requests during course registration through redundant servers
+- Developed an AI agent for the Artificial Intelligence subject using A\* and Dijkstra algorithms. The system optimizes pathfinding to complete mission objectives by minimizing energy waste and adhering to strict time constraints.
+- Throughout the project’s development, we evaluated several heuristics and mapping techniques to optimize terrain scanning in the virtual environment.
 
-== Extracurricular Activities
-
-#extracurriculars(
-  activity: "Capture The Flag Competitions",
-  dates: dates-helper(start-date: "Jan 2021", end-date: "Present"),
+#project(
+  name: "Parcheckers",
+  // Dates is optional
+  dates: dates-helper(start-date: "Apr 2025", end-date: "Jun 2025")
 )
-- Founder of Les Amateurs (#link("https://amateurs.team")[amateurs.team]), currently ranked \#4 US, \#33 global on CTFTime (2023: \#4 US, \#42 global)
-- Organized AmateursCTF 2023 and 2024, with 1000+ teams solving at least one challenge and \$2000+ in cash prizes
-  - Scaled infrastructure using GCP, Digital Ocean with Kubernetes and Docker; deployed custom software on fly.io
-- Qualified for DEFCON CTF 32 and CSAW CTF 2023, two of the most prestigious cybersecurity competitions globally
+- Developed an AI agent for an Artificial Intelligence course, implementing Minimax algorithm variants with advanced pruning techniques and custom heuristics. The system optimizes decision-making in a competitive two-player board game involving dice rolls and movement constraints.
+== Volunteering 
+#work(
+  title: "Muala Marine Sanctuary",
+  location: "Nacala, Mozambique",
+  dates: "Summer 2024",
+)
+- The main goal of the volunteering is to rebuild the coral barrier of Nacala Bay and help the local communities to find a sustainable diet  without harming the environment. 
+#work(
+  title: "Hygee Farm ",
+  location: "Quang Nam, Vietnam",
+  dates: "Summer 2023",
+)
+- Volunteered at a sustainable farm in a countryside village in Vietnam, immersing myself in authentic Vietnamese culture and customs through meals, daily life, traditional landscape and a wedding party.
+- Collaborated with 10 other international volunteers, gaining experience in building relationships and working with people from diverse backgrounds and different age groups.
+
+
 
 // #extracurriculars(
 //   activity: "Science Olympiad Volunteering",
@@ -136,5 +150,6 @@
 // )
 
 == Skills
-- *Programming Languages*: JavaScript, Python, C/C++, HTML/CSS, Java, Bash, R, Flutter, Dart
-- *Technologies*: React, Astro, Svelte, Tailwind CSS, Git, UNIX, Docker, Caddy, NGINX, Google Cloud Platform
+- *Programming Languages*:C++, Python, Java, Bash, SQL, Ruby.
+- *Technologies*: Git, UNIX, Pytorch, Matplotlib, scikit-learn ,Pandas.
+- *Language skills*:  C1 Cambridge English certificate , Spanish.
