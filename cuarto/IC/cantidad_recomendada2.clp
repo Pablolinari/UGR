@@ -266,4 +266,9 @@
 ;;; Indicaciones: 1) deduce (alimento_parecido ?x) para los alimentos que tengan alguna propiedad común con el alimento sobre el que se pregunta
 ;;;               2) retracta los alimento_parecido que tengan una propiedad distinta con el preguntado
 ;;;               3) Imprime por pantalla los alimento_parecido que queden 
-
+(defrule retractar_pollo_rico_en_proteinas
+(es_un_tipo_de ?x carne_blanca )
+?f <- (propiedad rico_en_proteinas ?x)
+=>(retract ?f)
+(printout t "El " ?x " no lo consider rico en proteinas" crlf)
+)
