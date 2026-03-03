@@ -155,6 +155,6 @@ image("imagen.jpg",width: 2.5cm)
 
 == Skills
 - *Programming Languages*:C++, Python, Java, Bash, SQL, Ruby, GDScript.
-- *Technologies*: Git, UNIX, Pytorch, Matplotlib, scikit-learn, Pandas.
+- *Technologies*: Git, Linux, Pytorch, Matplotlib, scikit-learn, Pandas.
 - *Language skills*: C1 Cambridge English certificate, Spanish.
 - *Interests *:Machine learning, AI, robotics, sports, chess, travel. 
