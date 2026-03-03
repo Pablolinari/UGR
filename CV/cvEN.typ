@@ -1,9 +1,9 @@
 #import "@preview/basic-resume:0.2.9": *
 // Put your personal information here, replacing mine
-#let name = "Pablo Linair Pérez"
+#let name = "Pablo Linari Pérez"
 #let email = "linariperez@gmail.com"
 #let github = "github.com/Pablolinari"
-#let linkedin = "linkedin.com/in/Pablolinari"
+#let linkedin = "linkedin.com/in/pablolinari"
 #let phone = "+34 674668690"
 #let personal-site = "stuxf.dev"
 
@@ -16,14 +16,18 @@
   github: github,
   linkedin: linkedin,
   phone: phone,
-  personal-site: personal-site,
   accent-color: "#26428b",
   font: "New Computer Modern",
   paper: "us-letter",
   author-position: left,
   personal-info-position: left,
 )
-
+#place(
+  top +right,
+  dx: 0pt,
+  dy: -40pt,
+image("imagen.jpg",width: 2.5cm)
+)
 #set text(size: 9pt)
 /*
 * Lines that start with == are formatted into section headings
@@ -44,32 +48,32 @@
   institution: "University of Granada",
   location: "Granada, Spain",
   dates: dates-helper(start-date: "Sep 2022", end-date: "present (fourth year) "),
-  degree: "Double degree in Computer science and Math ",
+  degree: "Double degree in Computer Science and Math ",
 
   // Uncomment the line below if you want edu formatting to be consistent with everything else
   // consistent: true
 )
-- Relevant Coursework:Artificial intelligence , Machine Learning , Data structures , Object oriented programming,Concurrent and Parallel programming , Metaheuristics , Probability and statistics , Mathemathical Analysis , Mthematical Models , Diferential ecuations , Geometry.
+- Relevant Coursework: Artificial Intelligence, Machine Learning, Data Structures, Object Oriented Programming, Concurrent and Parallel Programming, Metaheuristics, Probability and Statistics, Mathematical Analysis, Mathematical Models, Differential Equations, Geometry, Computer Graphics.
 #edu(
-  institution: "Colegio inmacuadad Niña",
+  institution: "Colegio Inmaculada Niña",
   location: "Granada, Spain",
-  dates: dates-helper(start-date: "Sep 2022", end-date: "Jun 2022"),
+  dates: dates-helper(start-date: "Sep 2020", end-date: "Jun 2022"),
   degree: "Bachillerato Ciencias Tecnológicas ",
 
   // Uncomment the line below if you want edu formatting to be consistent with everything else
   // consistent: true
 )
-- Attained an average grade 9.8/10 in the Título de Bachiller in  Technological Sciences  (school diploma).
+- Attained an average grade 9.8/10 in the Título de Bachiller in Technological Sciences (school diploma).
 #edu(
   institution: "Federación Española de Rugby ",
   location: "Granada, Spain",
-  dates: dates-helper(start-date: " 2021"),
+  dates: dates-helper(start-date: " 2021",end-date:"2021"),
   degree: "Sports technician , High-performance rugby player",
 
   // Uncomment the line below if you want edu formatting to be consistent with everything else
   // consistent: true
 )
-- Formed in rugby coaching  , sports event planning and first aid  in sports.
+- Formed in rugby coaching, sports event planning and first aid in sports.
 #edu(
   institution: "Conservatorio Profesional de Música Ángel Barrios",
   location: "Granada, Spain",
@@ -79,7 +83,7 @@
   // Uncomment the line below if you want edu formatting to be consistent with everything else
   // consistent: true
 )
-- Studied percussion for several years and participated in various wind bands . 
+- Studied percussion for several years and participated in various wind bands.
 
 
 
@@ -87,7 +91,7 @@
 
 #work(
   title: "Rugby coach",
-  location: "Granada , Spain",
+  location: "Granada, Spain",
   company: "University of Granada",
   dates: dates-helper(start-date: "Sep 2021", end-date: "Jul 2024"),
 )
@@ -95,8 +99,8 @@
 - Organization of training sessions, competitions, and rugby events.
 
 #work(
-  title: "Recepcionist",
-  location: "Tau , Norway",
+  title: "Receptionist",
+  location: "Tau, Norway",
   company: "Vaulali Hostel",
   dates: dates-helper(start-date: "Jun 2022", end-date: "Sep 2022"),
 )
@@ -125,13 +129,13 @@
   location: "Nacala, Mozambique",
   dates: "Summer 2024",
 )
-- The main goal of the volunteering is to rebuild the coral barrier of Nacala Bay and help the local communities to find a sustainable diet  without harming the environment. 
+- The main goal of the volunteering is to rebuild the coral barrier of Nacala Bay and help the local communities to find a sustainable diet without harming the environment.
 #work(
-  title: "Hygee Farm ",
+  title: "Hygee Farm",
   location: "Quang Nam, Vietnam",
   dates: "Summer 2023",
 )
-- Volunteered at a sustainable farm in a countryside village in Vietnam, immersing myself in authentic Vietnamese culture and customs through meals, daily life, traditional landscape and a wedding party.
+- Volunteered at a sustainable farm in a rural village in Vietnam, immersing myself in authentic Vietnamese culture and customs through daily life, traditional meals, and the local landscape, while teaching English to local youth.
 - Collaborated with 10 other international volunteers, gaining experience in building relationships and working with people from diverse backgrounds and different age groups.
 
 
@@ -150,6 +154,7 @@
 // )
 
 == Skills
-- *Programming Languages*:C++, Python, Java, Bash, SQL, Ruby.
-- *Technologies*: Git, UNIX, Pytorch, Matplotlib, scikit-learn ,Pandas.
-- *Language skills*:  C1 Cambridge English certificate , Spanish.
+- *Programming Languages*:C++, Python, Java, Bash, SQL, Ruby, GDScript.
+- *Technologies*: Git, UNIX, Pytorch, Matplotlib, scikit-learn, Pandas.
+- *Language skills*: C1 Cambridge English certificate, Spanish.
+- *Interests *:Machine learning, AI, robotics, sports, chess, travel. 
