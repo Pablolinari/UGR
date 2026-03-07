@@ -40,21 +40,20 @@ Densidad Calórica: baja
 == Esquema argumentativo del experto
 La lógica argumentativa que sigue el experto consiste en comenzar con todas las recetas posibles y restringir según los datos de entrada, aplicando filtros en cadena por orden de prioridad. El proceso es el siguiente:
 
-+ *Filtro por alergias (prioridad máxima):* Se eliminan todas las recetas que contengan cualquier alimento al que el usuario sea alérgico. Este filtro es absoluto y no admite excepciones.
++ *Filtro por alergias (prioridad máxima):* Se eliminan todas las recetas que contengan cualquier alimento al que el usuario sea alérgico..
 
-+ *Filtro por ingredientes disponibles:* Se descartan las recetas cuyos ingredientes no estén ni en la lista de alimentos disponibles actualmente ni en la lista de alimentos que se pueden adquirir. Se priorizan las recetas que aprovechan mejor los alimentos ya disponibles, minimizando la necesidad de compra.
++ *Filtro por ingredientes disponibles:* Se descartan las recetas cuyos ingredientes no estén ni en la lista de alimentos disponibles actualmente ni en la lista de alimentos que se pueden adquirir.
 
-+ *Filtro por tipo de comida:* Se restringe el conjunto de recetas según el momento del día (Desayuno, Comida, Merienda, Cena). Para desayuno y cena se favorecen platos ligeros; para comida se permiten platos más contundentes; para merienda se seleccionan opciones intermedias o snacks.
-
++ *Filtro por tipo de comida:* Se restringe el conjunto de recetas según el momento del día (Desayuno, Comida, Merienda, Cena).
 + *Filtro por tipo de plato:* Se filtra según la categoría del plato (Entrante, Plato Principal, Postre). Entrantes incluyen ensaladas, sopas o aperitivos; platos principales son preparaciones contundentes; postres son dulces o fruta.
 
-+ *Filtro por tiempo máximo disponible:* Se descartan todas las recetas cuyo tiempo de preparación estimado supere el tiempo máximo indicado por el usuario. Con tiempos muy cortos (10-15 min) solo se ofrecen recetas rápidas como bocadillos, ensaladas simples o precocinados.
++ *Filtro por tiempo máximo disponible:* Se descartan todas las recetas cuyo tiempo de preparación estimado supere el tiempo máximo indicado por el usuario. 
 
-+ *Filtro por densidad calórica:* Si el usuario pide densidad baja, se eliminan fritos, recetas grasas y se favorecen preparaciones al horno, plancha o ensaladas. Si pide densidad alta, se priorizan recetas contundentes con salsas, carbohidratos o proteínas abundantes.
++ *Filtro por densidad calórica:* Si el usuario pide densidad baja, se eliminan fritos, recetas grasas y se favorecen preparaciones al horno, plancha o ensaladas. Si pide densidad alta, se priorizan recetas  con carbohidratos o proteínas abundantes.
 
-+ *Ajuste por número de personas:* Se descartan recetas que no escalen bien al número de comensales indicado (por ejemplo, recetas individuales para 5 personas o recetas pensadas para grupos cuando solo hay 1). Las cantidades de los ingredientes de la receta seleccionada se ajustan proporcionalmente.
++ *Ajuste por número de personas:* Se descartan recetas que no escalen bien al número de comensales indicado . Las cantidades de los ingredientes de la receta seleccionada se ajustan proporcionalmente.
 
-Tras aplicar todos los filtros, del conjunto resultante se selecciona la receta más adecuada y se devuelve como salida con su título, lista de ingredientes (ajustada al número de personas), pasos a seguir, tiempo de preparación y densidad calórica.
+
 
 === Resumen de la entrevista
 
