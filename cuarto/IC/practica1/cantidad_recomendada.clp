@@ -262,13 +262,68 @@
 ;;; Indicaciones: 1) deduce hechos (es_alimento ?x) representando que algo es un alimento a partir de la relacion "es_un_tipo_de" ¡Ojo serían alimentos, no tipos de alimentos!
 ;;;               2) Imprime por pantalla los es_alimento
 
+
+(defrule deducir_es_alimento
+   (declare (salience 20)) 
+   (es_un_tipo_de ?x ?y)
+   =>
+   (assert (es_alimento ?x))
+)
+
+;;; 1.2 Regla para la cabecera
+(defrule listar_alimentos_disponibles
+   (declare (salience 10))
+   =>
+   (printout t "--- ALIMENTOS DISPONIBLES EN EL SISTEMA ---" crlf)
+)
+
+;;; 1.3 Imprimir los alimentos (ahora sí estarán todos deducidos)
+(defrule imprimir_alimentos
+   (declare (salience 10))
+   (es_alimento ?x)
+   =>
+   (printout t  ?x " , ")
+)
+
 ;;;;;; EJERCICIO PARTE 2:  AÑADIR REGLAS PARA INDICAR AL FINAL OTROS ALIMENTOS CON LAS MISMAS PROPIEDADES
 ;;; Indicaciones: 1) deduce (alimento_parecido ?x) para los alimentos que tengan alguna propiedad común con el alimento sobre el que se pregunta
 ;;;               2) retracta los alimento_parecido que tengan una propiedad distinta con el preguntado
-;;;               3) Imprime por pantalla los alimento_parecido que queden 
-(defrule retractar_pollo_rico_en_proteinas
-(es_un_tipo_de ?x carne_blanca )
-?f <- (propiedad rico_en_proteinas ?x)
-=>(retract ?f)
-(printout t "El " ?x " no lo consider rico en proteinas" crlf)
+;;;               3) Imprime por pantalla los alimento_parecido que queden
+
+;;; 2.1 Identificar candidatos (tienen al menos una propiedad igual)
+(defrule buscar_alimento_parecido
+   (declare (salience -2))
+   (alimento ?a)
+   (propiedad ?p ?a)
+   (propiedad ?p ?otro)
+   (test (neq ?a ?otro)) 
+   =>
+   (assert (alimento_parecido ?otro))
+)
+
+;;; 2.2 Retractar si el candidato tiene una propiedad que el original NO tiene
+(defrule filtrar_alimento_parecido
+   (declare (salience -3))
+   (alimento ?a)
+   ?f <- (alimento_parecido ?otro)
+   (propiedad ?p ?otro)
+   (not (propiedad ?p ?a))
+   =>
+   (retract ?f)
+)
+
+;;; 2.3 Imprimir los resultados finales
+(defrule imprimir_parecidos_cabecera
+   (declare (salience -4))
+   (exists (alimento_parecido ?))
+   =>
+   (printout t "Otros alimentos con propiedades nutricionales similares que podrias considerar: " crlf)
+)
+
+(defrule imprimir_un_parecido
+   (declare (salience -5))
+   ?f <- (alimento_parecido ?x)
+   =>
+   (printout t " -> " ?x crlf)
+   (retract ?f) 
 )
