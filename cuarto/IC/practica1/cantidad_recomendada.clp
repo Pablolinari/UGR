@@ -213,7 +213,6 @@
 (deffacts rico_en_fibras
 (propiedad rico_en_fibras fruta)
 (propiedad rico_en_fibras verdura)
-(propiedad rico_en fibras hortalizas)
 (propiedad rico_en_fibras hortalizas)
 )
 
@@ -266,6 +265,7 @@
 (defrule deducir_es_alimento
    (declare (salience 20)) 
    (es_un_tipo_de ?x ?y)
+   (not (es_un_tipo_de ? ?x))
    =>
    (assert (es_alimento ?x))
 )
@@ -296,6 +296,7 @@
    (alimento ?a)
    (propiedad ?p ?a)
    (propiedad ?p ?otro)
+   (es_alimento ?otro)
    (test (neq ?a ?otro)) 
    =>
    (assert (alimento_parecido ?otro))
@@ -308,6 +309,17 @@
    ?f <- (alimento_parecido ?otro)
    (propiedad ?p ?otro)
    (not (propiedad ?p ?a))
+   =>
+   (retract ?f)
+)
+
+;;; 2.2.b Retractar si al original le falta alguna propiedad del candidato (igualdad completa)
+(defrule filtrar_alimento_parecido_inverso
+   (declare (salience -3))
+   (alimento ?a)
+   ?f <- (alimento_parecido ?otro)
+   (propiedad ?p ?a)
+   (not (propiedad ?p ?otro))
    =>
    (retract ?f)
 )
