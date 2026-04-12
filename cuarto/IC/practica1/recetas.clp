@@ -1,268 +1,389 @@
+
+
+;;;; Carga automatica de la base de recetas
+;;;; Al cargar este archivo se cargan tambien las recetas de BDrecetas_100.clp
+
 (deftemplate receta
-   (slot nombre (type STRING))
-   (slot tipo-plato (type SYMBOL))
-   (slot dificultad (type SYMBOL))
-   (slot comensales (type INTEGER))
-   (slot tiempo-cocinado (type INTEGER))
-   (multislot info-nutricional)
-   (slot enlace-web (type STRING))
+  (slot nombre (type STRING))
+  (slot tipo-plato (type SYMBOL))
+  (slot dificultad (type SYMBOL))
+  (slot comensales (type INTEGER))
+  (slot tiempo-cocinado (type INTEGER))
+  (multislot info-nutricional)
+  (slot enlace-web (type STRING))
 )
 
 (deftemplate ingrediente
-   (slot nombre-receta (type STRING))
-   (slot nombre-ingrediente (type STRING))
-   (slot cantidad (type FLOAT))
-   (slot unidad (type SYMBOL))
+  (slot nombre-receta (type STRING))
+  (slot nombre-ingrediente (type STRING))
+  (slot cantidad (type FLOAT))
+  (slot unidad (type SYMBOL))
+)
+
+(deffunction contiene (?texto ?patron)
+  (if (neq (str-index (lowcase ?patron) (lowcase ?texto)) FALSE)
+    then TRUE
+    else FALSE)
+)
+
+(deffunction es-condimento (?ing)
+  (if (or (contiene ?ing "sal")
+          (contiene ?ing "pimienta")
+          (contiene ?ing "perejil")
+          (contiene ?ing "laurel")
+          (contiene ?ing "oregano")
+          (contiene ?ing "tomillo")
+          (contiene ?ing "albahaca")
+          (contiene ?ing "esencia")
+          (contiene ?ing "canela")
+          (contiene ?ing "vinagre")
+          (contiene ?ing "comino")
+          (contiene ?ing "curry")
+          (contiene ?ing "pimenton"))
+    then TRUE
+    else FALSE)
+)
+
+(deffunction es-importante (?ing)
+  (if (or (contiene ?ing "pollo")
+          (contiene ?ing "carne")
+          (contiene ?ing "ternera")
+          (contiene ?ing "cerdo")
+          (contiene ?ing "pato")
+          (contiene ?ing "atun")
+          (contiene ?ing "bacalao")
+          (contiene ?ing "merluza")
+          (contiene ?ing "gamba")
+          (contiene ?ing "pulpo")
+          (contiene ?ing "arroz")
+          (contiene ?ing "pasta")
+          (contiene ?ing "fideos")
+          (contiene ?ing "patata")
+          (contiene ?ing "garbanzo")
+          (contiene ?ing "lenteja")
+          (contiene ?ing "queso")
+          (contiene ?ing "chocolate"))
+    then TRUE
+    else FALSE)
+)
+
+(deffunction es-dulce (?ing)
+  (if (or (contiene ?ing "azucar")
+          (contiene ?ing "chocolate")
+          (contiene ?ing "galleta")
+          (contiene ?ing "vainilla")
+          (contiene ?ing "miel")
+          (contiene ?ing "cacao")
+          (contiene ?ing "leche condensada")
+          (contiene ?ing "manjar"))
+    then TRUE
+    else FALSE)
+)
+
+(deffunction obtener-kcal ($?info)
+  (if (= (length$ ?info) 0) then (return -1))
+  (bind ?prim (nth$ 1 ?info))
+
+  (if (numberp ?prim) then (return ?prim))
+
+  (if (symbolp ?prim) then
+    (bind ?num-sym (string-to-field (sym-cat ?prim)))
+    (if (numberp ?num-sym) then (return ?num-sym)))
+
+  (if (stringp ?prim) then
+    (bind ?partes (explode$ ?prim))
+    (if (> (length$ ?partes) 0) then
+      (bind ?primera-parte (nth$ 1 ?partes))
+      (if (numberp ?primera-parte) then
+        (return ?primera-parte)
+      else
+        (if (or (stringp ?primera-parte) (symbolp ?primera-parte) (instance-namep ?primera-parte)) then
+          (bind ?num (string-to-field (sym-cat ?primera-parte)))
+          (if (numberp ?num) then (return ?num))))))
+
+  (return -1)
 )
 
 
+(defrule con_pollo
+(ingrediente (nombre-receta ?r)(nombre-ingrediente ?a))
+(test (str-index "pollo" (lowcase ?a)))
+(not (propiedad_receta con_pollo ?r))
+=>
+(assert (propiedad_receta con_pollo ?r))
+(printout t ?r " contiene pollo" crlf)
+)
+;;;EJERCICIO: Añadir reglas para  deducir tal y como tú lo harias (usando razonamiento basado en conocimiento):
+;;;  1) cual o cuales son los ingredientes relevantes de una receta
+;;;  2) Si una receta no incluye el tipo de plato, que deduzca y añada, modificando la receta, el tipo de plato que le correspondería (plato principal, postre, entrante, merienda, …)
+;;;  3) si una receta es: vegana, vegetariana, picante, sin gluten o sin lactosa,o ,  si en cuanto a calorías es ligera, normal o calórica o si es de digestión ligera, normal o pesada (teniendo en cuenta en estos últimos casos el tipo de plato que es) 
 
-(deffacts receta-pionono-agridulce
-   ;; Definición de la receta principal
-   (receta 
-      (nombre "Pionono agridulce")
-      (tipo-plato entrante)
-      (dificultad media)
-      (comensales 6)
-      (tiempo-cocinado 40)
-      (info-nutricional 320.0 "kcal" 12.0 "g proteina" 18.0 "g grasas" 25.0 "g carbohidratos")
-      (enlace-web "https://recetas.elperiodico.com/receta-de-pionono-agridulce-77770.html")
-   )
 
-   ;; Ingredientes de la masa y base
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "plancha de pionono o bizcochuelo") (cantidad 1.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "mayonesa") (cantidad 150.0) (unidad g))
-   
-   ;; Ingredientes del relleno (Salados)
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "jamon cocido") (cantidad 200.0) (unidad g))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "queso en lonchas") (cantidad 150.0) (unidad g))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "huevo duro") (cantidad 3.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "aceitunas verdes rellenas") (cantidad 50.0) (unidad g))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "pimiento morron en conserva") (cantidad 100.0) (unidad g))
 
-   ;; Ingredientes del toque dulce
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "palmito") (cantidad 4.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "piña en almibar") (cantidad 3.0) (unidad rodajas))
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "cerezas al marrasquino") (cantidad 6.0) (unidad unidades))
-   
-   ;; Condimentos
-   (ingrediente (nombre-receta "Pionono agridulce") (nombre-ingrediente "sal y pimienta") (cantidad 1.0) (unidad pizca))
+
+; 1) Ingredientes relevantes
+
+(defrule ingrediente-relevante-por-nombre
+  (receta (nombre ?r))
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (contiene ?r ?a))
+  (not (propiedad_receta ingrediente_relevante ?r ?a))
+  =>
+  (assert (propiedad_receta ingrediente_relevante ?r ?a))
 )
 
-(deffacts receta-carbonara-philadelphia
-   ;; Definición de la receta principal
-   (receta 
-      (nombre "Espagueti carbonara con queso Philadelphia")
-      (tipo-plato segundo-plato)
-      (dificultad baja)
-      (comensales 4)
-      (tiempo-cocinado 20)
-      (info-nutricional 580.0 "kcal" 18.0 "g proteina" 28.0 "g grasas" 65.0 "g carbohidratos")
-      (enlace-web "https://recetas.elperiodico.com/receta-de-espagueti-carbonara-con-queso-philadelphia-59508.html")
-   )
-
-   ;; Ingredientes para la pasta y la salsa
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "espaguetis") (cantidad 400.0) (unidad g))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "queso Philadelphia") (cantidad 150.0) (unidad g))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "bacon o panceta") (cantidad 150.0) (unidad g))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "huevo") (cantidad 2.0) (unidad unidades))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "cebolla") (cantidad 0.5) (unidad unidades))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "aceite de oliva") (cantidad 2.0) (unidad cucharadas))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "queso parmesano rallado") (cantidad 50.0) (unidad g))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "sal") (cantidad 1.0) (unidad pizca))
-   (ingrediente (nombre-receta "Espagueti carbonara con queso Philadelphia") (nombre-ingrediente "pimienta negra") (cantidad 1.0) (unidad pizca))
+(defrule ingrediente-relevante-por-tipo
+  (receta (nombre ?r))
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (es-importante ?a))
+  (not (propiedad_receta ingrediente_relevante ?r ?a))
+  =>
+  (assert (propiedad_receta ingrediente_relevante ?r ?a))
 )
 
 
-(deffacts receta-pejerrey-arrebozado
-   ;; Definición de la receta principal
-   (receta 
-      (nombre "Pejerrey arrebozado")
-      (tipo-plato segundo-plato)
-      (dificultad baja)
-      (comensales 2)
-      (tiempo-cocinado 45)
-      (info-nutricional 612.5 "kcal" 45 "g proteina" 3 "g grasas" 37.5 "g carbohidratos")
-      (enlace-web "https://recetas.elperiodico.com/receta-de-pejerrey-arrebozado-77640.html")
-   )
+; 2) Deducir tipo de plato si no viene informado
 
-   ;; Ingredientes del pescado y rebozado
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "pejerrey limpio") (cantidad 500.0) (unidad g))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "huevo") (cantidad 1.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "mostaza") (cantidad 1.0) (unidad cucharada))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "ajo molido") (cantidad 1.0) (unidad cucharadita))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "pimienta negra") (cantidad 1.0) (unidad pizca))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "sal") (cantidad 1.0) (unidad cucharadita))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "cerveza rubia") (cantidad 100.0) (unidad ml))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "harina de trigo") (cantidad 150.0) (unidad g))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "aceite para freir") (cantidad 500.0) (unidad ml))
+(defrule deducir-tipo-plato-postre
+  ?f <- (receta (nombre ?r) (tipo-plato ?tp&:(or (eq ?tp desconocido) (eq ?tp sin-clasificar) (eq ?tp ninguno))))
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (es-dulce ?a))
+  =>
+  (modify ?f (tipo-plato postre))
+)
 
-   ;; Ingredientes para la sarsa criolla (acompañamiento)
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "cebolla roja") (cantidad 1.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "tomate") (cantidad 1.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "limon") (cantidad 2.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "aji amarillo") (cantidad 1.0) (unidad unidades))
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "culantro") (cantidad 1.0) (unidad pizca))
+(defrule deducir-tipo-plato-principal
+  ?f <- (receta (nombre ?r) (tipo-plato ?tp&:(or (eq ?tp desconocido) (eq ?tp sin-clasificar) (eq ?tp ninguno))))
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (es-importante ?a))
+  =>
+  (modify ?f (tipo-plato principal))
+)
 
-   ;; Guarnición
-   (ingrediente (nombre-receta "Pejerrey arrebozado") (nombre-ingrediente "yuca o camote") (cantidad 2.0) (unidad unidades))
+(defrule deducir-tipo-plato-por-defecto
+  (declare (salience -5))
+  ?f <- (receta (nombre ?r) (tipo-plato ?tp&:(or (eq ?tp desconocido) (eq ?tp sin-clasificar) (eq ?tp ninguno))))
+  =>
+  (modify ?f (tipo-plato entrante))
 )
 
 
-(deffacts receta-camarones-tamarindo
-   ;; Definición de la receta principal
-   (receta 
-      (nombre "Camarones al tamarindo")
-      (tipo-plato segundo-plato)
-      (dificultad baja)
-      (comensales 4)
-      (tiempo-cocinado 30)
-      (info-nutricional 420.0 "kcal" 28.0 "g proteina" 12.0 "g grasas" 50.0 "g carbohidratos")
-      (enlace-web "https://recetas.elperiodico.com/receta-de-camarones-al-tamarindo-74924.html")
-   )
+; 3) Clasificaciones: vegana/vegetariana/picante/sin gluten/sin lactosa
+;    y calorias + digestion
 
-   ;; Ingredientes principales
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "camarones limpios") (cantidad 500.0) (unidad g))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "pasta de tamarindo") (cantidad 100.0) (unidad g))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "azucar rubia") (cantidad 2.0) (unidad cucharadas))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "salsa de soja") (cantidad 1.0) (unidad cucharada))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "ajo picado") (cantidad 2.0) (unidad dientes))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "kion o jengibre rallado") (cantidad 1.0) (unidad cucharadita))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "aceite vegetal") (cantidad 2.0) (unidad cucharadas))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "cebollita china") (cantidad 1.0) (unidad pizca))
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "sal y pimienta") (cantidad 1.0) (unidad pizca))
-
-   ;; Acompañamiento sugerido
-   (ingrediente (nombre-receta "Camarones al tamarindo") (nombre-ingrediente "arroz blanco cocido") (cantidad 200.0) (unidad g))
-)
-(deffacts receta-goxua
-   ;; Definición de la receta principal
-   (receta 
-      (nombre "Goxua casero")
-      (tipo-plato postre)
-      (dificultad media)
-      (comensales 4)
-      (tiempo-cocinado 40)
-      (info-nutricional 57 "kcal" 9 "g proteina" 32 "g grasas" 62 "g carbohidratos")
-      (enlace-web "https://recetas.elperiodico.com/receta-de-goxua-casero-como-preparar-el-postre-vasco-de-crema-y-nata-irresistible-78505.html")
-   )
-
-   ;; Ingredientes para la Crema Pastelera
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "leche") (cantidad 500.0) (unidad ml))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "yemas de huevo") (cantidad 3.0) (unidad unidades))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "azucar") (cantidad 100.0) (unidad g))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "maicena") (cantidad 40.0) (unidad g))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "esencia de vainilla") (cantidad 1.0) (unidad pizca))
-
-   ;; Ingredientes para la Nata Montada / Chantilly
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "nata para montar") (cantidad 400.0) (unidad ml))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "azucar glas") (cantidad 60.0) (unidad g))
-
-   ;; Ingredientes para el montaje
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "bizcocho de soletilla") (cantidad 12.0) (unidad unidades))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "licor o almibar") (cantidad 50.0) (unidad ml))
-   (ingrediente (nombre-receta "Goxua casero") (nombre-ingrediente "azucar para quemar") (cantidad 20.0) (unidad g))
+(defrule marcar-picante
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (or (contiene ?a "guindilla")
+            (contiene ?a "chile")
+            (contiene ?a "cayena")
+            (contiene ?a "aji")
+            (contiene ?a "picante")))
+  (not (propiedad_receta es_picante ?r))
+  =>
+  (assert (propiedad_receta es_picante ?r))
 )
 
-
-
-(deftemplate ingrediente-relevante
-   (slot nombre-receta (type STRING))
-   (slot nombre-ingrediente (type STRING))
+(defrule marcar-contiene-gluten
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (or (contiene ?a "harina")
+            (contiene ?a "pan")
+            (contiene ?a "pasta")
+            (contiene ?a "fideos")
+            (contiene ?a "galleta")
+            (contiene ?a "hojaldre")
+            (contiene ?a "bizcocho")
+            (contiene ?a "trigo")))
+  (not (propiedad_receta contiene_gluten ?r))
+  =>
+  (assert (propiedad_receta contiene_gluten ?r))
 )
 
-(deftemplate propiedad-receta
-   (slot nombre-receta (type STRING))
-   (slot propiedad (type SYMBOL)) ; vegana, vegetariana, picante, gluten, lactosa
+(defrule marcar-contiene-lactosa
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (or (contiene ?a "leche")
+            (contiene ?a "queso")
+            (contiene ?a "nata")
+            (contiene ?a "mantequilla")
+            (contiene ?a "yogur")
+            (contiene ?a "crema")
+            (contiene ?a "mascarpone")))
+  (not (propiedad_receta contiene_lactosa ?r))
+  =>
+  (assert (propiedad_receta contiene_lactosa ?r))
 )
 
-(deftemplate clasificacion-nutricional
-   (slot nombre-receta (type STRING))
-   (slot tipo (type SYMBOL)) ; calorica, ligera, normal
-   (slot digestion (type SYMBOL)) ; pesada, normal, ligera
+(defrule marcar-no-vegetariana
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (or (contiene ?a "carne")
+          	(contiene ?a "pollo")
+            (contiene ?a "ternera")
+            (contiene ?a "cerdo")
+            (contiene ?a "jamon")
+            (contiene ?a "chorizo")
+            (contiene ?a "morcilla")
+            (contiene ?a "pato")
+            (contiene ?a "atun")
+            (contiene ?a "bacalao")
+            (contiene ?a "merluza")
+            (contiene ?a "pescado")
+            (contiene ?a "gamba")
+            (contiene ?a "pulpo")
+            (contiene ?a "salmon")
+            (contiene ?a "marisco")))
+  (not (propiedad_receta no_vegetariana ?r))
+  =>
+  (assert (propiedad_receta no_vegetariana ?r))
 )
 
-;;; --- REGLAS ---
-
-;; 1) Deducir ingredientes relevantes
-;; Consideramos relevante si el ingrediente aparece en el nombre de la receta
-(defrule identificar-ingrediente-relevante
-   (receta (nombre ?n))
-   (ingrediente (nombre-receta ?n) (nombre-ingrediente ?ing))
-   (test (str-index (lowcase ?ing) (lowcase ?n)))
-   =>
-   (assert (ingrediente-relevante (nombre-receta ?n) (nombre-ingrediente ?ing)))
+(defrule marcar-no-vegana-por-otros
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (contiene ?a "huevo"))
+  (not (propiedad_receta no_vegana ?r))
+  =>
+  (assert (propiedad_receta no_vegana ?r))
 )
 
-;; 2) Deducir y modificar tipo de plato si falta
-;; Si no tiene tipo y lleva "azucar" o "nata" suele ser postre
-(defrule deducir-tipo-postre
-   ?r <- (receta (nombre ?n) (tipo-plato nil))
-   (ingrediente (nombre-receta ?n) (nombre-ingrediente ?ing))
-   (test (or (eq ?ing "azucar") (eq ?ing "nata para montar")))
-   =>
-   (modify ?r (tipo-plato postre))
+(defrule marcar-no-vegana-por-animal
+  (propiedad_receta no_vegetariana ?r)
+  (not (propiedad_receta no_vegana ?r))
+  =>
+  (assert (propiedad_receta no_vegana ?r))
 )
 
-;; Por defecto, si no es postre y tiene ingredientes contundentes, plato-principal
-(defrule deducir-tipo-principal-defecto
-   ?r <- (receta (nombre ?n) (tipo-plato nil))
-   (ingrediente (nombre-receta ?n) (nombre-ingrediente ?ing))
-   (test (or (eq ?ing "carne") (eq ?ing "pescado") (eq ?ing "pollo")))
-   =>
-   (modify ?r (tipo-plato plato-principal))
+(defrule marcar-no-vegana-por-lactosa
+  (propiedad_receta contiene_lactosa ?r)
+  (not (propiedad_receta no_vegana ?r))
+  =>
+  (assert (propiedad_receta no_vegana ?r))
 )
 
-;; 3) Clasificación: Dieta y Alérgenos
-(defrule es-picante
-   (ingrediente (nombre-receta ?n) (nombre-ingrediente ?ing))
-   (test (or (str-index "aji" (lowcase ?ing)) 
-             (str-index "pimienta" (lowcase ?ing))
-             (str-index "guindilla" (lowcase ?ing))))
-   =>
-   (assert (propiedad-receta (nombre-receta ?n) (propiedad picante)))
+(defrule marcar-es-vegetariana
+  (receta (nombre ?r))
+  (not (propiedad_receta no_vegetariana ?r))
+  (not (propiedad_receta es_vegetariana ?r))
+  =>
+  (assert (propiedad_receta es_vegetariana ?r))
 )
 
-(defrule tiene-gluten
-   (ingrediente (nombre-receta ?n) (nombre-ingrediente ?ing))
-   (test (or (str-index "harina de trigo" (lowcase ?ing))
-             (str-index "espaguetis" (lowcase ?ing))
-             (str-index "bizcocho" (lowcase ?ing))))
-   =>
-   (assert (propiedad-receta (nombre-receta ?n) (propiedad contiene-gluten)))
+(defrule marcar-es-vegana
+  (receta (nombre ?r))
+  (not (propiedad_receta no_vegana ?r))
+  (not (propiedad_receta es_vegana ?r))
+  =>
+  (assert (propiedad_receta es_vegana ?r))
 )
 
-(defrule tiene-lactosa
-   (ingrediente (nombre-receta ?n) (nombre-ingrediente ?ing))
-   (test (or (str-index "leche" (lowcase ?ing))
-             (str-index "queso" (lowcase ?ing))
-             (str-index "nata" (lowcase ?ing))))
-   =>
-   (assert (propiedad-receta (nombre-receta ?n) (propiedad contiene-lactosa)))
+(defrule marcar-es-sin-gluten
+  (receta (nombre ?r))
+  (not (propiedad_receta contiene_gluten ?r))
+  (not (propiedad_receta es_sin_gluten ?r))
+  =>
+  (assert (propiedad_receta es_sin_gluten ?r))
 )
 
-;; 4) Clasificación: Calorías y Digestión
-;; Lógica: Postre > 400kcal = calórica. Principal > 600kcal = calórica.
-(defrule clasificar-calorias-pesadas
-   (receta (nombre ?n) (tipo-plato ?t) (info-nutricional ?cal $?))
-   =>
-   (bind ?cat normal)
-   (bind ?dig normal)
-   
-   ;; Lógica de calorías
-   (if (and (eq ?t postre) (> ?cal 350)) then (bind ?cat calorica))
-   (if (and (eq ?t segundo-plato) (> ?cal 600)) then (bind ?cat calorica))
-   (if (< ?cal 200) then (bind ?cat ligera))
-   
-   ;; Lógica de digestión (basada en grasas, asumiendo que el 5º elemento de multislot es grasas)
-   ;; En tu template: kcal (1), "kcal" (2), prot (3), "g proteina" (4), grasas (5)
-   (do-for-fact ((?r receta)) (eq ?r:nombre ?n)
-      (bind ?grasas (nth$ 5 ?r:info-nutricional))
-      (if (> ?grasas 25) then (bind ?dig pesada))
-      (if (< ?grasas 10) then (bind ?dig ligera))
-   )
-   
-   (assert (clasificacion-nutricional (nombre-receta ?n) (tipo ?cat) (digestion ?dig)))
+(defrule marcar-es-sin-lactosa
+  (receta (nombre ?r))
+  (not (propiedad_receta contiene_lactosa ?r))
+  (not (propiedad_receta es_sin_lactosa ?r))
+  =>
+  (assert (propiedad_receta es_sin_lactosa ?r))
 )
 
+(defrule marcar-receta-pesada
+  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
+  (test (or (contiene ?a "frito")
+            (contiene ?a "freir")
+            (contiene ?r "frito")
+            (contiene ?r "carne")
+            (contiene ?a "mantequilla")
+            (contiene ?a "nata")
+            (contiene ?a "queso")
+            (contiene ?a "tocino")
+            (contiene ?a "bacon")
+            (contiene ?a "morcilla")))
+  (not (propiedad_receta receta_pesada ?r))
+  =>
+  (assert (propiedad_receta receta_pesada ?r))
+)
 
+(defrule clasificar-calorias
+  (receta (nombre ?r) (info-nutricional $?info))
+  (not (propiedad_receta calorias ?categoria ?r))
+  =>
+  (bind ?kcal (obtener-kcal ?info))
+  (if (or (< ?kcal 0) (<= ?kcal 100)) then
+    (assert (propiedad_receta calorias ligera ?r))
+  else
+    (if (or (< ?kcal 100) (<= ?kcal 250)) then
+      (assert (propiedad_receta calorias normal ?r))
+    else
+      (assert (propiedad_receta calorias calorica ?r))))
+)
+
+(defrule clasificar-digestion-pesada
+  (receta (nombre ?r))
+  (or (propiedad_receta receta_pesada ?r)
+      (propiedad_receta calorias calorica ?r))
+  (not (propiedad_receta digestion ?nivel ?r))
+  =>
+  (assert (propiedad_receta digestion pesada ?r))
+)
+
+(defrule clasificar-digestion-ligera
+  (declare (salience -2))
+  (receta (nombre ?r) (tipo-plato ?tp))
+  (or (eq ?tp entrante)
+      (propiedad_receta calorias ligera ?r))
+  (not (propiedad_receta digestion ?nivel ?r))
+  =>
+  (assert (propiedad_receta digestion ligera ?r))
+)
+
+(defrule clasificar-digestion-normal
+  (declare (salience -5))
+  (receta (nombre ?r))
+  (not (propiedad_receta digestion ?nivel ?r))
+  =>
+  (assert (propiedad_receta digestion normal ?r))
+)
+
+;;;FORMATO DE LOS HECHOS:  (siendo ?r el nombre de la receta)
+;  
+;       (propiedad_receta ingrediente_relevante ?r ?a)
+;       (propiedad_receta digestion ligera/normal/pesada ?r)
+;       (propiedad_receta calorias ligera/normal/calorica ?r)
+;       (propiedad_receta es_vegetariana ?r) 
+;       (propiedad_receta es_vegana ?r)
+;       (propiedad_receta es_sin_gluten ?r)
+;       (propiedad_receta es_picante ?r)
+;       (propiedad_receta es_sin_lactosa ?r)
+
+
+(defrule imprimir-propiedades-de-cada-receta
+  (declare (salience -1000))
+  (receta (nombre ?r))
+  (not (receta_impresa ?r))
+  =>
+  (printout t crlf "========================================" crlf)
+  (printout t "Receta: " ?r crlf)
+  (printout t "Propiedades deducidas:" crlf)
+
+  (bind ?hay FALSE)
+  (do-for-all-facts ((?p propiedad_receta)) TRUE
+    (bind ?datos ?p:implied)
+    (bind ?l (length$ ?datos))
+
+    (if (or (and (>= ?l 2) (eq (nth$ 2 ?datos) ?r))
+            (and (>= ?l 3) (eq (nth$ 3 ?datos) ?r)))
+      then
+      (bind ?hay TRUE)
+      (printout t "- " ?datos crlf)
+    )
+  )
+
+  (if (eq ?hay FALSE) then
+    (printout t "- (sin propiedades deducidas)" crlf)
+  )
+
+  (assert (receta_impresa ?r))
+)
