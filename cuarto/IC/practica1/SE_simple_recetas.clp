@@ -146,10 +146,12 @@
 )
 
 
-;;;EJERCICIO: Añadir reglas para  deducir tal y como tú lo harias (usando razonamiento basado en conocimiento):
-;;;  1) cual o cuales son los ingredientes relevantes de una receta
-;;;  2) Si una receta no incluye el tipo de plato, que deduzca y añada, modificando la receta, el tipo de plato que le correspondería (plato principal, postre, entrante, merienda, …)
-;;;  3) si una receta es: vegana, vegetariana, picante, sin gluten o sin lactosa,o ,  si en cuanto a calorías es ligera, normal o calórica o si es de digestión ligera, normal o pesada (teniendo en cuenta en estos últimos casos el tipo de plato que es) 
+;;; ============================================================
+;;; MODULO 1: DEDUCIR PROPIEDADES DE RECETAS (base de conocimiento)
+;;; ============================================================
+;;; Aqui se infieren atributos de cada receta antes de interactuar
+;;; con el usuario: ingredientes relevantes, tipo, dieta, calorias,
+;;; proteinas y digestion.
 
 
 
@@ -202,7 +204,7 @@
 
 
 ; 3) Clasificaciones: vegana/vegetariana/picante/sin gluten/sin lactosa
-;    y calorias + digestion
+;    + calorias/proteinas/digestion
 
 (defrule marcar-picante
   (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
@@ -210,7 +212,8 @@
             (contiene ?a "chile")
             (contiene ?a "cayena")
             (contiene ?a "aji")
-            (contiene ?a "picante")))
+            (contiene ?a "picante")
+            (contiene ?r "picante")))
   (not (propiedad_receta es_picante ?r))
   =>
   (assert (propiedad_receta es_picante ?r))
@@ -345,12 +348,12 @@
   =>
   (bind ?kcal (obtener-kcal ?info))
   (if (or (< ?kcal 0) (<= ?kcal 100)) then
-    (assert (propiedad_receta calorias ligera ?r))
+    (assert (propiedad_receta calorias baja ?r))
   else
     (if (or (< ?kcal 100) (<= ?kcal 250)) then
-      (assert (propiedad_receta calorias normal ?r))
+      (assert (propiedad_receta calorias media ?r))
     else
-      (assert (propiedad_receta calorias calorica ?r))))
+      (assert (propiedad_receta calorias alta ?r))))
 )
 
 (defrule clasificar-proteinas
@@ -370,7 +373,7 @@
 (defrule clasificar-digestion-pesada
   (receta (nombre ?r))
   (or (propiedad_receta receta_pesada ?r)
-      (propiedad_receta calorias calorica ?r))
+      (propiedad_receta calorias alta ?r))
   (not (propiedad_receta digestion ?nivel ?r))
   =>
   (assert (propiedad_receta digestion pesada ?r))
@@ -380,7 +383,7 @@
   (declare (salience -2))
   (receta (nombre ?r) (tipo-plato ?tp))
   (or (eq ?tp entrante)
-      (propiedad_receta calorias ligera ?r))
+      (propiedad_receta calorias baja ?r))
   (not (propiedad_receta digestion ?nivel ?r))
   =>
   (assert (propiedad_receta digestion ligera ?r))
@@ -398,16 +401,22 @@
 ;  
 ;       (propiedad_receta ingrediente_relevante ?r ?a)
 ;       (propiedad_receta digestion ligera/normal/pesada ?r)
-;       (propiedad_receta calorias ligera/normal/calorica ?r)
+;       (propiedad_receta calorias baja/media/alta ?r)
 ;       (propiedad_receta es_vegetariana ?r) 
 ;       (propiedad_receta es_vegana ?r)
 ;       (propiedad_receta es_sin_gluten ?r)
 ;       (propiedad_receta es_picante ?r)
 ;       (propiedad_receta es_sin_lactosa ?r)
 
-;; HASTA ESTA PARTE SE CLASIFICAN LAS RECETAS DE LA BD
+;; HASTA AQUI: MODULO 1 (deduccion de propiedades)
 
-;; AQUI EMPIEZA EL SISTEMA EXPERTO
+;; ============================================================
+;; MODULOS DEL SISTEMA EXPERTO INTERACTIVO
+;;  - MODULO 2: pedir informacion al usuario
+;;  - MODULO 3: proponer tipo de receta (preferencia de tipo)
+;;  - MODULO 4: obtener recetas compatibles (filtrado)
+;;  - MODULO 5: proponer receta y permitir reajustes
+;; ============================================================
 
 (deftemplate RecetaCandidata (slot nombre))
 (deftemplate RecetaAdecuada (slot nombre) (slot motivo))
@@ -524,8 +533,14 @@
 )
 
 ;; ------------------------
-;; BLOQUE 1: PREGUNTAS
+;; MODULO 2: PEDIR INFORMACION
 ;; ------------------------
+;; Justificacion de las preguntas:
+;; - dieta/sin lactosa/sin gluten: restricciones de salud o estilo de vida.
+;; - tipo: preferencia de contexto de consumo (principal/entrante/postre).
+;; - comensales y tiempo: viabilidad practica.
+;; - proteina y densidad calorica: objetivo nutricional.
+;; - ingrediente obligatorio: preferencia o disponibilidad de despensa.
 
 (defrule pregunta-dieta
   (declare (salience 12))
@@ -554,6 +569,8 @@
   ?f <- (pregunta tipo)
   =>
   (retract ?f)
+  ;; MODULO 3: proponer tipo de receta segun preferencia del usuario.
+  ;; Si responde ns, luego no se filtra por tipo.
   (printout t "Tipo (principal|entrante|postre|ns|fin): ")
   (assert (respuesta-tipo (normalizar-respuesta (read))))
 )
@@ -760,8 +777,10 @@
 )
 
 ;; ------------------------
-;; BLOQUE 2: FILTRADO
+;; MODULO 4: OBTENER RECETAS COMPATIBLES
 ;; ------------------------
+;; Se parte de todas las recetas y se van eliminando las que no
+;; cumplen cada restriccion del usuario.
 
 (defrule iniciar-evaluacion
   (declare (salience 900))
@@ -825,7 +844,7 @@
   (respuesta-densidad-calorica baja)
   ?f <- (RecetaCandidata (nombre ?r))
   (propiedad_receta calorias ?c ?r)
-  (test (neq ?c ligera))
+  (test (neq ?c baja))
   =>
   (retract ?f)
 )
@@ -835,7 +854,7 @@
   (respuesta-densidad-calorica media)
   ?f <- (RecetaCandidata (nombre ?r))
   (propiedad_receta calorias ?c ?r)
-  (test (neq ?c normal))
+  (test (neq ?c media))
   =>
   (retract ?f)
 )
@@ -845,7 +864,7 @@
   (respuesta-densidad-calorica alta)
   ?f <- (RecetaCandidata (nombre ?r))
   (propiedad_receta calorias ?c ?r)
-  (test (neq ?c calorica))
+  (test (neq ?c alta))
   =>
   (retract ?f)
 )
@@ -941,7 +960,51 @@
   =>
   (retract ?fr)
   (printout t crlf "No hay recetas compatibles con los criterios actuales." crlf)
-  (assert (fin))
+  (printout t "Quieres modificar un parametro? (dieta|tipo|comensales|tiempo|proteina|densidad|ingrediente|salir): ")
+  (bind ?x (normalizar-respuesta (read)))
+
+  (if (eq ?x dieta) then
+    (printout t "Nueva dieta (normal|vegetariana|vegana|ns): ")
+    (do-for-all-facts ((?f respuesta-dieta)) TRUE (retract ?f))
+    (assert (respuesta-dieta (normalizar-respuesta (read)))))
+
+  (if (eq ?x tipo) then
+    (printout t "Nuevo tipo (principal|entrante|postre|ns): ")
+    (do-for-all-facts ((?f respuesta-tipo)) TRUE (retract ?f))
+    (assert (respuesta-tipo (normalizar-respuesta (read)))))
+
+  (if (eq ?x comensales) then
+    (printout t "Nuevos comensales (numero|ns): ")
+    (do-for-all-facts ((?f respuesta-comensales)) TRUE (retract ?f))
+    (assert (respuesta-comensales (normalizar-respuesta (read)))))
+
+  (if (eq ?x tiempo) then
+    (printout t "Nuevo tiempo maximo (numero|ns): ")
+    (do-for-all-facts ((?f respuesta-tiempo)) TRUE (retract ?f))
+    (assert (respuesta-tiempo (normalizar-respuesta (read)))))
+
+  (if (eq ?x proteina) then
+    (printout t "Nuevo nivel de proteina (alta|media|baja|ns): ")
+    (do-for-all-facts ((?f respuesta-proteina)) TRUE (retract ?f))
+    (assert (respuesta-proteina (normalizar-respuesta (read)))))
+
+  (if (eq ?x densidad) then
+    (printout t "Nueva densidad calorica (alta|media|baja|ns): ")
+    (do-for-all-facts ((?f respuesta-densidad-calorica)) TRUE (retract ?f))
+    (assert (respuesta-densidad-calorica (normalizar-respuesta (read)))))
+
+  (if (eq ?x ingrediente) then
+    (printout t "Nuevo ingrediente obligatorio (texto|ns): ")
+    (do-for-all-facts ((?f respuesta-ingrediente-obligatorio)) TRUE (retract ?f))
+    (assert (respuesta-ingrediente-obligatorio (normalizar-respuesta (read)))))
+
+  (if (or (eq ?x dieta) (eq ?x tipo) (eq ?x comensales) (eq ?x tiempo)
+          (eq ?x proteina) (eq ?x densidad) (eq ?x ingrediente)) then
+    (do-for-all-facts ((?f defaults-listos)) TRUE (retract ?f))
+    (do-for-all-facts ((?f evaluacion-iniciada)) TRUE (retract ?f))
+    (assert (fase elegir))
+  else
+    (assert (fin)))
 )
 
 (defrule mostrar-receta
@@ -961,8 +1024,10 @@
 )
 
 ;; ------------------------
-;; BLOQUE 3: RESULTADOS
+;; MODULO 5: PROPONER RECETA
 ;; ------------------------
+;; Se ofertan recetas una a una. El usuario puede aceptar, rechazar
+;; o reajustar un criterio y relanzar el filtrado.
 
 (defrule aceptar-receta
   ?fr <- (fase resultados)
