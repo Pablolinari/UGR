@@ -1,7 +1,4 @@
 
-
-
-;;;; Carga automatica de la base de recetas
 ;; al ejecutar (load"SE_simple_recetas.clp") hay que hacer después
 ;; (load "BDrecetas_100.clp") para cargar la informacion de las recetas
 

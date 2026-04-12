@@ -1,7 +1,7 @@
 
+;; al ejecutar (load"SE_simple_recetas.clp") hay que hacer después
+;; (load "BDrecetas_100.clp") para cargar la informacion de las recetas
 
-;;;; Carga automatica de la base de recetas
-;;;; Al cargar este archivo se cargan tambien las recetas de BDrecetas_100.clp
 
 (deftemplate receta
   (slot nombre (type STRING))
@@ -135,14 +135,6 @@
 )
 
 
-(defrule con_pollo
-(ingrediente (nombre-receta ?r)(nombre-ingrediente ?a))
-(test (str-index "pollo" (lowcase ?a)))
-(not (propiedad_receta con_pollo ?r))
-=>
-(assert (propiedad_receta con_pollo ?r))
-(printout t ?r " contiene pollo" crlf)
-)
 ;;;EJERCICIO: Añadir reglas para  deducir tal y como tú lo harias (usando razonamiento basado en conocimiento):
 ;;;  1) cual o cuales son los ingredientes relevantes de una receta
 ;;;  2) Si una receta no incluye el tipo de plato, que deduzca y añada, modificando la receta, el tipo de plato que le correspondería (plato principal, postre, entrante, merienda, …)
@@ -218,10 +210,12 @@
   (test (or (contiene ?a "harina")
             (contiene ?a "pan")
             (contiene ?a "pasta")
+            (contiene ?a "espaguetis")
             (contiene ?a "fideos")
             (contiene ?a "galleta")
             (contiene ?a "hojaldre")
             (contiene ?a "bizcocho")
+						(contiene ?r "espaguetis")
             (contiene ?a "trigo")))
   (not (propiedad_receta contiene_gluten ?r))
   =>
@@ -432,32 +426,32 @@
 ;       (propiedad_receta gramos_carbohidratos ?g ?r)
 ;       (propiedad_receta gramos_fibra ?g ?r)
 
-
-(defrule imprimir-propiedades-de-cada-receta
-  (declare (salience -1000))
-  (receta (nombre ?r))
-  (not (receta_impresa ?r))
-  =>
-  (printout t crlf "========================================" crlf)
-  (printout t "Receta: " ?r crlf)
-  (printout t "Propiedades deducidas:" crlf)
-
-  (bind ?hay FALSE)
-  (do-for-all-facts ((?p propiedad_receta)) TRUE
-    (bind ?datos ?p:implied)
-    (bind ?l (length$ ?datos))
-
-    (if (or (and (>= ?l 2) (eq (nth$ 2 ?datos) ?r))
-            (and (>= ?l 3) (eq (nth$ 3 ?datos) ?r)))
-      then
-      (bind ?hay TRUE)
-      (printout t "- " ?datos crlf)
-    )
-  )
-
-  (if (eq ?hay FALSE) then
-    (printout t "- (sin propiedades deducidas)" crlf)
-  )
-
-  (assert (receta_impresa ?r))
-)
+;; lo descomento para comprobar sin tener que mirar deffacts
+;(defrule imprimir-propiedades-de-cada-receta
+;  (declare (salience -1000))
+;  (receta (nombre ?r))
+;  (not (receta_impresa ?r))
+;  =>
+;  (printout t crlf "========================================" crlf)
+;  (printout t "Receta: " ?r crlf)
+;  (printout t "Propiedades deducidas:" crlf)
+;
+;  (bind ?hay FALSE)
+;  (do-for-all-facts ((?p propiedad_receta)) TRUE
+;    (bind ?datos ?p:implied)
+;    (bind ?l (length$ ?datos))
+;
+;    (if (or (and (>= ?l 2) (eq (nth$ 2 ?datos) ?r))
+;            (and (>= ?l 3) (eq (nth$ 3 ?datos) ?r)))
+;      then
+;      (bind ?hay TRUE)
+;      (printout t "- " ?datos crlf)
+;    )
+;  )
+;
+;  (if (eq ?hay FALSE) then
+;    (printout t "- (sin propiedades deducidas)" crlf)
+;  )
+;
+;  (assert (receta_impresa ?r))
+;)

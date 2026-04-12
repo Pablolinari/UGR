@@ -117,9 +117,10 @@
 )
 
 (defrule compuesto_fundamentalmente_por_entonces_es_un_tipo_de
-(compuesto_fundamentalmente_por ?x ?y)
-=>
-(assert (es_un_tipo_de ?x ?y))
+ (declare (salience 30))
+ (compuesto_fundamentalmente_por ?x ?y)
+ =>
+ (assert (es_un_tipo_de ?x ?y))
 )
 
 
@@ -270,14 +271,11 @@
    (assert (es_alimento ?x))
 )
 
-;;; 1.2 Regla para la cabecera
 (defrule listar_alimentos_disponibles
-   (declare (salience 10))
+   (declare (salience 11))
    =>
    (printout t "--- ALIMENTOS DISPONIBLES EN EL SISTEMA ---" crlf)
 )
-
-;;; 1.3 Imprimir los alimentos (ahora sí estarán todos deducidos)
 (defrule imprimir_alimentos
    (declare (salience 10))
    (es_alimento ?x)
