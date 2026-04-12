@@ -21,9 +21,6 @@
   (slot unidad (type SYMBOL))
 )
 
-(deffunction cargar-bd-recetas ()
-  (load "BDrecetas_100.clp")
-)
 
 (deffunction contiene (?texto ?patron)
   (if (neq (str-index (lowcase ?patron) (lowcase ?texto)) FALSE)
@@ -105,6 +102,45 @@
         (if (or (stringp ?primera-parte) (symbolp ?primera-parte) (instance-namep ?primera-parte)) then
           (bind ?num (string-to-field (sym-cat ?primera-parte)))
           (if (numberp ?num) then (return ?num))))))
+
+  (return -1)
+)
+
+(deffunction extraer-numero-gramos (?dato)
+  (if (numberp ?dato) then (return ?dato))
+
+  (if (stringp ?dato) then
+    (bind ?txt ?dato)
+  else
+    (bind ?txt (str-cat ?dato)))
+
+  (bind ?partes (explode$ ?txt))
+  (if (= (length$ ?partes) 0) then (return -1))
+
+  (bind ?tok (sym-cat (nth$ 1 ?partes)))
+  (bind ?len (str-length ?tok))
+  (if (= ?len 0) then (return -1))
+
+  (if (eq (lowcase (sub-string ?len ?len ?tok)) "g") then
+    (bind ?tok (sub-string 1 (- ?len 1) ?tok)))
+
+  (bind ?num (string-to-field ?tok))
+  (if (numberp ?num) then (return ?num))
+
+  (return -1)
+)
+
+(deffunction obtener-proteinas ($?info)
+  (bind ?n (length$ ?info))
+  (if (= ?n 0) then (return -1))
+
+  (bind ?i 1)
+  (while (<= ?i ?n) do
+    (bind ?dato (nth$ ?i ?info))
+    (if (contiene (sym-cat ?dato) "proteina") then
+      (bind ?p (extraer-numero-gramos ?dato))
+      (if (>= ?p 0) then (return ?p)))
+    (bind ?i (+ ?i 1)))
 
   (return -1)
 )
@@ -317,6 +353,20 @@
       (assert (propiedad_receta calorias calorica ?r))))
 )
 
+(defrule clasificar-proteinas
+  (receta (nombre ?r) (info-nutricional $?info))
+  (not (propiedad_receta proteinas ?nivel ?r))
+  =>
+  (bind ?p (obtener-proteinas ?info))
+  (if (or (< ?p 0) (<= ?p 10)) then
+    (assert (propiedad_receta proteinas baja ?r))
+  else
+    (if (<= ?p 15) then
+      (assert (propiedad_receta proteinas media ?r))
+    else
+      (assert (propiedad_receta proteinas alta ?r))))
+)
+
 (defrule clasificar-digestion-pesada
   (receta (nombre ?r))
   (or (propiedad_receta receta_pesada ?r)
@@ -363,15 +413,20 @@
 (deftemplate RecetaAdecuada (slot nombre) (slot motivo))
 (deftemplate RecetaOfertada (slot nombre))
 (deftemplate RecetaRechazada (slot nombre) (slot motivo))
+(deftemplate respuesta-sin-lactosa (slot valor))
+(deftemplate respuesta-sin-gluten (slot valor))
 
 (deffacts inicio-sistema-experto
   (arrancar)
   (pregunta dieta)
+  (pregunta sin_lactosa)
+  (pregunta sin_gluten)
   (pregunta tipo)
   (pregunta comensales)
   (pregunta tiempo)
+  (pregunta proteina)
+  (pregunta densidad_calorica)
   (pregunta ingrediente_obligatorio)
-  (pregunta ingrediente_prohibido)
 )
 
 (deffunction normalizar-respuesta (?x)
@@ -382,20 +437,37 @@
   (if (eq ?resp principal) then (return principal))
   (if (eq ?resp entrante) then (return entrante))
   (if (eq ?resp postre) then (return postre))
-  (if (eq ?resp desayuno_merienda) then (return desayuno-merienda))
-  (return cualquiera)
+  (return ns)
 )
 
 (deffunction dieta-valida (?r)
   (if (or (eq ?r normal) (eq ?r vegetariana) (eq ?r vegana)
-          (eq ?r sin_gluten) (eq ?r sin_lactosa) (eq ?r ns) (eq ?r fin))
+          (eq ?r ns) (eq ?r fin))
+    then TRUE
+    else FALSE)
+)
+
+(deffunction si-no-valido (?r)
+  (if (or (eq ?r si) (eq ?r no) (eq ?r ns) (eq ?r fin))
     then TRUE
     else FALSE)
 )
 
 (deffunction tipo-valido (?r)
   (if (or (eq ?r principal) (eq ?r entrante) (eq ?r postre)
-          (eq ?r desayuno_merienda) (eq ?r cualquiera) (eq ?r ns) (eq ?r fin))
+          (eq ?r ns) (eq ?r fin))
+    then TRUE
+    else FALSE)
+)
+
+(deffunction densidad-calorica-valida (?r)
+  (if (or (eq ?r alta) (eq ?r media) (eq ?r baja) (eq ?r ns) (eq ?r fin))
+    then TRUE
+    else FALSE)
+)
+
+(deffunction proteina-valida (?r)
+  (if (or (eq ?r alta) (eq ?r media) (eq ?r baja) (eq ?r ns) (eq ?r fin))
     then TRUE
     else FALSE)
 )
@@ -417,13 +489,27 @@
     (assert (RecetaCandidata (nombre ?r:nombre))))
 )
 
+(deffunction obtener-dieta-receta (?r)
+  (if (any-factp ((?f propiedad_receta))
+        (and (eq (nth$ 1 ?f:implied) es_vegana)
+             (eq (nth$ 2 ?f:implied) ?r)))
+    then (return "vegana"))
+
+  (if (any-factp ((?f propiedad_receta))
+        (and (eq (nth$ 1 ?f:implied) es_vegetariana)
+             (eq (nth$ 2 ?f:implied) ?r)))
+    then (return "vegetariana"))
+
+  (return "normal")
+)
+
 (defrule comprobar-recetas-cargadas
   (declare (salience 10000))
   ?f <- (arrancar)
   (not (receta (nombre ?)))
   =>
   (retract ?f)
-  (printout t crlf "No hay recetas cargadas. Ejecuta (cargar-bd-recetas), reset y run." crlf)
+  (printout t crlf "No hay recetas cargadas. Ejecuta (load del archivo con las recetas), reset y run." crlf)
   (assert (fin))
 )
 
@@ -442,12 +528,12 @@
 ;; ------------------------
 
 (defrule pregunta-dieta
-  (declare (salience 10))
+  (declare (salience 12))
   (fase preguntar)
   ?f <- (pregunta dieta)
   =>
   (retract ?f)
-  (printout t "Dieta (normal|vegetariana|vegana|sin_gluten|sin_lactosa|ns|fin): ")
+  (printout t "Dieta (normal|vegetariana|vegana|ns|fin): ")
   (assert (respuesta-dieta (normalizar-respuesta (read))))
 )
 
@@ -468,7 +554,7 @@
   ?f <- (pregunta tipo)
   =>
   (retract ?f)
-  (printout t "Tipo (principal|entrante|postre|desayuno_merienda|cualquiera|ns|fin): ")
+  (printout t "Tipo (principal|entrante|postre|ns|fin): ")
   (assert (respuesta-tipo (normalizar-respuesta (read))))
 )
 
@@ -481,6 +567,59 @@
   (retract ?f)
   (printout t "Valor no valido para tipo." crlf)
   (assert (pregunta tipo))
+)
+
+(defrule omitir-sin-lactosa-si-vegana
+  (declare (salience 950))
+  (fase preguntar)
+  (respuesta-dieta vegana)
+  ?q <- (pregunta sin_lactosa)
+  =>
+  (retract ?q)
+  (do-for-all-facts ((?f respuesta-sin-lactosa)) TRUE (retract ?f))
+  (assert (respuesta-sin-lactosa (valor si)))
+)
+
+(defrule pregunta-sin-lactosa
+  (declare (salience 11))
+  (fase preguntar)
+  ?f <- (pregunta sin_lactosa)
+  =>
+  (retract ?f)
+  (printout t "Quieres que sea sin lactosa? (si|no|ns|fin): ")
+  (assert (respuesta-sin-lactosa (valor (normalizar-respuesta (read)))))
+)
+
+(defrule validar-sin-lactosa
+  (declare (salience 1000))
+  (fase preguntar)
+  ?f <- (respuesta-sin-lactosa (valor ?r))
+  (test (not (si-no-valido ?r)))
+  =>
+  (retract ?f)
+  (printout t "Valor no valido para sin lactosa." crlf)
+  (assert (pregunta sin_lactosa))
+)
+
+(defrule pregunta-sin-gluten
+  (declare (salience 10))
+  (fase preguntar)
+  ?f <- (pregunta sin_gluten)
+  =>
+  (retract ?f)
+  (printout t "Quieres que sea sin gluten? (si|no|ns|fin): ")
+  (assert (respuesta-sin-gluten (valor (normalizar-respuesta (read)))))
+)
+
+(defrule validar-sin-gluten
+  (declare (salience 1000))
+  (fase preguntar)
+  ?f <- (respuesta-sin-gluten (valor ?r))
+  (test (not (si-no-valido ?r)))
+  =>
+  (retract ?f)
+  (printout t "Valor no valido para sin gluten." crlf)
+  (assert (pregunta sin_gluten))
 )
 
 (defrule pregunta-comensales
@@ -514,6 +653,27 @@
   (assert (respuesta-tiempo (normalizar-respuesta (read))))
 )
 
+(defrule pregunta-proteina
+  (declare (salience 6))
+  (fase preguntar)
+  ?f <- (pregunta proteina)
+  =>
+  (retract ?f)
+  (printout t "Nivel de proteina (alta|media|baja|ns|fin): ")
+  (assert (respuesta-proteina (normalizar-respuesta (read))))
+)
+
+(defrule validar-proteina
+  (declare (salience 1000))
+  (fase preguntar)
+  ?f <- (respuesta-proteina ?r)
+  (test (not (proteina-valida ?r)))
+  =>
+  (retract ?f)
+  (printout t "Valor no valido para proteina." crlf)
+  (assert (pregunta proteina))
+)
+
 (defrule validar-tiempo
   (declare (salience 1000))
   (fase preguntar)
@@ -526,7 +686,7 @@
 )
 
 (defrule pregunta-ingrediente-obligatorio
-  (declare (salience 6))
+  (declare (salience 4))
   (fase preguntar)
   ?f <- (pregunta ingrediente_obligatorio)
   =>
@@ -535,25 +695,40 @@
   (assert (respuesta-ingrediente-obligatorio (normalizar-respuesta (read))))
 )
 
-(defrule pregunta-ingrediente-prohibido
+(defrule pregunta-densidad-calorica
   (declare (salience 5))
   (fase preguntar)
-  ?f <- (pregunta ingrediente_prohibido)
+  ?f <- (pregunta densidad_calorica)
   =>
   (retract ?f)
-  (printout t "Ingrediente prohibido (texto|ns|fin): ")
-  (assert (respuesta-ingrediente-prohibido (normalizar-respuesta (read))))
+  (printout t "Densidad calorica (alta|media|baja|ns|fin): ")
+  (assert (respuesta-densidad-calorica (normalizar-respuesta (read))))
+)
+
+(defrule validar-densidad-calorica
+  (declare (salience 1000))
+  (fase preguntar)
+  ?f <- (respuesta-densidad-calorica ?r)
+  (test (not (densidad-calorica-valida ?r)))
+  =>
+  (retract ?f)
+  (printout t "Valor no valido para densidad calorica." crlf)
+  (assert (pregunta densidad_calorica))
 )
 
 (defrule finalizar-preguntas-por-fin
   (declare (salience 1100))
   ?p <- (fase preguntar)
   (or (respuesta-dieta fin)
+      (respuesta-sin-lactosa (valor fin))
+      (respuesta-sin-gluten (valor fin))
       (respuesta-tipo fin)
       (respuesta-comensales fin)
       (respuesta-tiempo fin)
+      (respuesta-proteina fin)
+      (respuesta-densidad-calorica fin)
       (respuesta-ingrediente-obligatorio fin)
-      (respuesta-ingrediente-prohibido fin))
+  )
   =>
   (retract ?p)
   (assert (fase elegir))
@@ -566,17 +741,21 @@
   (retract ?p)
   (assert (fase elegir))
 )
-
+;;Garantizo qe haya respuestas para todo , hago 
+;; que si no hay ningun fact que coincidad con lo indicaado , este se quede en ns
 (defrule defaults-respuestas
   (fase elegir)
   (not (defaults-listos))
   =>
   (if (not (any-factp ((?f respuesta-dieta)) TRUE)) then (assert (respuesta-dieta ns)))
+  (if (not (any-factp ((?f respuesta-sin-lactosa)) TRUE)) then (assert (respuesta-sin-lactosa (valor ns))))
+  (if (not (any-factp ((?f respuesta-sin-gluten)) TRUE)) then (assert (respuesta-sin-gluten (valor ns))))
   (if (not (any-factp ((?f respuesta-tipo)) TRUE)) then (assert (respuesta-tipo ns)))
   (if (not (any-factp ((?f respuesta-comensales)) TRUE)) then (assert (respuesta-comensales ns)))
   (if (not (any-factp ((?f respuesta-tiempo)) TRUE)) then (assert (respuesta-tiempo ns)))
+  (if (not (any-factp ((?f respuesta-proteina)) TRUE)) then (assert (respuesta-proteina ns)))
+  (if (not (any-factp ((?f respuesta-densidad-calorica)) TRUE)) then (assert (respuesta-densidad-calorica ns)))
   (if (not (any-factp ((?f respuesta-ingrediente-obligatorio)) TRUE)) then (assert (respuesta-ingrediente-obligatorio ns)))
-  (if (not (any-factp ((?f respuesta-ingrediente-prohibido)) TRUE)) then (assert (respuesta-ingrediente-prohibido ns)))
   (assert (defaults-listos))
 )
 
@@ -613,30 +792,90 @@
   (retract ?f)
 )
 
-(defrule filtrar-sin-gluten
-  (fase elegir)
-  (respuesta-dieta sin_gluten)
-  ?f <- (RecetaCandidata (nombre ?r))
-  (propiedad_receta contiene_gluten ?r)
-  =>
-  (retract ?f)
-)
-
 (defrule filtrar-sin-lactosa
   (fase elegir)
-  (respuesta-dieta sin_lactosa)
+  (respuesta-sin-lactosa (valor si))
   ?f <- (RecetaCandidata (nombre ?r))
   (propiedad_receta contiene_lactosa ?r)
   =>
   (retract ?f)
 )
 
+(defrule filtrar-sin-gluten
+  (fase elegir)
+  (respuesta-sin-gluten (valor si))
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta contiene_gluten ?r)
+  =>
+  (retract ?f)
+)
+
 (defrule filtrar-tipo
   (fase elegir)
-  (respuesta-tipo ?tp&~ns&~cualquiera)
+  (respuesta-tipo ?tp&~ns)
   ?f <- (RecetaCandidata (nombre ?r))
   (receta (nombre ?r) (tipo-plato ?real))
   (test (neq ?real (tipo-respuesta-a-simbolo ?tp)))
+  =>
+  (retract ?f)
+)
+
+(defrule filtrar-densidad-calorica-baja
+  (fase elegir)
+  (respuesta-densidad-calorica baja)
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta calorias ?c ?r)
+  (test (neq ?c ligera))
+  =>
+  (retract ?f)
+)
+
+(defrule filtrar-densidad-calorica-media
+  (fase elegir)
+  (respuesta-densidad-calorica media)
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta calorias ?c ?r)
+  (test (neq ?c normal))
+  =>
+  (retract ?f)
+)
+
+(defrule filtrar-densidad-calorica-alta
+  (fase elegir)
+  (respuesta-densidad-calorica alta)
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta calorias ?c ?r)
+  (test (neq ?c calorica))
+  =>
+  (retract ?f)
+)
+
+(defrule filtrar-proteina-baja
+  (fase elegir)
+  (respuesta-proteina baja)
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta proteinas ?p ?r)
+  (test (neq ?p baja))
+  =>
+  (retract ?f)
+)
+
+(defrule filtrar-proteina-media
+  (fase elegir)
+  (respuesta-proteina media)
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta proteinas ?p ?r)
+  (test (neq ?p media))
+  =>
+  (retract ?f)
+)
+
+(defrule filtrar-proteina-alta
+  (fase elegir)
+  (respuesta-proteina alta)
+  ?f <- (RecetaCandidata (nombre ?r))
+  (propiedad_receta proteinas ?p ?r)
+  (test (neq ?p alta))
   =>
   (retract ?f)
 )
@@ -673,22 +912,17 @@
   (retract ?f)
 )
 
-(defrule filtrar-ingrediente-prohibido
-  (fase elegir)
-  (respuesta-ingrediente-prohibido ?ing&~ns)
-  ?f <- (RecetaCandidata (nombre ?r))
-  (ingrediente (nombre-receta ?r) (nombre-ingrediente ?a))
-  (test (contiene ?a (sym-cat ?ing)))
-  =>
-  (retract ?f)
-)
-
 (defrule registrar-adecuadas
   (fase elegir)
   (RecetaCandidata (nombre ?r))
+  (receta (nombre ?r) (tipo-plato ?tp))
+  (propiedad_receta calorias ?cal ?r)
   (not (RecetaAdecuada (nombre ?r)))
   =>
-  (assert (RecetaAdecuada (nombre ?r) (motivo "Cumple tus restricciones.")))
+  (bind ?dieta (obtener-dieta-receta ?r))
+  (bind ?motivo (str-cat "Se ha elegido esta receta ya que es un plato de tipo " ?tp
+                        " y " ?cal " en calorias que sigue una dieta " ?dieta "."))
+  (assert (RecetaAdecuada (nombre ?r) (motivo ?motivo)))
 )
 
 (defrule pasar-a-resultados
@@ -722,7 +956,7 @@
   (printout t "Receta recomendada: " ?r crlf)
   (printout t "Tipo: " ?tp ", dificultad: " ?d ", comensales: " ?c ", tiempo: " ?t " min" crlf)
   (printout t "Motivo: " ?mot crlf)
-  (printout t "Respuesta (a|rechazar|dieta|tipo|comensales|tiempo|ingrediente): ")
+  (printout t "Respuesta (a|rechazar|dieta|tipo|comensales|tiempo|proteina|densidad): ")
   (assert (respuesta-final (normalizar-respuesta (read))))
 )
 
@@ -750,18 +984,18 @@
 
 (defrule reajustar-criterio
   ?o <- (RecetaOfertada (nombre ?r))
-  ?a <- (respuesta-final ?x&:(or (eq ?x dieta) (eq ?x tipo) (eq ?x comensales) (eq ?x tiempo) (eq ?x ingrediente)))
+  ?a <- (respuesta-final ?x&:(or (eq ?x dieta) (eq ?x tipo) (eq ?x comensales) (eq ?x tiempo) (eq ?x proteina) (eq ?x densidad)))
   =>
   (retract ?o ?a)
   (assert (RecetaRechazada (nombre ?r) (motivo ?x)))
 
   (if (eq ?x dieta) then
-    (printout t "Nueva dieta (normal|vegetariana|vegana|sin_gluten|sin_lactosa|ns): ")
+    (printout t "Nueva dieta (normal|vegetariana|vegana|ns): ")
     (do-for-all-facts ((?f respuesta-dieta)) TRUE (retract ?f))
     (assert (respuesta-dieta (normalizar-respuesta (read)))))
 
   (if (eq ?x tipo) then
-    (printout t "Nuevo tipo (principal|entrante|postre|desayuno_merienda|cualquiera|ns): ")
+    (printout t "Nuevo tipo (principal|entrante|postre|ns): ")
     (do-for-all-facts ((?f respuesta-tipo)) TRUE (retract ?f))
     (assert (respuesta-tipo (normalizar-respuesta (read)))))
 
@@ -775,10 +1009,15 @@
     (do-for-all-facts ((?f respuesta-tiempo)) TRUE (retract ?f))
     (assert (respuesta-tiempo (normalizar-respuesta (read)))))
 
-  (if (eq ?x ingrediente) then
-    (printout t "Nuevo ingrediente prohibido (texto|ns): ")
-    (do-for-all-facts ((?f respuesta-ingrediente-prohibido)) TRUE (retract ?f))
-    (assert (respuesta-ingrediente-prohibido (normalizar-respuesta (read)))))
+  (if (eq ?x proteina) then
+    (printout t "Nuevo nivel de proteina (alta|media|baja|ns): ")
+    (do-for-all-facts ((?f respuesta-proteina)) TRUE (retract ?f))
+    (assert (respuesta-proteina (normalizar-respuesta (read)))))
+
+  (if (eq ?x densidad) then
+    (printout t "Nueva densidad calorica (alta|media|baja|ns): ")
+    (do-for-all-facts ((?f respuesta-densidad-calorica)) TRUE (retract ?f))
+    (assert (respuesta-densidad-calorica (normalizar-respuesta (read)))))
 
   (do-for-all-facts ((?f defaults-listos)) TRUE (retract ?f))
   (do-for-all-facts ((?f evaluacion-iniciada)) TRUE (retract ?f))

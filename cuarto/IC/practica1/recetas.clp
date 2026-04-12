@@ -104,6 +104,36 @@
   (return -1)
 )
 
+(deffunction obtener-numero-previo (?str ?sub)
+  (bind ?pos (str-index ?sub ?str))
+  (if (eq ?pos FALSE) then (return FALSE))
+
+  (bind ?pos-actual (- ?pos 1))
+  (bind ?resultado "")
+
+  (while (> ?pos-actual 0)
+    (bind ?char (sub-string ?pos-actual ?pos-actual ?str))
+
+    (if (or (and (>= (str-compare ?char "0") 0)
+                 (<= (str-compare ?char "9") 0))
+            (eq ?char "."))
+      then
+      (bind ?resultado (format nil "%s%s" ?char ?resultado))
+      (bind ?pos-actual (- ?pos-actual 1))
+    else
+      (if (eq ?char " ") then
+        (bind ?pos-actual (- ?pos-actual 1))
+      else
+        (break))
+    )
+  )
+
+  (if (neq ?resultado "") then
+    (return (string-to-field ?resultado))
+  else
+    (return FALSE))
+)
+
 
 (defrule con_pollo
 (ingrediente (nombre-receta ?r)(nombre-ingrediente ?a))
@@ -320,6 +350,46 @@
       (assert (propiedad_receta calorias calorica ?r))))
 )
 
+(defrule deducir-gramos-proteinas
+  (receta (nombre ?r) (info-nutricional $? ?dato $?))
+  (test (str-index "g proteinas" (lowcase (sym-cat ?dato))))
+  (not (propiedad_receta gramos_proteinas ?x ?r))
+  =>
+  (bind ?g (obtener-numero-previo (lowcase (sym-cat ?dato)) "g proteinas"))
+  (if (numberp ?g) then
+    (assert (propiedad_receta gramos_proteinas ?g ?r)))
+)
+
+(defrule deducir-gramos-grasas
+  (receta (nombre ?r) (info-nutricional $? ?dato $?))
+  (test (str-index "g grasas" (lowcase (sym-cat ?dato))))
+  (not (propiedad_receta gramos_grasas ?x ?r))
+  =>
+  (bind ?g (obtener-numero-previo (lowcase (sym-cat ?dato)) "g grasas"))
+  (if (numberp ?g) then
+    (assert (propiedad_receta gramos_grasas ?g ?r)))
+)
+
+(defrule deducir-gramos-carbohidratos
+  (receta (nombre ?r) (info-nutricional $? ?dato $?))
+  (test (str-index "g carbohidratos" (lowcase (sym-cat ?dato))))
+  (not (propiedad_receta gramos_carbohidratos ?x ?r))
+  =>
+  (bind ?g (obtener-numero-previo (lowcase (sym-cat ?dato)) "g carbohidratos"))
+  (if (numberp ?g) then
+    (assert (propiedad_receta gramos_carbohidratos ?g ?r)))
+)
+
+(defrule deducir-gramos-fibra
+  (receta (nombre ?r) (info-nutricional $? ?dato $?))
+  (test (str-index "g fibra" (lowcase (sym-cat ?dato))))
+  (not (propiedad_receta gramos_fibra ?x ?r))
+  =>
+  (bind ?g (obtener-numero-previo (lowcase (sym-cat ?dato)) "g fibra"))
+  (if (numberp ?g) then
+    (assert (propiedad_receta gramos_fibra ?g ?r)))
+)
+
 (defrule clasificar-digestion-pesada
   (receta (nombre ?r))
   (or (propiedad_receta receta_pesada ?r)
@@ -357,6 +427,10 @@
 ;       (propiedad_receta es_sin_gluten ?r)
 ;       (propiedad_receta es_picante ?r)
 ;       (propiedad_receta es_sin_lactosa ?r)
+;       (propiedad_receta gramos_proteinas ?g ?r)
+;       (propiedad_receta gramos_grasas ?g ?r)
+;       (propiedad_receta gramos_carbohidratos ?g ?r)
+;       (propiedad_receta gramos_fibra ?g ?r)
 
 
 (defrule imprimir-propiedades-de-cada-receta
