@@ -599,7 +599,7 @@
   (fase elegir)
   (respuesta-dieta vegana)
   ?f <- (RecetaCandidata (nombre ?r))
-  (not (propiedad_receta es_vegana ?r))
+  (propiedad_receta no_vegana ?r)
   =>
   (retract ?f)
 )
@@ -608,7 +608,7 @@
   (fase elegir)
   (respuesta-dieta vegetariana)
   ?f <- (RecetaCandidata (nombre ?r))
-  (not (propiedad_receta es_vegetariana ?r))
+  (propiedad_receta no_vegetariana ?r)
   =>
   (retract ?f)
 )
@@ -617,7 +617,7 @@
   (fase elegir)
   (respuesta-dieta sin_gluten)
   ?f <- (RecetaCandidata (nombre ?r))
-  (not (propiedad_receta es_sin_gluten ?r))
+  (propiedad_receta contiene_gluten ?r)
   =>
   (retract ?f)
 )
@@ -626,7 +626,7 @@
   (fase elegir)
   (respuesta-dieta sin_lactosa)
   ?f <- (RecetaCandidata (nombre ?r))
-  (not (propiedad_receta es_sin_lactosa ?r))
+  (propiedad_receta contiene_lactosa ?r)
   =>
   (retract ?f)
 )
