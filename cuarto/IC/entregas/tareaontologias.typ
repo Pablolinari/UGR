@@ -39,15 +39,18 @@ Toda presentación realizada en el congreso debe tener un autor que figure en la
 === 1. Enunciado
 Crear un axioma para representar: *"Todas las presentaciones tienen que estar justificadas por las inscripciones, de acuerdo al siguiente criterio: cada inscripción justifica solo una de las presentaciones de las que el inscrito es autor"*.
 
-=== Axioma
-Para crear el axioma debemos tener en cuenta que tendrá una forma de:
-#set text(lang: "es")
-
-=== Axioma de Justificación de Presentaciones
 
 
 
 
+
+
+=== 2. Descomposición de los componentes
+
+- *#strong("esJustificadaPor")*: Relación entre una #emph[Presentación] y un #emph[Inscrito]. Indica que la presentación está respaldada por una inscripción concreta.
+- *#strong("Inscrito")*: Clase de las personas registradas en el congreso. Son quienes pueden justificar presentaciones.
+- *#strong("P-autor")*: Relación entre una #emph[Presentación] y su #emph[Autor]. Sirve para vincular cada presentación con quien la firma.
+- *#strong("Presentacion")*: Clase de las contribuciones del congreso (artículos, conferencias invitadas y pósteres) que deben estar justificadas.
 
 
 $ "Presentacion" subset.eq exists "esJustificadaPor" . ("Inscrito" inter exists "P-autor"^-1 . "Presentacion") $
