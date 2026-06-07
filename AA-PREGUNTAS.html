@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test AA - Convocatoria ordinaria</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #fff;
+            color: #222;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitulo {
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        .pregunta {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .enunciado {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .opcion {
+            display: block;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+
+        .opcion:hover {
+            background-color: #f2f2f2;
+        }
+
+        .correcta-inicial {
+            background-color: #e0e0e0;
+        }
+
+        .correcta {
+            background-color: rgba(19, 252, 89, 0.65);
+        }
+
+        .incorrecta {
+            background-color: #fa674dbb;
+        }
+
+        .letra {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin: 0 8px 20px 0;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #f7f7f7;
+        }
+    </style>
+    <script>
+        function comprobar(e) {
+            let valor = e.dataset.valor;
+            let correctas = e.dataset.correctas.split(",");
+            if (e.classList.contains("correcta") || e.classList.contains("incorrecta")) return;
+            if (correctas.includes(valor)) e.classList.add("correcta");
+            else e.classList.add("incorrecta");
+        }
+        function mezclar(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+        function mezclarTodo() {
+            const contenedor = document.getElementById("contenedor-preguntas");
+            const preguntas = Array.from(contenedor.children);
+            mezclar(preguntas);
+            preguntas.forEach(p => contenedor.appendChild(p));
+            preguntas.forEach(pregunta => {
+                const opciones = Array.from(pregunta.querySelectorAll(".opcion"));
+                mezclar(opciones);
+                opciones.forEach(op => pregunta.appendChild(op));
+            });
+        }
+        function marcarCorrectasIniciales() {
+            document.querySelectorAll(".opcion").forEach(opcion => {
+                const valor = opcion.dataset.valor;
+                const correctas = opcion.dataset.correctas.split(",");
+                if (correctas.includes(valor)) opcion.classList.add("correcta-inicial");
+            });
+        }
+        function ocultarCorrectasIniciales() {
+            document.querySelectorAll(".opcion").forEach(opcion => opcion.classList.remove("correcta-inicial"));
+        }
+        function reiniciar() {
+            document.querySelectorAll(".opcion").forEach(opcion => {
+                opcion.classList.remove("correcta", "incorrecta");
+            });
+        }
+        window.onload = function () { marcarCorrectasIniciales(); };
+    </script>
+</head>
+
+<body>
+    <h1>Test AA - Convocatoria ordinaria</h1>
+    <div class="subtitulo">Haz clic en una opción: verde = correcta, rojo = incorrecta. Las correctas aparecen marcadas
+        en gris al abrir.</div>
+    <button onclick="mezclarTodo()">Mezclar preguntas y opciones</button>
+    <button onclick="marcarCorrectasIniciales()">Mostrar correctas en gris</button>
+    <button onclick="ocultarCorrectasIniciales()">Ocultar correctas en gris</button>
+    <button onclick="reiniciar()">Reiniciar respuestas</button>
+    <div id="contenedor-preguntas">
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 1. Si utilizamos una Máquina de Soporte Vectorial (SVM) hemos de tener en
+                cuenta los siguientes aspectos de diseño. ¿Cuál es menos necesario o incorrecto?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Hemos de considerar siempre la correlación entre clases para considerar un
+                modelo lineal o un modelo con características polinómicas.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>Añadir características polinómicas es sencillo de implementar y puede
+                funcionar muy bien con todo tipo de algoritmos de aprendizaje automático. Hay que analizar si son
+                necesarias.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Aunque los clasificadores SVM lineales son eficientes y a menudo funcionan
+                sorprendentemente bien, muchos conjuntos de datos ni siquiera están cerca de ser linealmente separables.
+                Hay que analizar si son apropiados.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 2. Los algoritmos de aprendizaje suelen optimizar una función de pérdida
+                diferente durante el entrenamiento a la medida de rendimiento utilizada para evaluar el modelo final.
+                ¿Cuál de las siguientes afirmaciones es incorrecta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Una buena función de pérdida para entrenamiento debe ser fácil de optimizar y
+                estar correlacionada con la métrica de evaluación.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>La función de pérdida es siempre necesaria e independiente de la función de
+                evaluación del modelo.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Las características de diferenciabilidad y de optimización matemática de los
+                modelos requieren una función de pérdida, ya que la función de evaluación puede ser difícilmente usable
+                para optimizar los parámetros del modelo.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 3. ¿Por qué utilizar el aprendizaje automático?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Porque tenemos un problema complejo para el cual el uso de un enfoque
+                tradicional no ofrece una buena solución en un tiempo razonable.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>Porque tenemos datos asociados a un problema.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Porque un enfoque tradicional proporciona siempre peores resultados.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 4. Sobre detección de anomalías. ¿Qué afirmación no es correcta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Una colección de instancias de datos relacionadas puede ser anómala. Las
+                instancias individuales dentro de una anomalía colectiva son anómalas por sí mismas.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>El enfoque general para la detección de anomalías es analizar la vecindad
+                para determinar si el registro de datos es anómalo o no.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Los puntos normales tienen vecinos cercanos, mientras que las anomalías se
+                sitúan lejos de otros puntos.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 5. ¿Qué es el aprendizaje automático?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Que un sistema informático haga predicciones basadas en datos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>El aprendizaje automático es la ciencia (y el arte) de programar ordenadores
+                para que puedan aprender de los datos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Programar algoritmos de aprendizaje.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 6. ¿Cuál de las siguientes afirmaciones describe mejor a una Red Neuronal
+                Convolucional (CNN)?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Una red neuronal que utiliza capas convolucionales para procesar información
+                en formato de matriz, como imágenes.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>Una red neuronal que utiliza capas densamente conectadas para procesar datos
+                estructurados.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Una red neuronal que utiliza capas recurrentes para capturar dependencias
+                temporales en secuencias de datos.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 7. ¿Qué problemas soluciona la inicialización de Glorot y la inicialización
+                de He en el entrenamiento de redes neuronales profundas?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Ayudan a mitigar el problema de los gradientes inestables, asegurando que la
+                varianza de las salidas de cada capa sea igual a la varianza de sus entradas, lo que permite que los
+                gradientes fluyan correctamente sin desvanecerse o explotar.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>Reducen significativamente el riesgo de sobreajuste del modelo, permitiendo
+                que la red generalice mejor en datos no vistos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Permiten entrenar redes con un número reducido de datos de entrenamiento al
+                mejorar la eficiencia del proceso de entrenamiento.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 8. ¿Qué característica distingue a Adam de otros algoritmos de optimización
+                como SGD, AdaGrad y RMSProp?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Adam es exclusivamente adecuado para redes neuronales recurrentes debido a su
+                capacidad para manejar gradientes explosivos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>Adam combina la idea de optimización de momentos con RMSProp, manteniendo una
+                media exponencialmente decreciente de gradientes pasados y gradientes al cuadrado.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Adam utiliza la técnica de descenso de gradiente estocástico (SGD) con tasas
+                de aprendizaje adaptativas para cada parámetro del modelo.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 9. Cuando tengo modelos con múltiples parámetros es normal entrenar cada
+                modelo con diferentes parámetros y comparar su rendimiento en un conjunto de pruebas. ¿Cómo es mejor
+                abordar la selección del mejor modelo?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Se recomienda aplicar un proceso de validación sobre el conjunto de
+                entrenamiento, ya sea una validación hold-out o, preferiblemente, validación cruzada k-fold
+                (k-FCV).</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>El teorema de “No Free Lunch” nos dice que si no se hace absolutamente
+                ninguna suposición sobre los datos, no hay ninguna razón para preferir un modelo sobre otro.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Se aplican técnicas de regularización para ajustar los parámetros del modelo
+                que minimicen la generalización.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 10. Un problema con información parcial es aquel en el que la información de
+                entrenamiento tiene instancias sin etiquetar o no hay instancias de alguna clase. ¿Cuál de los
+                siguientes problemas no pertenece a este tipo de problema de aprendizaje?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Aprendizaje semisupervisado.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Aprendizaje Zero-Shot.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>Aprendizaje multi-instancia.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 11. La medida de evaluación F1 es la media armónica de precisión y recall.
+                ¿Cuándo tiene más interés utilizarla?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>En todos los problemas de evaluación de clasificadores.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Cuando la curva ROC no nos es útil para valorar el comportamiento del
+                algoritmo atendiendo a TP y FP.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>En los problemas desbalanceados para evaluar con especial atención la clase
+                minoritaria.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 12. ¿Cuál es uno de los principales beneficios del uso de la técnica de
+                dropout en redes neuronales profundas?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Aumenta la precisión del modelo reduciendo el sesgo en la fase de
+                entrenamiento.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>Evita el sobreajuste al promover la robustez y la generalización al forzar a
+                las neuronas a aprender de manera más independiente.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Mejora la velocidad de entrenamiento mediante la reducción del número de
+                iteraciones necesarias.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 13. ¿Por qué es importante el preprocesamiento de datos?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>El preprocesamiento de datos puede generar un conjunto de datos más pequeño
+                que el original, lo cual puede mejorar la eficiencia de procesos de aprendizaje y minería de datos
+                útiles para el problema a tratar.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>Los datos siempre son impuros y conducen a la extracción de patrones/reglas
+                poco útiles.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>El preprocesamiento siempre genera “datos de mayor calidad” que conducen a
+                “patrones/reglas de calidad”.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 14. ¿Cuál de los siguientes retos clásicos del aprendizaje automático se
+                encuentra mejor resuelto en la literatura actual?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>La baja calidad de los datos de entrenamiento.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>La presencia de datos de entrenamiento no representativos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>La presencia de características irrelevantes en los datos de
+                entrenamiento.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 15. ¿Qué son las Redes Neuronales Artificiales?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Son modelos computacionales que replican la estructura del cerebro humano y
+                no tienen aplicaciones prácticas en la actualidad.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>Son modelos computacionales inspirados en las neuronas biológicas, que forman
+                el núcleo del aprendizaje profundo y son ideales para tareas complejas como la clasificación de
+                imágenes, el reconocimiento de voz y la recomendación de contenidos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Son técnicas de aprendizaje automático que se basan en algoritmos
+                tradicionales y han sido superadas por otros métodos más eficientes.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 16. En el contexto de la Inteligencia Artificial fiable. ¿Cuál de las
+                siguientes definiciones es incorrecta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>La IA fiable tiene tres pilares: Lícita (cumple la ley), Ética (principios
+                éticos) y Robusta (segura en su uso, control de fallos, …).</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>La IA fiable está regulada por los siguientes seis requisitos: validable,
+                sostenible, robusta, explicable, supervisión humana y rendición de cuenta.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Aunque los problemas de sesgo y discriminación siempre han estado presentes
+                en la sociedad, la preocupación es que la IA pueda perpetuar estos problemas y acrecentar su impacto.
+                Este problema lo puede abordar la IA fiable.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 17. ¿Qué es un problema de clasificación multietiqueta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Un problema que tiene una bolsa de instancias asociada a cada ejemplo.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>Un problema que puede incluir múltiples clases para la misma
+                instancia.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Un problema de clasificación supervisada que puede tener una probabilidad de
+                clasificación similar para diferentes clases.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 18. El descenso de gradiente es un algoritmo de optimización genérico capaz
+                de encontrar soluciones óptimas a una amplia gama de problemas. Es muy importante el ratio o tasa de
+                aprendizaje. ¿Cuál de las siguientes respuestas es la menos adecuada o incorrecta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Si la tasa de aprendizaje es muy alta puede hacer que el algoritmo diverja,
+                con valores cada vez mayores, sin encontrar una buena solución.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Si la tasa de aprendizaje es demasiado pequeña, el algoritmo tendrá que pasar
+                por muchas iteraciones para converger, lo que llevará mucho tiempo, y hay que plantearse este problema
+                por el coste de tiempo del aprendizaje.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>Cualquier tasa de aprendizaje es válida, siempre que las características
+                mantengan su escala original.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 19. ¿Cuándo se recomienda utilizar el aprendizaje basado en instancias
+                frente al aprendizaje basado en modelos?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Siempre que necesitemos interpretar el resultado, dado que las instancias
+                siempre nos explican mejor por qué se tomó la decisión.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>Cuando el enfoque basado en instancias demuestra un buen rendimiento en el
+                problema específico y los expertos lo consideran adecuado para ese caso.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Cuando tenemos pocos datos, dado que es más eficiente.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 20. ¿Qué caracteriza a un perceptrón en una red neuronal artificial?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Utiliza la técnica de retropropagación para ajustar los pesos y reducir el
+                error en la predicción de las salidas.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>Consiste en una o más TLU organizadas en una sola capa, donde cada TLU está
+                conectada a cada entrada, permitiendo clasificar instancias en clases binarias diferentes.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>Está compuesto por múltiples capas ocultas que permiten resolver problemas no
+                lineales.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 21. El aprendizaje por refuerzo es una técnica de aprendizaje automático que
+                imita el proceso de aprendizaje por ensayo y error que los humanos utilizan para lograr sus objetivos.
+                ¿Cuál de las siguientes afirmaciones no es correcta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>El aprendizaje por refuerzo puede abordar el desarrollo de IA para juegos,
+                vía ensayo y error.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>El aprendizaje por refuerzo permite incluir el ensayo y error de los humanos
+                en problemas de clasificación de imágenes difíciles.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>El aprendizaje por refuerzo acelera el aprendizaje de los robots.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 22. ¿En qué tipo de tareas se puede utilizar un perceptrón multicapa (MLP)?
+            </div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Únicamente en la detección de patrones no lineales.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Exclusivamente en problemas de clasificación binaria.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>En problemas de clasificación binaria, regresión y clasificación
+                multiclase.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 23. Sobre algoritmos de clustering, ¿qué afirmación no es correcta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="b"><span
+                    class="letra">a.</span>Si no hay una región de densidad suficientemente baja alrededor de algunos
+                conglomerados, DBSCAN puede tener dificultades para capturar todos los conglomerados
+                correctamente.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="b"><span
+                    class="letra">b.</span>El algoritmo BIRCH (Balanced Iterative Reducing and Clustering using
+                Hierarchies) se diseñó específicamente para conjuntos de datos pequeños para conseguir una separación
+                entre clústeres de alta calidad.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="b"><span
+                    class="letra">c.</span>El clustering aglomerativo se construye vía una jerarquía de clústeres de
+                abajo a arriba.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 24. Sobre aprendizaje no supervisado. ¿Qué afirmación no es correcta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Puede aprender qué aspecto tienen los datos &quot;normales&quot; y, a partir
+                de ahí, detectar los casos anómalos.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Puede permitir agrupar instancias similares en clústeres.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>Es esencial para la visualización de datos agrupados en clústeres similares
+                aplicando técnicas de PCA o similares.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 25. Mientras que los clasificadores binarios distinguen entre dos clases,
+                los clasificadores multiclase pueden distinguir entre más de dos clases. ¿Cuál de los siguientes
+                enfoques no sería adecuado para resolver un problema multiclase?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Un algoritmo de descomposición OVO u OVA.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Un algoritmo capaz de manejar múltiples clases de forma nativa y que permita
+                la separación de las clases.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>Un algoritmo de descomposición de subproblemas o clasificación por
+                voto.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 26. D. Pyle, 1999, pp. 90: “El propósito fundamental de la preparación de
+                los datos es la manipulación y transformación de los datos sin refinar para que la información contenida
+                en el conjunto de datos pueda ser descubierta o estar accesible de forma más fácil”. ¿Cuál de las
+                siguientes afirmaciones es incorrecta?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>La selección de características permite refinar los datos detectando
+                variables irrelevantes o inconsistentes.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Es recomendable analizar el ruido entre clases y limpiarlo cuando sea
+                posible.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>Siempre hay que refinar los datos antes de utilizar algoritmos de
+                aprendizaje.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 27. Dada una audiencia determinada, una IA explicable es aquella que
+                proporciona los detalles oportunos para que su funcionamiento sea claro o fácil de comprender para tal
+                audiencia. ¿Cuál de las siguientes aproximaciones no es IA explicable?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Determinar las variables más relevantes del problema.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Conocer la región más importante de una imagen para la decisión
+                predictiva.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>Un multiclasificador de árboles de decisión.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 28. Si deseamos utilizar árboles de decisión para resolver un problema, debo
+                tener en cuenta los siguientes aspectos. ¿Cuál de ellos no es correcto?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="a"><span
+                    class="letra">a.</span>Que son los algoritmos que mejor rendimiento han demostrado en todo tipo de
+                tareas.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="a"><span
+                    class="letra">b.</span>Que tienen un buen comportamiento en problemas con variables que aportan
+                conocimiento sobre las clases y permiten aplicar el criterio greedy de selección de variables
+                recursivamente.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="a"><span
+                    class="letra">c.</span>Que su funcionamiento es muy bueno en algunas tareas, además de aportar
+                cierto grado de interpretabilidad, lo cual puede ser crucial en algunos contextos.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 29. Un modelo lineal realiza una predicción simplemente calculando una suma
+                ponderada de las características de entrada. ¿Por qué necesitamos el término de sesgo θ₀?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Es un parámetro requerido por la función de pérdida a optimizar.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Es un estimador de sesgo que se utiliza cuando hay pocos datos para ajustar
+                mejor el comportamiento del modelo.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>El sesgo permite desplazar la función de predicción para que no pase
+                forzosamente por el origen.</span>
+        </div>
+
+        <div class="pregunta">
+            <div class="enunciado">Pregunta 30. ¿Cuál es la función de activación más recomendada para las capas ocultas
+                de redes neuronales profundas en tareas sencillas?</div>
+            <span class="opcion" onclick="comprobar(this)" data-valor="a" data-correctas="c"><span
+                    class="letra">a.</span>Swish.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="b" data-correctas="c"><span
+                    class="letra">b.</span>Mish.</span>
+            <span class="opcion" onclick="comprobar(this)" data-valor="c" data-correctas="c"><span
+                    class="letra">c.</span>ReLU.</span>
+        </div>
+
+    </div>
+</body>
+
+</html>
