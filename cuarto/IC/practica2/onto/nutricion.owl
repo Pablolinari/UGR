@@ -1,0 +1,564 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY nut  "http://www.semanticweb.org/ic/nutricion#" >
+]>
+
+<rdf:RDF xmlns="http://www.semanticweb.org/ic/nutricion#"
+     xml:base="http://www.semanticweb.org/ic/nutricion"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:nut="http://www.semanticweb.org/ic/nutricion#">
+
+    <owl:Ontology rdf:about="http://www.semanticweb.org/ic/nutricion">
+        <rdfs:comment xml:lang="es">Ontologia de un centro de nutricion web que recomienda
+recetas en funcion del perfil del usuario (objetivos, dieta y alergias).
+Practica 2 de Ingenieria del Conocimiento.</rdfs:comment>
+        <rdfs:label xml:lang="es">Ontologia Centro de Nutricion</rdfs:label>
+    </owl:Ontology>
+
+
+    <!-- =========================================================== -->
+    <!--  TIPOS DE DATOS PERSONALIZADOS                              -->
+    <!-- =========================================================== -->
+
+    <!-- Edad: entero entre 0 y 120 -->
+    <rdfs:Datatype rdf:about="&nut;Edad">
+        <rdfs:label xml:lang="es">Edad</rdfs:label>
+        <owl:equivalentClass>
+            <rdfs:Datatype>
+                <owl:onDatatype rdf:resource="&xsd;integer"/>
+                <owl:withRestrictions rdf:parseType="Collection">
+                    <rdf:Description>
+                        <xsd:minInclusive rdf:datatype="&xsd;integer">0</xsd:minInclusive>
+                    </rdf:Description>
+                    <rdf:Description>
+                        <xsd:maxInclusive rdf:datatype="&xsd;integer">120</xsd:maxInclusive>
+                    </rdf:Description>
+                </owl:withRestrictions>
+            </rdfs:Datatype>
+        </owl:equivalentClass>
+    </rdfs:Datatype>
+
+    <!-- Calorias: entero no negativo -->
+    <rdfs:Datatype rdf:about="&nut;Calorias">
+        <rdfs:label xml:lang="es">Calorias</rdfs:label>
+        <owl:equivalentClass>
+            <rdfs:Datatype>
+                <owl:onDatatype rdf:resource="&xsd;integer"/>
+                <owl:withRestrictions rdf:parseType="Collection">
+                    <rdf:Description>
+                        <xsd:minInclusive rdf:datatype="&xsd;integer">0</xsd:minInclusive>
+                    </rdf:Description>
+                </owl:withRestrictions>
+            </rdfs:Datatype>
+        </owl:equivalentClass>
+    </rdfs:Datatype>
+
+
+    <!-- =========================================================== -->
+    <!--  PROPIEDADES DE TIPO OBJETO                                 -->
+    <!-- =========================================================== -->
+
+    <owl:ObjectProperty rdf:about="&nut;tieneObjetivo">
+        <rdfs:label xml:lang="es">tiene objetivo</rdfs:label>
+        <rdfs:comment xml:lang="es">Relaciona un usuario con el objetivo de salud que persigue.</rdfs:comment>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Usuario"/>
+        <rdfs:range rdf:resource="&nut;ObjetivoSalud"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="&nut;sigueDieta">
+        <rdfs:label xml:lang="es">sigue dieta</rdfs:label>
+        <rdfs:comment xml:lang="es">Tipo de dieta que sigue el usuario.</rdfs:comment>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Usuario"/>
+        <rdfs:range rdf:resource="&nut;TipoDieta"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="&nut;tieneAlergia">
+        <rdfs:label xml:lang="es">tiene alergia</rdfs:label>
+        <rdfs:comment xml:lang="es">Alergias o intolerancias del usuario.</rdfs:comment>
+        <rdfs:domain rdf:resource="&nut;Usuario"/>
+        <rdfs:range rdf:resource="&nut;Alergeno"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="&nut;contieneIngrediente">
+        <rdfs:label xml:lang="es">contiene ingrediente</rdfs:label>
+        <rdfs:comment xml:lang="es">Ingredientes que forman parte de una receta.</rdfs:comment>
+        <rdfs:domain rdf:resource="&nut;Receta"/>
+        <rdfs:range rdf:resource="&nut;Ingrediente"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="&nut;aptaParaDieta">
+        <rdfs:label xml:lang="es">apta para dieta</rdfs:label>
+        <rdfs:comment xml:lang="es">Tipos de dieta para los que la receta es adecuada.</rdfs:comment>
+        <rdfs:domain rdf:resource="&nut;Receta"/>
+        <rdfs:range rdf:resource="&nut;TipoDieta"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="&nut;recomendadaPara">
+        <rdfs:label xml:lang="es">recomendada para</rdfs:label>
+        <rdfs:comment xml:lang="es">Objetivo de salud para el que la receta esta recomendada.</rdfs:comment>
+        <rdfs:domain rdf:resource="&nut;Receta"/>
+        <rdfs:range rdf:resource="&nut;ObjetivoSalud"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="&nut;perteneceAGrupo">
+        <rdfs:label xml:lang="es">pertenece a grupo</rdfs:label>
+        <rdfs:comment xml:lang="es">Grupo alimenticio al que pertenece un ingrediente.</rdfs:comment>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Ingrediente"/>
+        <rdfs:range rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:ObjectProperty>
+
+
+    <!-- =========================================================== -->
+    <!--  PROPIEDADES DE TIPO DATO (SLOTS)                           -->
+    <!-- =========================================================== -->
+
+    <!-- nombre: comun a varias clases, se declara a alto nivel (dominio amplio) -->
+    <owl:DatatypeProperty rdf:about="&nut;nombre">
+        <rdfs:label xml:lang="es">nombre</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;edad">
+        <rdfs:label xml:lang="es">edad</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Usuario"/>
+        <rdfs:range rdf:resource="&nut;Edad"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;pesoKg">
+        <rdfs:label xml:lang="es">peso (kg)</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Usuario"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;alturaCm">
+        <rdfs:label xml:lang="es">altura (cm)</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Usuario"/>
+        <rdfs:range rdf:resource="&xsd;float"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;calorias">
+        <rdfs:label xml:lang="es">calorias</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Receta"/>
+        <rdfs:range rdf:resource="&nut;Calorias"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;tiempoPreparacionMin">
+        <rdfs:label xml:lang="es">tiempo de preparacion (min)</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Receta"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;caloriasPor100g">
+        <rdfs:label xml:lang="es">calorias por 100g</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Ingrediente"/>
+        <rdfs:range rdf:resource="&nut;Calorias"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="&nut;esEcologico">
+        <rdfs:label xml:lang="es">es ecologico</rdfs:label>
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&nut;Ingrediente"/>
+        <rdfs:range rdf:resource="&xsd;boolean"/>
+    </owl:DatatypeProperty>
+
+
+    <!-- =========================================================== -->
+    <!--  CLASES PRIMARIAS (PRIMITIVAS)                              -->
+    <!-- =========================================================== -->
+
+    <owl:Class rdf:about="&nut;Usuario">
+        <rdfs:label xml:lang="es">Usuario</rdfs:label>
+        <rdfs:comment xml:lang="es">Cliente del centro de nutricion. Todo usuario tiene exactamente un objetivo de salud.</rdfs:comment>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&nut;tieneObjetivo"/>
+                <owl:someValuesFrom rdf:resource="&nut;ObjetivoSalud"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <owl:Class rdf:about="&nut;Receta">
+        <rdfs:label xml:lang="es">Receta</rdfs:label>
+        <rdfs:comment xml:lang="es">Plato recomendable. Toda receta tiene al menos un ingrediente.</rdfs:comment>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&nut;contieneIngrediente"/>
+                <owl:someValuesFrom rdf:resource="&nut;Ingrediente"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <owl:Class rdf:about="&nut;Ingrediente">
+        <rdfs:label xml:lang="es">Ingrediente</rdfs:label>
+        <rdfs:comment xml:lang="es">Alimento basico que compone las recetas. Pertenece a un grupo alimenticio.</rdfs:comment>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&nut;perteneceAGrupo"/>
+                <owl:someValuesFrom rdf:resource="&nut;GrupoAlimenticio"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <owl:Class rdf:about="&nut;GrupoAlimenticio">
+        <rdfs:label xml:lang="es">Grupo Alimenticio</rdfs:label>
+        <rdfs:comment xml:lang="es">Categoria nutricional de los ingredientes.</rdfs:comment>
+    </owl:Class>
+    <owl:Class rdf:about="&nut;Proteina">
+        <rdfs:label xml:lang="es">Proteina</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:Class>
+    <owl:Class rdf:about="&nut;Carbohidrato">
+        <rdfs:label xml:lang="es">Carbohidrato</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:Class>
+    <owl:Class rdf:about="&nut;Verdura">
+        <rdfs:label xml:lang="es">Verdura</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:Class>
+    <owl:Class rdf:about="&nut;Fruta">
+        <rdfs:label xml:lang="es">Fruta</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:Class>
+    <owl:Class rdf:about="&nut;Lacteo">
+        <rdfs:label xml:lang="es">Lacteo</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:Class>
+    <owl:Class rdf:about="&nut;Grasa">
+        <rdfs:label xml:lang="es">Grasa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&nut;GrupoAlimenticio"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="&nut;ObjetivoSalud">
+        <rdfs:label xml:lang="es">Objetivo de Salud</rdfs:label>
+        <rdfs:comment xml:lang="es">Meta nutricional del usuario.</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="&nut;TipoDieta">
+        <rdfs:label xml:lang="es">Tipo de Dieta</rdfs:label>
+        <rdfs:comment xml:lang="es">Regimen alimentario.</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="&nut;Alergeno">
+        <rdfs:label xml:lang="es">Alergeno</rdfs:label>
+        <rdfs:comment xml:lang="es">Sustancia que puede provocar alergia o intolerancia.</rdfs:comment>
+    </owl:Class>
+
+    <!-- Disyuncion entre las clases de mas alto nivel del dominio -->
+    <owl:AllDisjointClasses>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&nut;Usuario"/>
+            <rdf:Description rdf:about="&nut;Receta"/>
+            <rdf:Description rdf:about="&nut;Ingrediente"/>
+            <rdf:Description rdf:about="&nut;GrupoAlimenticio"/>
+            <rdf:Description rdf:about="&nut;ObjetivoSalud"/>
+            <rdf:Description rdf:about="&nut;TipoDieta"/>
+            <rdf:Description rdf:about="&nut;Alergeno"/>
+        </owl:members>
+    </owl:AllDisjointClasses>
+
+
+    <!-- =========================================================== -->
+    <!--  CLASES DEFINIDAS (a partir de las primitivas)             -->
+    <!-- =========================================================== -->
+
+    <!-- 1) Receta baja en calorias: < 400 kcal -->
+    <owl:Class rdf:about="&nut;RecetaBajaEnCalorias">
+        <rdfs:label xml:lang="es">Receta Baja en Calorias</rdfs:label>
+        <rdfs:comment xml:lang="es">Receta con menos de 400 kcal.</rdfs:comment>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&nut;Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&nut;calorias"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="&xsd;integer"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:maxExclusive rdf:datatype="&xsd;integer">400</xsd:maxExclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+
+    <!-- 2) Receta rapida: <= 15 min de preparacion -->
+    <owl:Class rdf:about="&nut;RecetaRapida">
+        <rdfs:label xml:lang="es">Receta Rapida</rdfs:label>
+        <rdfs:comment xml:lang="es">Receta que se prepara en 15 minutos o menos.</rdfs:comment>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&nut;Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&nut;tiempoPreparacionMin"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="&xsd;integer"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:maxInclusive rdf:datatype="&xsd;integer">15</xsd:maxInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+
+    <!-- 3) Receta vegana: apta para la dieta Vegana -->
+    <owl:Class rdf:about="&nut;RecetaVegana">
+        <rdfs:label xml:lang="es">Receta Vegana</rdfs:label>
+        <rdfs:comment xml:lang="es">Receta apta para la dieta vegana.</rdfs:comment>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&nut;Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&nut;aptaParaDieta"/>
+                        <owl:hasValue rdf:resource="&nut;Vegana"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+
+    <!-- 4) Receta para perder peso: baja en calorias y recomendada para PerderPeso -->
+    <owl:Class rdf:about="&nut;RecetaParaPerderPeso">
+        <rdfs:label xml:lang="es">Receta Para Perder Peso</rdfs:label>
+        <rdfs:comment xml:lang="es">Receta baja en calorias recomendada para el objetivo de perder peso.</rdfs:comment>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&nut;RecetaBajaEnCalorias"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&nut;recomendadaPara"/>
+                        <owl:hasValue rdf:resource="&nut;PerderPeso"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+
+    <!-- 5) Usuario vegano: sigue la dieta Vegana -->
+    <owl:Class rdf:about="&nut;UsuarioVegano">
+        <rdfs:label xml:lang="es">Usuario Vegano</rdfs:label>
+        <rdfs:comment xml:lang="es">Usuario que sigue una dieta vegana.</rdfs:comment>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&nut;Usuario"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&nut;sigueDieta"/>
+                        <owl:hasValue rdf:resource="&nut;Vegana"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+
+
+    <!-- =========================================================== -->
+    <!--  INDIVIDUOS: OBJETIVOS, DIETAS Y ALERGENOS                  -->
+    <!-- =========================================================== -->
+
+    <owl:NamedIndividual rdf:about="&nut;PerderPeso">
+        <rdf:type rdf:resource="&nut;ObjetivoSalud"/>
+        <nombre>Perder peso</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;GanarMusculo">
+        <rdf:type rdf:resource="&nut;ObjetivoSalud"/>
+        <nombre>Ganar musculo</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;Mantenerse">
+        <rdf:type rdf:resource="&nut;ObjetivoSalud"/>
+        <nombre>Mantenerse</nombre>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;Vegana">
+        <rdf:type rdf:resource="&nut;TipoDieta"/>
+        <nombre>Vegana</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;Vegetariana">
+        <rdf:type rdf:resource="&nut;TipoDieta"/>
+        <nombre>Vegetariana</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;Omnivora">
+        <rdf:type rdf:resource="&nut;TipoDieta"/>
+        <nombre>Omnivora</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;SinGluten">
+        <rdf:type rdf:resource="&nut;TipoDieta"/>
+        <nombre>Sin gluten</nombre>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;Gluten">
+        <rdf:type rdf:resource="&nut;Alergeno"/>
+        <nombre>Gluten</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;Lactosa">
+        <rdf:type rdf:resource="&nut;Alergeno"/>
+        <nombre>Lactosa</nombre>
+    </owl:NamedIndividual>
+    <owl:NamedIndividual rdf:about="&nut;FrutosSecos">
+        <rdf:type rdf:resource="&nut;Alergeno"/>
+        <nombre>Frutos secos</nombre>
+    </owl:NamedIndividual>
+
+    <!-- Todos los individuos enumerados son distintos entre si -->
+    <owl:AllDifferent>
+        <owl:distinctMembers rdf:parseType="Collection">
+            <rdf:Description rdf:about="&nut;PerderPeso"/>
+            <rdf:Description rdf:about="&nut;GanarMusculo"/>
+            <rdf:Description rdf:about="&nut;Mantenerse"/>
+            <rdf:Description rdf:about="&nut;Vegana"/>
+            <rdf:Description rdf:about="&nut;Vegetariana"/>
+            <rdf:Description rdf:about="&nut;Omnivora"/>
+            <rdf:Description rdf:about="&nut;SinGluten"/>
+            <rdf:Description rdf:about="&nut;Gluten"/>
+            <rdf:Description rdf:about="&nut;Lactosa"/>
+            <rdf:Description rdf:about="&nut;FrutosSecos"/>
+        </owl:distinctMembers>
+    </owl:AllDifferent>
+
+
+    <!-- =========================================================== -->
+    <!--  INDIVIDUOS: INGREDIENTES                                   -->
+    <!-- =========================================================== -->
+
+    <owl:NamedIndividual rdf:about="&nut;Quinoa">
+        <rdf:type rdf:resource="&nut;Ingrediente"/>
+        <nombre>Quinoa</nombre>
+        <perteneceAGrupo rdf:resource="&nut;Carbohidrato"/>
+        <caloriasPor100g rdf:datatype="&xsd;integer">120</caloriasPor100g>
+        <esEcologico rdf:datatype="&xsd;boolean">true</esEcologico>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;Tomate">
+        <rdf:type rdf:resource="&nut;Ingrediente"/>
+        <nombre>Tomate</nombre>
+        <perteneceAGrupo rdf:resource="&nut;Verdura"/>
+        <caloriasPor100g rdf:datatype="&xsd;integer">18</caloriasPor100g>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;PechugaPollo">
+        <rdf:type rdf:resource="&nut;Ingrediente"/>
+        <nombre>Pechuga de pollo</nombre>
+        <perteneceAGrupo rdf:resource="&nut;Proteina"/>
+        <caloriasPor100g rdf:datatype="&xsd;integer">165</caloriasPor100g>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;Leche">
+        <rdf:type rdf:resource="&nut;Ingrediente"/>
+        <nombre>Leche</nombre>
+        <perteneceAGrupo rdf:resource="&nut;Lacteo"/>
+        <caloriasPor100g rdf:datatype="&xsd;integer">64</caloriasPor100g>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;Platano">
+        <rdf:type rdf:resource="&nut;Ingrediente"/>
+        <nombre>Platano</nombre>
+        <perteneceAGrupo rdf:resource="&nut;Fruta"/>
+        <caloriasPor100g rdf:datatype="&xsd;integer">89</caloriasPor100g>
+    </owl:NamedIndividual>
+
+
+    <!-- =========================================================== -->
+    <!--  INDIVIDUOS: RECETAS                                        -->
+    <!--  (no se asignan las clases definidas: las deduce el razonador) -->
+    <!-- =========================================================== -->
+
+    <owl:NamedIndividual rdf:about="&nut;EnsaladaDeQuinoa">
+        <rdf:type rdf:resource="&nut;Receta"/>
+        <nombre>Ensalada de quinoa</nombre>
+        <calorias rdf:datatype="&xsd;integer">350</calorias>
+        <tiempoPreparacionMin rdf:datatype="&xsd;integer">15</tiempoPreparacionMin>
+        <contieneIngrediente rdf:resource="&nut;Quinoa"/>
+        <contieneIngrediente rdf:resource="&nut;Tomate"/>
+        <aptaParaDieta rdf:resource="&nut;Vegana"/>
+        <aptaParaDieta rdf:resource="&nut;Vegetariana"/>
+        <recomendadaPara rdf:resource="&nut;PerderPeso"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;PolloAlHorno">
+        <rdf:type rdf:resource="&nut;Receta"/>
+        <nombre>Pollo al horno</nombre>
+        <calorias rdf:datatype="&xsd;integer">600</calorias>
+        <tiempoPreparacionMin rdf:datatype="&xsd;integer">45</tiempoPreparacionMin>
+        <contieneIngrediente rdf:resource="&nut;PechugaPollo"/>
+        <aptaParaDieta rdf:resource="&nut;Omnivora"/>
+        <recomendadaPara rdf:resource="&nut;GanarMusculo"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;BatidoProteico">
+        <rdf:type rdf:resource="&nut;Receta"/>
+        <nombre>Batido proteico de platano</nombre>
+        <calorias rdf:datatype="&xsd;integer">250</calorias>
+        <tiempoPreparacionMin rdf:datatype="&xsd;integer">5</tiempoPreparacionMin>
+        <contieneIngrediente rdf:resource="&nut;Leche"/>
+        <contieneIngrediente rdf:resource="&nut;Platano"/>
+        <aptaParaDieta rdf:resource="&nut;Vegetariana"/>
+        <recomendadaPara rdf:resource="&nut;GanarMusculo"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;TartaDeChocolate">
+        <rdf:type rdf:resource="&nut;Receta"/>
+        <nombre>Tarta de chocolate</nombre>
+        <calorias rdf:datatype="&xsd;integer">800</calorias>
+        <tiempoPreparacionMin rdf:datatype="&xsd;integer">60</tiempoPreparacionMin>
+        <contieneIngrediente rdf:resource="&nut;Leche"/>
+        <aptaParaDieta rdf:resource="&nut;Vegetariana"/>
+        <recomendadaPara rdf:resource="&nut;Mantenerse"/>
+    </owl:NamedIndividual>
+
+
+    <!-- =========================================================== -->
+    <!--  INDIVIDUOS: USUARIOS                                       -->
+    <!-- =========================================================== -->
+
+    <owl:NamedIndividual rdf:about="&nut;Ana">
+        <rdf:type rdf:resource="&nut;Usuario"/>
+        <nombre>Ana</nombre>
+        <edad rdf:datatype="&xsd;integer">30</edad>
+        <pesoKg rdf:datatype="&xsd;float">68.0</pesoKg>
+        <alturaCm rdf:datatype="&xsd;float">165.0</alturaCm>
+        <sigueDieta rdf:resource="&nut;Vegana"/>
+        <tieneObjetivo rdf:resource="&nut;PerderPeso"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="&nut;Juan">
+        <rdf:type rdf:resource="&nut;Usuario"/>
+        <nombre>Juan</nombre>
+        <edad rdf:datatype="&xsd;integer">25</edad>
+        <pesoKg rdf:datatype="&xsd;float">80.0</pesoKg>
+        <alturaCm rdf:datatype="&xsd;float">180.0</alturaCm>
+        <sigueDieta rdf:resource="&nut;Omnivora"/>
+        <tieneObjetivo rdf:resource="&nut;GanarMusculo"/>
+        <tieneAlergia rdf:resource="&nut;Lactosa"/>
+    </owl:NamedIndividual>
+
+</rdf:RDF>
