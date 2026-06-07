@@ -421,6 +421,10 @@
 ;; Marca de que ya se ha combinado el CF de una receta (evita recalcular).
 (deftemplate cf-calculada (slot receta))
 
+;; Registro de las preguntas que el sistema decidio NO hacer (porque no
+;; discriminaban), para poder explicarlo al usuario al final.
+(deftemplate pregunta-omitida (slot que))
+
 (deffacts inicio-sistema-experto
   (arrancar)
   (pregunta dieta)
@@ -588,14 +592,33 @@
 )
 
 ;;; ============================================================
-;;; RAZONAMIENTO CON INCERTIDUMBRE: FACTORES DE CERTEZA (MYCIN)
+;;; RAZONAMIENTO CON INCERTIDUMBRE (los CUATRO tipos)
 ;;; ============================================================
-;; Cada preferencia del usuario que coincide con una receta aporta un factor
-;; de certeza positivo y cada discrepancia uno negativo. Como las preferencias
-;; ordinales (proteina/calorias) admiten parecidos parciales (un nivel
-;; adyacente es "casi" lo pedido), el sistema modela esa incertidumbre con CF
-;; intermedios en lugar de un simple si/no. Los CF se combinan con la formula
-;; clasica de MYCIN.
+;; Este sistema combina los cuatro tipos de razonamiento con incertidumbre,
+;; adaptando los ejemplos en CLIPS de la asignatura:
+;;
+;;  (1) RAZONAMIENTO POR DEFECTO  (adaptado de "Razonamiento por defecto"):
+;;      - Deducimos dieta/sin-gluten/sin-lactosa por mundo cerrado: a falta de
+;;        evidencia en contra, asumimos por defecto que la receta es apta.
+;;      - A falta de TODA preferencia, asumimos por defecto que el usuario
+;;        prefiere recetas faciles (igual que "por defecto un ave vuela").
+;;
+;;  (2) LOGICA DIFUSA  (adaptado de "ejemplofuzzy.clp"):
+;;      - La densidad calorica se calcula con la funcion 'membership' sobre
+;;        conjuntos difusos trapezoidales definidos sobre las kcal reales.
+;;        El grado de pertenencia mide cuanto encaja la receta con lo pedido.
+;;
+;;  (3) FACTORES DE CERTEZA  (adaptado de "Ejemplo uso de factores de Certeza"):
+;;      - Cada preferencia aporta un factor de certeza (CF) en [-1,1] y todos
+;;        se agregan con la funcion 'combinacion' de MYCIN. Se recomienda la
+;;        receta con mayor CF combinado.
+;;
+;;  (4) RAZONAMIENTO PROBABILISTICO:
+;;      - Como segunda opinion, se estima la probabilidad de acierto suponiendo
+;;        independencia entre aspectos (producto de probabilidades por aspecto).
+;;
+;; El motor principal de decision son los FACTORES DE CERTEZA; los otros tres
+;; tipos alimentan o complementan esa decision y se explican al usuario.
 
 ; Mantiene el CF dentro de (-1,1) para evitar divisiones por cero al combinar.
 (deffunction acotar-cf (?x)
@@ -636,6 +659,49 @@
   (return -0.6)
 )
 
+;;; ---- (2) LOGICA DIFUSA (adaptado de ejemplofuzzy.clp) ----
+
+; Grado de pertenencia de ?value al conjunto difuso trapezoidal (a b c d).
+; Funcion 'membership' del ejemplo de logica difusa de la asignatura.
+(deffunction membership (?value ?a ?b ?c ?d)
+  (if (< ?value ?a) then (bind ?rv 0)
+    else
+      (if (< ?value ?b) then (bind ?rv (/ (- ?value ?a) (- ?b ?a)))
+        else
+          (if (< ?value ?c) then (bind ?rv 1)
+            else
+              (if (< ?value ?d) then (bind ?rv (/ (- ?d ?value) (- ?d ?c)))
+                else (bind ?rv 0)))))
+  ?rv
+)
+
+; Conjuntos difusos de densidad calorica definidos sobre las kcal de la receta.
+; Devuelve el grado [0,1] con que ?kcal pertenece a la categoria pedida.
+(deffunction grado-densidad (?kcal ?cat)
+  (if (eq ?cat baja)  then (return (membership ?kcal 0 0 120 200)))    ; ligera
+  (if (eq ?cat media) then (return (membership ?kcal 150 220 300 380))); media
+  (if (eq ?cat alta)  then (return (membership ?kcal 320 420 5000 5000))) ; copiosa
+  (return 0)
+)
+
+;;; ---- (4) RAZONAMIENTO PROBABILISTICO ----
+
+; Traduce un factor de certeza [-1,1] a una probabilidad [0,1] de que el
+; usuario quede satisfecho en ese aspecto.
+(deffunction cf-a-prob (?cf)
+  (+ 0.5 (/ ?cf 2))
+)
+
+; Probabilidad de que la receta satisfaga TODAS las preferencias, suponiendo
+; independencia entre aspectos (producto de las probabilidades por aspecto).
+(deffunction prob-acierto-receta (?r)
+  (bind ?p 1.0)
+  (do-for-all-facts ((?e evidencia))
+                    (and (eq ?e:receta ?r) (neq ?e:descripcion ""))
+    (bind ?p (* ?p (cf-a-prob ?e:cf))))
+  (return ?p)
+)
+
 ; Combina todas las evidencias acumuladas sobre una receta en un unico CF.
 (deffunction cf-combinada-receta (?r)
   (bind ?acc 0.0)
@@ -653,12 +719,67 @@
   (return "poco adecuada")
 )
 
-; Imprime la justificacion: cada evidencia con su CF y, al final, el CF global.
-(deffunction explicar-receta (?r)
-  (printout t "Justificacion (factores de certeza combinados estilo MYCIN):" crlf)
+; Une una lista de frases en una enumeracion natural: "a, b y c".
+(deffunction unir-frases ($?frases)
+  (bind ?n (length$ ?frases))
+  (if (= ?n 0) then (return ""))
+  (bind ?res (nth$ 1 ?frases))
+  (bind ?i 2)
+  (while (<= ?i ?n) do
+    (if (= ?i ?n)
+      then (bind ?res (str-cat ?res " y " (nth$ ?i ?frases)))
+      else (bind ?res (str-cat ?res ", " (nth$ ?i ?frases))))
+    (bind ?i (+ ?i 1)))
+  (return ?res)
+)
+
+; Redacta, al final del proceso, un texto natural que justifica por que se
+; aconseja la receta ?r (con certeza global ?cf). El texto VARIA segun las
+; respuestas del usuario: solo menciona las restricciones que fijo, las
+; preferencias que expreso (a favor y en contra) y las preguntas que se le
+; ahorraron. Asi el consejo queda justificado de forma comprensible.
+(deffunction explicar-receta (?r ?cf ?dieta ?sl ?sg ?ing)
+  ;; --- Restricciones que pidio el usuario y que la receta cumple ---
+  (bind ?restr (create$))
+  (if (and (neq ?dieta ns) (neq ?dieta normal) (neq ?dieta fin)) then
+    (bind ?restr (create$ ?restr (str-cat "es apta para dieta " ?dieta))))
+  (if (eq ?sl si) then (bind ?restr (create$ ?restr "no contiene lactosa")))
+  (if (eq ?sg si) then (bind ?restr (create$ ?restr "no contiene gluten")))
+  (if (and (neq ?ing ns) (neq ?ing fin)) then
+    (bind ?restr (create$ ?restr (str-cat "incluye " ?ing))))
+
+  ;; --- Evidencia a favor y en contra (preferencias + razonamiento por defecto) ---
+  (bind ?favor (create$))
+  (bind ?contra (create$))
   (do-for-all-facts ((?e evidencia))
                     (and (eq ?e:receta ?r) (neq ?e:descripcion ""))
-    (printout t "   - [CF " ?e:cf "] " ?e:descripcion crlf))
+    (if (>= ?e:cf 0.0)
+      then (bind ?favor (create$ ?favor ?e:descripcion))
+      else (bind ?contra (create$ ?contra ?e:descripcion))))
+
+  ;; --- Preguntas que no se hicieron por no discriminar ---
+  (bind ?omit (create$))
+  (do-for-all-facts ((?o pregunta-omitida)) TRUE
+    (bind ?omit (create$ ?omit ?o:que)))
+
+  ;; --- Redaccion del texto natural ---
+  (printout t crlf "Por que te aconsejo esta receta:" crlf "  ")
+  (if (> (length$ ?restr) 0)
+    then (printout t "Marcaste condiciones innegociables y esta receta las respeta todas: "
+                    (unir-frases ?restr) ". ")
+    else (printout t "No fijaste ninguna restriccion obligatoria, asi que parti de todo el recetario. "))
+  (if (> (length$ ?favor) 0) then
+    (printout t "Encaja con lo que buscas porque " (unir-frases ?favor) ". "))
+  (if (> (length$ ?contra) 0) then
+    (printout t "El unico pero es que " (unir-frases ?contra)
+              ", aunque no es razon suficiente para descartarla. "))
+  (if (> (length$ ?omit) 0) then
+    (printout t "No te pregunte por " (unir-frases ?omit)
+              " porque todas las recetas compatibles coincidian en eso. "))
+  (printout t "Combinando estas evidencias con factores de certeza (formula de MYCIN) obtengo una confianza "
+            (etiqueta-confianza ?cf) " (CF=" ?cf "), la mas alta entre las recetas que cumplen tus restricciones. ")
+  (printout t "Como segunda opinion, un modelo probabilistico (suponiendo independencia entre aspectos) estima una probabilidad de acierto del "
+            (round (* 100 (prob-acierto-receta ?r))) "%." crlf)
 )
 
 (defrule comprobar-recetas-cargadas
@@ -684,8 +805,7 @@
   (printout t "Como razono: tus RESTRICCIONES (dieta, sin lactosa, sin gluten, ingrediente" crlf)
   (printout t "obligatorio) descartan recetas que no las cumplen. Tus PREFERENCIAS (tipo," crlf)
   (printout t "proteina, calorias, comensales, tiempo) no descartan: suman o restan certeza." crlf)
-  (printout t "Combino esa certeza y te propongo la receta con mayor factor, explicando por que." crlf)
-  (printout t "Solo te pregunto lo que de verdad ayuda a decidir en tu caso concreto." crlf)
+  (printout t "Te ire explicando por que pregunto cada cosa y, al final, por que te aconsejo esa receta." crlf)
 )
 
 ;; ------------------------
@@ -704,7 +824,7 @@
   ?f <- (pregunta dieta)
   =>
   (retract ?f)
-  (printout t "[Restriccion] Te pregunto la dieta porque es innegociable: descartare por completo las recetas que no la cumplan." crlf)
+  (printout t crlf "[Por que pregunto esto] La dieta es una restriccion innegociable: descartare por completo las recetas que no la cumplan." crlf)
   (printout t "Dieta (normal|vegetariana|vegana|ns|fin): ")
   (assert (respuesta-dieta (normalizar-respuesta (read))))
 )
@@ -728,7 +848,7 @@
   (retract ?f)
   ;; MODULO 3: proponer tipo de receta segun preferencia del usuario.
   ;; Si responde ns, no aporta evidencia de tipo.
-  (printout t "[Preferencia] El tipo no descarta recetas: da mucha certeza a las del tipo pedido y se la quita a las demas." crlf)
+  (printout t crlf "[Por que pregunto esto] El tipo es una preferencia: no descarta, da mucha certeza a las recetas del tipo pedido." crlf)
   (printout t "Tipo (principal|entrante|postre|ns|fin): ")
   (assert (respuesta-tipo (normalizar-respuesta (read))))
 )
@@ -769,7 +889,7 @@
   ?f <- (pregunta sin_lactosa)
   =>
   (retract ?f)
-  (printout t "[Restriccion] Pregunto por la lactosa porque, si la evitas, descartare las recetas que la contengan." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una restriccion: si la evitas, descartare las recetas con lactosa." crlf)
   (printout t "Quieres que sea sin lactosa? (si|no|ns|fin): ")
   (assert (respuesta-sin-lactosa (valor (normalizar-respuesta (read)))))
 )
@@ -791,7 +911,7 @@
   ?f <- (pregunta sin_gluten)
   =>
   (retract ?f)
-  (printout t "[Restriccion] Pregunto por el gluten porque, si lo evitas, descartare las recetas que lo contengan." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una restriccion: si lo evitas, descartare las recetas con gluten." crlf)
   (printout t "Quieres que sea sin gluten? (si|no|ns|fin): ")
   (assert (respuesta-sin-gluten (valor (normalizar-respuesta (read)))))
 )
@@ -821,7 +941,8 @@
   (test (unico-campo-base tipo ?d ?sl ?sg ?ing))
   =>
   (retract ?q)
-  (printout t "(Omito la pregunta del TIPO de plato: todas las recetas que aun encajan coinciden en ese aspecto, asi que no aportaria nada.)" crlf)
+  (printout t crlf "[No te pregunto el TIPO] Todas las recetas que aun encajan coinciden en el tipo, asi que preguntarlo no aportaria nada." crlf)
+  (assert (pregunta-omitida (que tipo)))
 )
 
 (defrule omitir-proteina-si-no-aporta
@@ -835,7 +956,8 @@
   (test (unico-campo-base proteinas ?d ?sl ?sg ?ing))
   =>
   (retract ?q)
-  (printout t "(Omito la pregunta de PROTEINA: todas las recetas compatibles tienen el mismo nivel, no discriminaria.)" crlf)
+  (printout t crlf "[No te pregunto la PROTEINA] Todas las recetas compatibles tienen el mismo nivel, no discriminaria." crlf)
+  (assert (pregunta-omitida (que proteina)))
 )
 
 (defrule omitir-densidad-si-no-aporta
@@ -849,7 +971,8 @@
   (test (unico-campo-base calorias ?d ?sl ?sg ?ing))
   =>
   (retract ?q)
-  (printout t "(Omito la pregunta de DENSIDAD CALORICA: todas las recetas compatibles comparten el mismo nivel.)" crlf)
+  (printout t crlf "[No te pregunto la DENSIDAD CALORICA] Todas las recetas compatibles comparten el mismo nivel." crlf)
+  (assert (pregunta-omitida (que densidad_calorica)))
 )
 
 (defrule omitir-comensales-si-no-aporta
@@ -863,7 +986,8 @@
   (test (unico-campo-base comensales ?d ?sl ?sg ?ing))
   =>
   (retract ?q)
-  (printout t "(Omito la pregunta de COMENSALES: todas las recetas compatibles rinden para el mismo numero.)" crlf)
+  (printout t crlf "[No te pregunto los COMENSALES] Todas las recetas compatibles rinden para el mismo numero." crlf)
+  (assert (pregunta-omitida (que comensales)))
 )
 
 (defrule omitir-tiempo-si-no-aporta
@@ -877,7 +1001,8 @@
   (test (unico-campo-base tiempo ?d ?sl ?sg ?ing))
   =>
   (retract ?q)
-  (printout t "(Omito la pregunta del TIEMPO: todas las recetas compatibles tardan lo mismo.)" crlf)
+  (printout t crlf "[No te pregunto el TIEMPO] Todas las recetas compatibles tardan lo mismo." crlf)
+  (assert (pregunta-omitida (que tiempo)))
 )
 (defrule pregunta-ingrediente-obligatorio
   (declare (salience 797))
@@ -885,7 +1010,7 @@
   ?f <- (pregunta ingrediente_obligatorio)
   =>
   (retract ?f)
-  (printout t "[Restriccion] Si indicas un ingrediente obligatorio, solo conservare recetas que lo lleven." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una restriccion: si fijas un ingrediente, solo conservare recetas que lo lleven." crlf)
   (printout t "Ingrediente obligatorio (texto|ns|fin): ")
   (assert (respuesta-ingrediente-obligatorio (normalizar-respuesta (read))))
 )
@@ -895,7 +1020,7 @@
   ?f <- (pregunta comensales)
   =>
   (retract ?f)
-  (printout t "[Preferencia] Los comensales no descartan: doy mas certeza a las recetas que cubren ese numero." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una preferencia: doy mas certeza a las recetas que cubren ese numero de comensales." crlf)
   (printout t "Comensales (numero|ns|fin): ")
   (assert (respuesta-comensales (normalizar-respuesta (read))))
 )
@@ -917,7 +1042,7 @@
   ?f <- (pregunta tiempo)
   =>
   (retract ?f)
-  (printout t "[Preferencia] El tiempo no descarta: premio con certeza a las recetas que caben en tu limite y penalizo poco a poco a las que se pasan." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una preferencia: premio a las recetas dentro de tu tiempo y penalizo gradualmente a las que se pasan." crlf)
   (printout t "Tiempo maximo en minutos (numero|ns|fin): ")
   (assert (respuesta-tiempo (normalizar-respuesta (read))))
 )
@@ -928,7 +1053,7 @@
   ?f <- (pregunta proteina)
   =>
   (retract ?f)
-  (printout t "[Preferencia] La proteina no descarta: un nivel adyacente tambien suma algo de certeza (parecido parcial)." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una preferencia: el nivel exacto da mas certeza y un nivel adyacente suma algo (parecido parcial)." crlf)
   (printout t "Nivel de proteina (alta|media|baja|ns|fin): ")
   (assert (respuesta-proteina (normalizar-respuesta (read))))
 )
@@ -963,7 +1088,7 @@
   ?f <- (pregunta densidad_calorica)
   =>
   (retract ?f)
-  (printout t "[Preferencia] La densidad calorica no descarta: un nivel adyacente tambien suma algo de certeza (parecido parcial)." crlf)
+  (printout t crlf "[Por que pregunto esto] Es una preferencia: el nivel exacto da mas certeza y un nivel adyacente suma algo (parecido parcial)." crlf)
   (printout t "Densidad calorica (alta|media|baja|ns|fin): ")
   (assert (respuesta-densidad-calorica (normalizar-respuesta (read))))
 )
@@ -1105,24 +1230,31 @@
 ;; generan evidencia: el sistema razona con informacion parcial. Despues se
 ;; combinan todas las evidencias de cada receta con la formula de MYCIN.
 
-; Razonamiento POR DEFECTO: a falta de mas informacion, preferimos recetas
-; faciles y desconfiamos un poco de las dificiles. Esto da un orden razonable
-; aun cuando el usuario no expresa ninguna preferencia.
+;; (1) RAZONAMIENTO POR DEFECTO: igual que "por defecto un ave vuela", a falta
+;; de TODA preferencia asumimos por defecto que el usuario prefiere recetas
+;; faciles. Esta suposicion solo se activa cuando no hay ninguna otra evidencia
+;; (todas las preferencias en ns); en cuanto el usuario expresa una preferencia,
+;; manda esa informacion y no se aplica el supuesto por defecto.
 (defrule evidencia-por-defecto-dificultad
   (declare (salience 10))
   (fase puntuar)
   (RecetaCandidata (nombre ?r))
   (receta (nombre ?r) (dificultad ?dif))
+  (respuesta-tipo ns)
+  (respuesta-proteina ns)
+  (respuesta-densidad-calorica ns)
+  (respuesta-comensales ns)
+  (respuesta-tiempo ns)
   (not (evidencia (receta ?r) (factor dificultad)))
   =>
   (bind ?cf 0.0)
   (bind ?txt "")
   (if (eq ?dif facil) then
-    (bind ?cf 0.15)
-    (bind ?txt "Por defecto prefiero recetas faciles de preparar (+)"))
+    (bind ?cf 0.3)
+    (bind ?txt "por defecto (no diste preferencias) priorizo que sea facil de preparar"))
   (if (eq ?dif dificil) then
-    (bind ?cf -0.15)
-    (bind ?txt "Es una receta dificil; por defecto la penalizo levemente (-)"))
+    (bind ?cf -0.3)
+    (bind ?txt "por defecto (no diste preferencias) evito las recetas dificiles, y esta lo es"))
   (assert (evidencia (receta ?r) (factor dificultad) (cf ?cf) (descripcion ?txt)))
 )
 
@@ -1137,10 +1269,10 @@
   (bind ?objetivo (tipo-respuesta-a-simbolo ?tp))
   (if (eq ?real ?objetivo) then
     (assert (evidencia (receta ?r) (factor tipo) (cf 0.85)
-      (descripcion (str-cat "Es un plato de tipo " ?real ", justo el que pediste (+)"))))
+      (descripcion (str-cat "es un plato " ?real ", justo el tipo que buscabas"))))
   else
     (assert (evidencia (receta ?r) (factor tipo) (cf -0.7)
-      (descripcion (str-cat "Es de tipo " ?real " y tu pediste " ?objetivo " (-)")))))
+      (descripcion (str-cat "no es del tipo " ?objetivo " que pediste, sino " ?real)))))
 )
 
 (defrule evidencia-proteina
@@ -1152,23 +1284,38 @@
   (not (evidencia (receta ?r) (factor proteinas)))
   =>
   (bind ?cf (cf-nivel ?p ?real))
-  (assert (evidencia (receta ?r) (factor proteinas) (cf ?cf)
-    (descripcion (str-cat "Aporta proteina " ?real " y pediste " ?p
-                          " (" (if (>= ?cf 0.0) then "+" else "-") ")"))))
+  (bind ?d (abs (- (nivel-num ?p) (nivel-num ?real))))
+  (if (= ?d 0) then
+    (bind ?txt (str-cat "tiene el nivel de proteina " ?real " que querias"))
+  else
+    (if (= ?d 1) then
+      (bind ?txt (str-cat "su proteina (" ?real ") se aproxima a la " ?p " que pediste"))
+    else
+      (bind ?txt (str-cat "su proteina es " ?real ", lejos de la " ?p " que pediste"))))
+  (assert (evidencia (receta ?r) (factor proteinas) (cf ?cf) (descripcion ?txt)))
 )
 
+;; LOGICA DIFUSA: el encaje de la densidad calorica se mide con el grado de
+;; pertenencia (membership) de las kcal reales al conjunto difuso pedido, en
+;; vez de con un corte rigido. El grado [0,1] se traslada a un CF en [-1,1].
 (defrule evidencia-calorias
   (declare (salience 10))
   (fase puntuar)
   (RecetaCandidata (nombre ?r))
   (respuesta-densidad-calorica ?dc&~ns&~fin)
-  (propiedad_receta calorias ?real ?r)
+  (receta (nombre ?r) (info-nutricional $?info))
   (not (evidencia (receta ?r) (factor calorias)))
   =>
-  (bind ?cf (cf-nivel ?dc ?real))
-  (assert (evidencia (receta ?r) (factor calorias) (cf ?cf)
-    (descripcion (str-cat "Densidad calorica " ?real " y pediste " ?dc
-                          " (" (if (>= ?cf 0.0) then "+" else "-") ")"))))
+  (bind ?kcal (obtener-kcal ?info))
+  (bind ?mu (grado-densidad ?kcal ?dc))
+  (bind ?cf (* 0.85 (- (* 2 ?mu) 1)))
+  (bind ?pct (round (* 100 ?mu)))
+  (if (>= ?mu 0.5)
+    then (bind ?txt (str-cat "sus " ?kcal " kcal encajan con densidad '" ?dc
+                             "' en grado difuso " ?pct "%"))
+    else (bind ?txt (str-cat "sus " ?kcal " kcal apenas encajan con densidad '" ?dc
+                             "' (grado difuso " ?pct "%)")))
+  (assert (evidencia (receta ?r) (factor calorias) (cf ?cf) (descripcion ?txt)))
 )
 
 (defrule evidencia-comensales
@@ -1181,12 +1328,12 @@
   =>
   (if (>= ?c ?n) then
     (assert (evidencia (receta ?r) (factor comensales) (cf 0.5)
-      (descripcion (str-cat "Rinde para " ?c " comensales y necesitas " ?n " (+)"))))
+      (descripcion (str-cat "rinde para " ?c " comensales, cubriendo los " ?n " que necesitas"))))
   else
     (bind ?gap (- ?n ?c))
     (bind ?cf (max -0.7 (* -0.25 ?gap)))
     (assert (evidencia (receta ?r) (factor comensales) (cf ?cf)
-      (descripcion (str-cat "Solo rinde para " ?c " comensales y necesitas " ?n " (-)")))))
+      (descripcion (str-cat "se queda algo corta: rinde para " ?c " y necesitabas " ?n)))))
 )
 
 (defrule evidencia-tiempo
@@ -1199,19 +1346,19 @@
   =>
   (if (<= ?tc ?t) then
     (bind ?cf 0.5)
-    (bind ?txt (str-cat "Se prepara en " ?tc " min, dentro de tus " ?t " (+)"))
+    (bind ?txt (str-cat "se prepara en " ?tc " minutos, dentro de tu limite de " ?t))
   else
     (bind ?over (- ?tc ?t))
     (if (<= ?over 15) then
       (bind ?cf 0.1)
-      (bind ?txt (str-cat "Tarda " ?tc " min, solo un poco mas de " ?t " (~)"))
+      (bind ?txt (str-cat "tarda " ?tc " minutos, solo un poco mas de los " ?t " que querias"))
     else
       (if (<= ?over 30) then
         (bind ?cf -0.3)
-        (bind ?txt (str-cat "Tarda " ?tc " min, bastante mas de " ?t " (-)"))
+        (bind ?txt (str-cat "tarda " ?tc " minutos, bastante mas de los " ?t " que querias"))
       else
         (bind ?cf -0.6)
-        (bind ?txt (str-cat "Tarda " ?tc " min, mucho mas de " ?t " (-)")))))
+        (bind ?txt (str-cat "tarda " ?tc " minutos, mucho mas de los " ?t " que querias")))))
   (assert (evidencia (receta ?r) (factor tiempo) (cf ?cf) (descripcion ?txt)))
 )
 
@@ -1308,17 +1455,17 @@
             (not (RecetaRechazada (nombre ?o) (motivo ?)))
             (test (> ?cf2 ?cf))))
   (receta (nombre ?r) (tipo-plato ?tp) (dificultad ?d) (comensales ?c) (tiempo-cocinado ?t))
+  (respuesta-dieta ?dietaPref)
+  (respuesta-sin-lactosa (valor ?slPref))
+  (respuesta-sin-gluten (valor ?sgPref))
+  (respuesta-ingrediente-obligatorio ?ingPref)
   =>
   (assert (RecetaOfertada (nombre ?r)))
   (printout t crlf "----------------------------------------" crlf)
   (printout t "Receta recomendada: " ?r crlf)
   (printout t "Tipo: " ?tp ", dificultad: " ?d ", comensales: " ?c ", tiempo: " ?t " min" crlf)
-  (printout t "Cumple tus restricciones: dieta " (obtener-dieta-receta ?r)
-            ", lactosa=" (if (tiene-prop2 contiene_lactosa ?r) then "si" else "no")
-            ", gluten=" (if (tiene-prop2 contiene_gluten ?r) then "si" else "no") crlf)
-  (explicar-receta ?r)
-  (printout t "==> Factor de certeza global: " ?cf " -> " (etiqueta-confianza ?cf) crlf)
-  (printout t "(Es la receta con mayor certeza entre las que cumplen tus restricciones.)" crlf)
+  (explicar-receta ?r ?cf ?dietaPref ?slPref ?sgPref ?ingPref)
+  (printout t "----------------------------------------" crlf)
   (printout t "Respuesta (a|rechazar|dieta|tipo|comensales|tiempo|proteina|calorias|ingrediente): ")
   (assert (respuesta-final (normalizar-respuesta (read))))
 )
