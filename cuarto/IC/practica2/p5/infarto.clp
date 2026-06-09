@@ -104,9 +104,9 @@
 ;;;   EDAD  -> Joven    : trapezoidal [0, 10, 20, 30]
 ;;;            Media    : triangular  [20, 50, 70]
 ;;;            Avanzada : trapezoidal [60, 75, 100, 100]
-;;;   IMC   -> Normal       : triangular  [0, 10, 20]
-;;;            Elevado      : triangular  [15, 30, 50]
-;;;            Muy elevado  : trapezoidal [30, 38, 50, 50]
+;;;   IMC   -> Normal       : triangular  [16, 21, 25]   (peso saludable)
+;;;            Elevado      : triangular  [23, 27.5, 32]  (sobrepeso)
+;;;            Muy elevado  : trapezoidal [30, 35, 50, 50] (obesidad)
 ;;;   COLESTEROL (criterio clinico estandar, mg/dL):
 ;;;            Normal     : trapezoidal [100, 150, 190, 210]
 ;;;            Alto       : triangular  [190, 220, 250]
@@ -117,7 +117,7 @@
 (defrule regla-imc-muy-elevado
    (paciente (imc ?i))
    =>
-   (bind ?g (trapezoidal ?i 30 38 50 50))
+   (bind ?g (trapezoidal ?i 30 35 50 50))
    (if (> ?g 0.0) then
       (assert (contribucion (termino "Muy Alto") (centro 80) (grado ?g)
                             (regla "Si el IMC es muy elevado, el riesgo es muy alto.")))))
@@ -135,7 +135,7 @@
 (defrule regla-imc-elevado-edad-avanzada
    (paciente (imc ?i) (edad ?e))
    =>
-   (bind ?g (minimo (triangular ?i 15 30 50)
+   (bind ?g (minimo (triangular ?i 23 27.5 32)
                     (trapezoidal ?e 60 75 100 100)))
    (if (> ?g 0.0) then
       (assert (contribucion (termino "Alto") (centro 50) (grado ?g)
@@ -154,7 +154,7 @@
 (defrule regla-imc-elevado-colesterol-normal
    (paciente (imc ?i) (colesterol ?c))
    =>
-   (bind ?g (minimo (triangular ?i 15 30 50)
+   (bind ?g (minimo (triangular ?i 23 27.5 32)
                     (trapezoidal ?c 100 150 190 210)))
    (if (> ?g 0.0) then
       (assert (contribucion (termino "Medio") (centro 30) (grado ?g)

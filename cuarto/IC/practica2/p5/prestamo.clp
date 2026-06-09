@@ -211,22 +211,23 @@
   (assert (deducibilidad (id ?id) (estado deducible)
                          (explicacion "Prestamo no personal: deducible."))))
 
-; Regla 4: informacion insuficiente => indeterminado
-(defrule prestamo-indeterminado-tipo
+; Regla 4 (default general): si no consta que sea personal, por defecto deducible
+(defrule prestamo-default-deducible
   (consulta (id ?id))
   (prestamo (id ?id) (tipo desconocido))
   (not (deducibilidad (id ?id)))
   =>
-  (assert (deducibilidad (id ?id) (estado indeterminado)
-                         (explicacion "Tipo de prestamo desconocido; no se puede determinar."))))
+  (assert (deducibilidad (id ?id) (estado deducible)
+                         (explicacion "No consta que sea personal; por defecto los prestamos son deducibles."))))
 
-(defrule prestamo-indeterminado-destino
+; Regla 5 (default de personal): personal sin constancia de uso para vivienda => por defecto no deducible
+(defrule prestamo-personal-default-no-deducible
   (consulta (id ?id))
   (prestamo (id ?id) (tipo personal) (destino desconocido))
   (not (deducibilidad (id ?id)))
   =>
-  (assert (deducibilidad (id ?id) (estado indeterminado)
-                         (explicacion "Destino de prestamo personal desconocido; no se puede determinar."))))
+  (assert (deducibilidad (id ?id) (estado no-deducible)
+                         (explicacion "Prestamo personal sin constancia de uso para vivienda; por defecto no deducible."))))
 
 (defrule imprimir-resultado
   (consulta (id ?id))
