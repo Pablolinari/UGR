@@ -99,7 +99,7 @@ El sistema integra de forma combinada los *cuatro tipos de razonamiento con ince
 - *Razonamiento por defecto:* deducción por mundo cerrado (a falta de evidencia en contra, la receta se asume apta) y, si el usuario no da ninguna preferencia, se asume por defecto que prefiere recetas fáciles.
 - *Lógica difusa:* el encaje de la densidad calórica se mide con el grado de pertenencia (`membership`) de las kcal reales a conjuntos difusos trapezoidales.
 - *Factores de certeza (MYCIN):* motor principal de decisión.
-- *Razonamiento probabilístico:* como segunda opinión, estima la probabilidad de acierto suponiendo independencia entre aspectos.
+- *Razonamiento probabilístico:* como segunda opinión, estima la probabilidad de acierto como la media geométrica de la satisfacción por aspecto (cada CF se traduce a una probabilidad y se promedian geométricamente).
 
 = Descripción del proceso seguido
 

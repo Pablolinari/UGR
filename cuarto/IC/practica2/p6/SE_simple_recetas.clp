@@ -692,14 +692,21 @@
   (+ 0.5 (/ ?cf 2))
 )
 
-; Probabilidad de que la receta satisfaga TODAS las preferencias, suponiendo
-; independencia entre aspectos (producto de las probabilidades por aspecto).
+; Probabilidad de que la receta resulte satisfactoria, combinando las
+; probabilidades por aspecto con su MEDIA GEOMETRICA. Antes se usaba el producto
+; (probabilidad de acertar en TODOS los aspectos a la vez), pero eso hundia la
+; cifra en cuanto un solo aspecto flojeaba, resultando poco intuitivo junto a un
+; CF combinado alto. La media geometrica da una valoracion global mas legible y
+; coherente con el CF, penalizando los aspectos malos mas que la media aritmetica.
 (deffunction prob-acierto-receta (?r)
   (bind ?p 1.0)
+  (bind ?n 0)
   (do-for-all-facts ((?e evidencia))
                     (and (eq ?e:receta ?r) (neq ?e:descripcion ""))
-    (bind ?p (* ?p (cf-a-prob ?e:cf))))
-  (return ?p)
+    (bind ?p (* ?p (cf-a-prob ?e:cf)))
+    (bind ?n (+ ?n 1)))
+  (if (= ?n 0) then (return 0.5))
+  (return (** ?p (/ 1.0 ?n)))
 )
 
 ; Combina todas las evidencias acumuladas sobre una receta en un unico CF.
@@ -778,7 +785,7 @@
               " porque todas las recetas compatibles coincidian en eso. "))
   (printout t "Combinando estas evidencias con factores de certeza (formula de MYCIN) obtengo una confianza "
             (etiqueta-confianza ?cf) " (CF=" ?cf "), la mas alta entre las recetas que cumplen tus restricciones. ")
-  (printout t "Como segunda opinion, un modelo probabilistico (suponiendo independencia entre aspectos) estima una probabilidad de acierto del "
+  (printout t "Como segunda opinion, un modelo probabilistico (media geometrica de la satisfaccion por aspecto) estima una probabilidad de acierto del "
             (round (* 100 (prob-acierto-receta ?r))) "%." crlf)
 )
 

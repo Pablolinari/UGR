@@ -65,125 +65,256 @@
 
 #pagebreak()
 
-= Casos de uso
+= Casos de uso de los sistemas basados en reglas
 
-A continuación se recogen, en formato tabla, varios casos de uso ejecutados sobre
-los sistemas basados en conocimiento desarrollados. Cada caso muestra las entradas
-proporcionadas por el usuario y la salida producida por el sistema.
+En esta primera parte se recogen *8 casos de uso* (4 por programa) de los
+sistemas de producción implementados en CLIPS: `prestamo.clp` y `coche.clp`.
+Cada programa se presenta en su propia sección, con una breve explicación de su
+funcionamiento y una tabla de casos. Todas las salidas que se muestran han sido
+obtenidas ejecutando directamente los programas sobre CLIPS 6.4.
 
-== Deducibilidad de intereses de préstamos (`prestamo.clp`)
+== Deducibilidad de préstamos: `prestamo.clp`
 
-Sistema de *lógica por defecto*. Por defecto los préstamos son deducibles; los
-préstamos personales son la excepción (no deducibles), salvo que se empleen para
-vivienda. Cuando falta información se aplica el default correspondiente.
+`prestamo.clp` es un sistema de clasificación que decide si un préstamo es
+*deducible* o *no deducible* en la declaración de la renta. Parte de una lista
+de préstamos predefinidos (cada uno con un `tipo` y un `destino`) y permite
+seleccionar uno existente o dar de alta uno nuevo respondiendo a las preguntas
+de si es personal y si se destina a vivienda. La base de conocimiento aplica
+cinco reglas:
 
-#block[
-  #set text(size: 9.5pt)
-  #table(
-    columns: (auto, auto, auto, auto, 1fr),
-    align: (center, center, center, center, left),
+- *R1.* Préstamo personal destinado a vivienda #sym.arrow.r deducible.
+- *R2.* Préstamo personal con destino conocido distinto de vivienda #sym.arrow.r no deducible.
+- *R3.* Préstamo no personal (hipotecario, comercial, ...) #sym.arrow.r deducible.
+- *R4.* Tipo desconocido #sym.arrow.r por defecto deducible.
+- *R5.* Personal sin constancia del destino #sym.arrow.r por defecto no deducible.
+
+#figure(
+  table(
+    columns: (auto, 1fr, auto, 1.3fr),
+    align: (center, left, center, left),
     inset: 6pt,
+    stroke: 0.5pt,
     table.header(
-      [*Préstamo*], [*Tipo*], [*Destino*], [*Resultado*], [*Explicación*],
+      [*\#*], [*Entradas relevantes*], [*Resultado*], [*Justificación*],
     ),
-    [p1], [personal], [vivienda], [Deducible],
-      [Préstamo personal para vivienda: deducible.],
-    [p2], [personal], [coche], [No deducible],
-      [Préstamo personal no destinado a vivienda.],
-    [p3], [hipotecario], [vivienda], [Deducible],
-      [Préstamo no personal: deducible.],
-    [p4], [comercial], [negocio], [Deducible],
-      [Préstamo no personal: deducible.],
-    [p5], [personal], [desconocido], [No deducible],
-      [Personal sin constancia de uso para vivienda: por defecto no deducible.],
-    [nuevo], [desconocido], [vivienda], [Deducible],
-      [No consta que sea personal: por defecto los préstamos son deducibles.],
-    [nuevo], [personal], [desconocido], [No deducible],
-      [Personal sin constancia de uso para vivienda: por defecto no deducible.],
-  )
-]
+    [1], [`p1`: personal, vivienda],
+      [Deducible], [Personal para vivienda (R1)],
+    [2], [`p3`: hipotecario, vivienda],
+      [Deducible], [Préstamo no personal (R3)],
+    [3], [`p4`: comercial, negocio],
+      [Deducible], [Préstamo no personal (R3)],
+    [4], [`p2`: personal, coche],
+      [No deducible], [Personal con destino #sym.eq.not vivienda (R2)],
+    [5], [`p5`: personal, destino desconocido],
+      [No deducible], [Personal sin constancia de vivienda: por defecto no deducible (R5)],
+    [6], [nuevo `p9`: personal sí, vivienda sí],
+      [Deducible], [Alta de préstamo personal para vivienda (R1)],
+    [7], [nuevo `p11`: personal sí, vivienda no],
+      [No deducible], [Alta de préstamo personal con destino #sym.eq.not vivienda (R2)],
+    [8], [`p77` (id inexistente): tipo y destino desconocidos],
+      [Deducible], [No consta que sea personal: por defecto deducible (R4)],
+  ),
+  caption: [Casos de uso de `prestamo.clp`.],
+)
 
-== Recomendación de tipo de coche (`coche.clp`)
+== Recomendación de motorización: `coche.clp`
 
-Sistema de *factores de certeza*. Se combinan las recomendaciones de cada regla
-mediante la fórmula de combinación de FC (MYCIN) y se muestra la opción con mayor
-factor de certeza.
+`coche.clp` es un sistema de recomendación basado en *factores de certeza
+(CF)*. Realiza siete preguntas (presupuesto, kilometraje anual, trayectos
+largos, remolque pesado, uso urbano, viajes a Zonas de Bajas Emisiones y
+beneficios por etiqueta Cero) y, según el contexto, dispara reglas que aportan
+evidencia a favor o en contra de cada tipo de motorización. Cuando varias
+reglas apoyan el mismo tipo, sus CF se combinan mediante la fórmula clásica
+de MYCIN:
 
-#block[
-  #set text(size: 9pt)
-  #table(
-    columns: 9,
-    align: center,
-    inset: 5pt,
-    table.header(
-      [*Presup.*], [*\<20k km*], [*Tray. largos*], [*Remolque*],
-      [*Ciudad*], [*ZBE*], [*Etiq. 0*], [*Recomendación*], [*FC*],
-    ),
-    [alto], [no], [no], [no], [sí], [no], [sí], [eléctrico], [0,95],
-    [bajo], [sí], [sí], [sí], [no], [sí], [no], [híbrido auto-rec.], [0,71],
-    [medio], [no], [no], [sí], [no], [no], [no], [diésel], [0,50],
-    [bajo], [sí], [no], [no], [no], [no], [no], [gasolina], [0,88],
-  )
-]
+$ "CF"_("comb") = "CF"_1 + "CF"_2 dot (1 - "CF"_1) quad ("ambos" >= 0). $
 
-== Estimación del riesgo de infarto (`infarto.clp`)
+Finalmente se recomienda la motorización con mayor factor de certeza.
 
-Sistema *difuso* (Mamdani simplificado). A partir del IMC, la edad y el colesterol
-se estima el riesgo de infarto en una escala de 0 a 10.
-
-#block[
-  #set text(size: 9.5pt)
-  #table(
-    columns: (auto, auto, auto, auto, auto),
-    align: center,
+#figure(
+  table(
+    columns: (auto, 1fr, auto, 1.3fr),
+    align: (center, left, center, left),
     inset: 6pt,
+    stroke: 0.5pt,
     table.header(
-      [*IMC*], [*Edad*], [*Colesterol*], [*Riesgo*], [*Escala (0–10)*],
+      [*\#*], [*Entradas relevantes*], [*Resultado*], [*Justificación*],
     ),
-    [22], [25], [150], [Bajo], [0,0],
-    [28], [70], [150], [Medio], [3,86],
-    [40], [30], [150], [Muy Alto], [8,0],
-    [24], [50], [300], [Muy Alto], [8,0],
-    [24], [50], [220], [Alto], [5,0],
-  )
-]
+    [1], [presupuesto medio, \<20000 km sí, resto no],
+      [Híbrido auto-rec. \ (CF = 0.8)], [Pocos km favorecen el híbrido auto-recargable (0.8) frente a gasolina (0.6)],
+    [2], [presupuesto medio, uso en ciudad sí, resto no],
+      [Eléctrico \ (CF = 0.8)], [El uso urbano favorece el eléctrico],
+    [3], [presupuesto alto, trayectos largos sí, resto no],
+      [Híbrido \ (CF = 0.6)], [Los trayectos largos penalizan el eléctrico ($0.7 #sym.plus.o (-0.9) approx -0.67$) y gana el híbrido del presupuesto alto],
+    [4], [presupuesto bajo, resto no],
+      [Gasolina \ (CF = 0.7)], [Presupuesto bajo: gasolina (0.7) supera al gas (0.6)],
+    [5], [presupuesto medio, remolque pesado sí, resto no],
+      [Diésel \ (CF = 0.5)], [El remolque pesado exige par y robustez],
+    [6], [presupuesto medio, \<20000 km sí, ciudad sí, etiqueta Cero sí],
+      [Eléctrico \ (CF = 0.84)], [Combina uso urbano (0.8) #sym.plus.o etiqueta Cero (0.2): $0.8 + 0.2 dot 0.2 = 0.84$],
+    [7], [presupuesto alto, etiqueta Cero sí, resto no],
+      [Eléctrico \ (CF = 0.76)], [Presupuesto alto (0.7) #sym.plus.o etiqueta Cero (0.2): $0.7 + 0.2 dot 0.3 = 0.76$],
+    [8], [presupuesto bajo, trayectos largos sí, remolque sí],
+      [Gasolina \ (CF = 0.7)], [El presupuesto bajo prima el coste y supera al diésel del remolque (0.5)],
+  ),
+  caption: [Casos de uso de `coche.clp`.],
+)
 
-= Razonamiento probabilístico: ¿le gustaría comer pasta? (`pasta.clp`)
+#pagebreak()
 
-Sistema de *razonamiento bayesiano*. Partiendo de la probabilidad a priori
-$P("ComerPasta") = 0,668$, se actualiza con las causas conocidas (edad y si comió
-pasta ayer) y, mediante el teorema de Bayes, con las evidencias o efectos
-(restaurantes italianos y frecuencia de consumo). A continuación se responden los
-tres casos planteados.
+= Razonamiento bayesiano: `pasta.clp`
 
-#block[
-  #set text(size: 9.5pt)
-  #table(
-    columns: (auto, auto, auto, auto, auto),
-    align: (center, center, center, center, center),
-    inset: 6pt,
-    table.header(
-      [*Edad*], [*Comió ayer*], [*Rest. italianos*], [*Frecuencia*],
-      [*P(le gusta la pasta)*],
-    ),
-    [Joven], [No], [Sí], [Esporádicamente], [0,7215 (72,15 %)],
-    [Mayor], [Sí], [Sí], [Frecuentemente], [0,7328 (73,28 %)],
-    [Desconocida], [No], [Sí], [Frecuentemente], [0,9414 (94,14 %)],
-  )
-]
+El programa `pasta.clp` implementa una *red causal* para estimar la
+probabilidad de que a una persona le gustaría comer pasta hoy. La variable a
+inferir es:
 
-- *Es joven, no comió pasta ayer, le gustan los restaurantes italianos y come pasta
-  esporádicamente.* Con ambas causas conocidas la probabilidad sube a $0,85$; tras
-  incorporar las evidencias (le gustan los restaurantes italianos, pero come pasta
-  solo esporádicamente, lo que la rebaja) la probabilidad final es
-  *$0,7215$ (72,15 %)*.
+- *CP* = _comer pasta hoy_, con valores ${"SÍ", "NO"}$.
 
-- *Es mayor, comió pasta ayer, le gustan los restaurantes italianos y come pasta
-  frecuentemente.* Las causas (mayor y haber comido ayer) bajan la probabilidad a
-  $0,30$, pero las evidencias positivas (restaurantes italianos y consumo frecuente)
-  la elevan hasta *$0,7328$ (73,28 %)*.
+Sobre ella actúan dos *causas* (variables que influyen _a priori_) y dos
+*efectos* o indicios (variables que se observan para actualizar la creencia):
 
-- *No sabemos la edad, no comió pasta ayer, le gustan los restaurantes italianos y
-  come pasta frecuentemente.* Al desconocerse la edad solo influye la causa "no comió
-  ayer" ($0,715$); con las evidencias positivas la probabilidad final asciende a
-  *$0,9414$ (94,14 %)*.
+#table(
+  columns: (auto, 1fr),
+  inset: 6pt,
+  stroke: 0.5pt,
+  align: (left, left),
+  [*Causas*], [*E* = edad ${"joven", "mediana", "mayor"}$ \ *C* = comió pasta ayer ${"sí", "no"}$],
+  [*Efectos*], [*G* = le gustan los restaurantes italianos ${"sí", "no"}$ \ *F* = frecuencia con que come pasta ${"esporádicamente", "frecuentemente", "habitualmente"}$],
+)
+
+El razonamiento se realiza en dos fases. Primero, a partir de las causas
+conocidas se obtiene la probabilidad _a priori_ (ajustada) de $P("CP"="SÍ")$.
+Después, cada efecto observado se utiliza para actualizar esa probabilidad
+mediante el *teorema de Bayes*.
+
+== Pregunta 1: distribuciones de probabilidad necesarias
+
+Para llevar a cabo el razonamiento son necesarias las siguientes
+distribuciones de probabilidad, que se supone se obtienen y actualizan de un
+banco de datos estadísticos. Se asignan los siguientes valores subjetivos
+(los mismos que figuran en `pasta.clp`):
+
+*(a) Distribución _a priori_ de las causas, $P(E)$ y $P(C)$:*
+
+#table(
+  columns: (auto, auto, auto, auto, auto),
+  inset: 6pt,
+  stroke: 0.5pt,
+  align: center,
+  table.header([$P(E="joven")$], [$P(E="mediana")$], [$P(E="mayor")$], [$P(C="sí")$], [$P(C="no")$]),
+  [0.4], [0.3], [0.3], [0.2], [0.8],
+)
+
+*(b) Distribución condicional de la variable a inferir dadas las causas,
+$P("CP"="SÍ" | E, C)$* (la de $"NO"$ es su complementario):
+
+#table(
+  columns: (auto, auto, auto),
+  inset: 6pt,
+  stroke: 0.5pt,
+  align: center,
+  table.header([*Edad (E)*], [*Comió ayer (C)*], [$P("CP"="SÍ" | E, C)$]),
+  [joven],   [sí], [0.60],
+  [joven],   [no], [0.85],
+  [mediana], [sí], [0.50],
+  [mediana], [no], [0.70],
+  [mayor],   [sí], [0.30],
+  [mayor],   [no], [0.55],
+)
+
+*(c) Distribución condicional de los efectos dada la variable a inferir,
+$P(G | "CP")$ y $P(F | "CP")$:*
+
+#table(
+  columns: (auto, auto, auto),
+  inset: 6pt,
+  stroke: 0.5pt,
+  align: center,
+  table.header([*Efecto*], [$dot | "CP"="SÍ"$], [$dot | "CP"="NO"$]),
+  [$P(G="sí")$], [0.80], [0.25],
+  [$P(G="no")$], [0.20], [0.75],
+  [$P(F="esporádicamente")$], [0.10], [0.70],
+  [$P(F="frecuentemente")$],  [0.40], [0.20],
+  [$P(F="habitualmente")$],   [0.50], [0.10],
+)
+
+A partir de (a) y (b), el sistema deduce la probabilidad _a priori_ marginal
+combinando todas las situaciones de las causas:
+
+$ P("CP"="SÍ") = sum_(E,C) P("CP"="SÍ" | E, C) dot P(E) dot P(C) = 0.668. $
+
+Esta es la creencia inicial antes de observar ningún dato de la persona.
+
+== Pregunta 2
+
+#emph[¿Probabilidad de que le gustaría comer pasta si es _joven_, _no_ comió
+pasta ayer, le gustan los restaurantes italianos ($G="sí"$) y come pasta
+_esporádicamente_?]
+
+Se conocen *las dos causas*, luego la probabilidad ajustada por las causas es
+directamente la de la tabla (b):
+
+$ P("CP"="SÍ" | E="joven", C="no") = 0.85, quad P("CP"="NO" | dots) = 0.15. $
+
+Ahora se incorporan los dos efectos observados ($G="sí"$, $F="esporádicamente"$)
+mediante Bayes. Las verosimilitudes de cada hipótesis son:
+
+$ P(G="sí", F="esp" | "CP"="SÍ") = 0.80 dot 0.10 = 0.08, $
+$ P(G="sí", F="esp" | "CP"="NO") = 0.25 dot 0.70 = 0.175. $
+
+Aplicando el teorema de Bayes (los factores comunes $P(E)P(C)$ se cancelan en
+la normalización):
+
+$ P("CP"="SÍ" | "evidencia") = (0.85 dot 0.08) / (0.85 dot 0.08 + 0.15 dot 0.175) = 0.068 / 0.09425 approx bold(0.7215). $
+
+*La probabilidad de que le gustaría comer pasta es $approx 0.7215$ (72.15 %).*
+
+== Pregunta 3
+
+#emph[¿Probabilidad de que _no_ le gustaría comer pasta si es _mayor_, _sí_
+comió pasta ayer, le gustan los restaurantes italianos ($G="sí"$) y come pasta
+_frecuentemente_?]
+
+De nuevo se conocen las dos causas:
+
+$ P("CP"="SÍ" | E="mayor", C="sí") = 0.30, quad P("CP"="NO" | dots) = 0.70. $
+
+Verosimilitudes con $G="sí"$ y $F="frecuentemente"$:
+
+$ P(dot | "CP"="SÍ") = 0.80 dot 0.40 = 0.32, quad P(dot | "CP"="NO") = 0.25 dot 0.20 = 0.05. $
+
+Teorema de Bayes para la hipótesis $"SÍ"$:
+
+$ P("CP"="SÍ" | "evidencia") = (0.30 dot 0.32) / (0.30 dot 0.32 + 0.70 dot 0.05) = 0.096 / 0.131 approx 0.7328. $
+
+Como nos preguntan por el caso contrario:
+
+$ P("CP"="NO" | "evidencia") = 1 - 0.7328 = (0.70 dot 0.05) / 0.131 approx bold(0.2672). $
+
+*La probabilidad de que NO le gustaría comer pasta es $approx 0.2672$
+(26.72 %).*
+
+== Pregunta 4
+
+#emph[¿Probabilidad de que le gustaría comer pasta si _no se conoce su edad_,
+_no_ comió pasta ayer, le gustan los restaurantes italianos ($G="sí"$) y come
+pasta _frecuentemente_?]
+
+Ahora solo se conoce *una causa* ($C="no"$); la edad es desconocida. El sistema
+*marginaliza* sobre la edad para obtener la probabilidad ajustada:
+
+$ P("CP"="SÍ" | C="no") = sum_E P("CP"="SÍ" | E, C="no") dot P(E) $
+$ = 0.85 dot 0.4 + 0.70 dot 0.3 + 0.55 dot 0.3 = 0.34 + 0.21 + 0.165 = 0.715. $
+
+Por tanto $P("CP"="NO" | C="no") = 0.285$. Verosimilitudes con $G="sí"$ y
+$F="frecuentemente"$ (iguales que en la pregunta 3): $0.32$ para $"SÍ"$ y
+$0.05$ para $"NO"$. Aplicando Bayes:
+
+$ P("CP"="SÍ" | "evidencia") = (0.715 dot 0.32) / (0.715 dot 0.32 + 0.285 dot 0.05) = 0.2288 / 0.24305 approx bold(0.9414). $
+
+*La probabilidad de que le gustaría comer pasta es $approx 0.9414$ (94.14 %).*
+
+Obsérvese que, al no penalizar la edad avanzada y proceder de una persona que
+no comió pasta ayer, los dos indicios fuertemente a favor (le gustan los
+restaurantes italianos y come pasta con frecuencia) elevan notablemente la
+creencia respecto a la inicial de $0.668$.
