@@ -69,55 +69,49 @@
 
 = Datos del trabajo
 
-- *Título del trabajo:* Sistema Basado en el Conocimiento para la recomendación de recetas de cocina (`SE_simple_recetas.clp`).
-- *Asignatura:* Ingeniería del Conocimiento — Práctica 6 (SBC sobre alimentación).
-- *Alumno:* Pablo Linari Pérez.
-- *DNI:* 75571079W.
-- *Curso:* 2025/2026.
 
 El sistema está implementado en CLIPS y se reparte en dos ficheros:
 
 - `SE_simple_recetas.clp`: base de conocimiento, motor de inferencia y diálogo con el usuario.
-- `BDrecetas_100.clp`: base de hechos con ~100 recetas reales (hechos `receta` e `ingrediente`).
+- `BDrecetas_100.clp`: base de hechos con 100 recetas reales (hechos `receta` e `ingrediente`).
 
 = Resumen de cómo funciona el sistema
 
-El sistema es un *asistente experto interactivo* que recomienda una receta de un recetario de unas 100 recetas a partir de las preferencias y restricciones del usuario.
+El sistema es un asistente experto interactivo que recomienda una receta de un recetario de unas 100 recetas a partir de las preferencias y restricciones del usuario.
 
-Su funcionamiento se divide en dos grandes fases:
+Su funcionamiento se divide en dos  fases:
 
-+ *Preproceso de la base de conocimiento (offline respecto al usuario).* Antes de hablar con el usuario, el sistema analiza cada receta y deduce automáticamente propiedades que no vienen dadas explícitamente: si es vegetariana/vegana, si contiene gluten o lactosa, si es picante, su nivel de calorías y de proteínas, su ingrediente relevante, e incluso el tipo de plato cuando no está informado. Estas deducciones se hacen con reglas de alta prioridad (`salience` 2000/1900) para que estén disponibles cuando comience el diálogo.
++ *Preproceso de la base de conocimiento.* Antes de hablar con el usuario, el sistema analiza cada receta y deduce automáticamente propiedades que no vienen dadas explícitamente: si es vegetariana/vegana, si contiene gluten o lactosa, si es picante, su nivel de calorías y de proteínas, su ingrediente relevante, e incluso el tipo de plato cuando no está informado. Estas deducciones se hacen con reglas de alta prioridad (`salience` 2000/1900) para que estén disponibles cuando comience el diálogo.
 
 + *Diálogo y razonamiento con incertidumbre.* El sistema pregunta al usuario, justificando *por qué* hace cada pregunta. Distingue dos clases de información:
-  - *Restricciones* (dieta, sin lactosa, sin gluten, ingrediente obligatorio): conocimiento *cierto*. Una receta que las incumple se *descarta* (filtrado duro).
-  - *Preferencias* (tipo de plato, proteína, densidad calórica, comensales, tiempo): conocimiento *incierto*. No descartan recetas, sino que aportan *evidencia* a favor o en contra mediante un *factor de certeza* (CF) en $[-1,1]$.
+  - *Restricciones* (dieta, sin lactosa, sin gluten, ingrediente obligatorio): conocimiento *cierto*. Una receta que las incumple se *descarta*.
+  - *Preferencias* (tipo de plato, proteína, densidad calórica, comensales, tiempo): se tratan como conocimiento incierto. No descartan recetas, sino que aportan evidencia a favor o en contra mediante un factor de certeza (CF) en $[-1,1]$ de esta manera al final conseguimos asignar distintos CF a cada receta y se escoge el que mejor resultado tenga.
 
-Los factores de certeza de cada receta se combinan con la *fórmula de MYCIN* y se recomienda la receta de mayor CF combinado, explicando al usuario cada aporte de evidencia. El usuario puede *aceptar* la receta, *rechazarla* (se ofrece la siguiente mejor) o *reajustar* un criterio y relanzar el razonamiento.
+Los factores de certeza de cada receta se combinan con la fórmula de MYCIN y se recomienda la receta de mayor CF combinado, explicando al usuario cada aporte de evidencia. El usuario puede aceptar la receta, rechazarla (se ofrece la siguiente mejor) o reajustar un criterio y relanzar el razonamiento.
 
-El sistema integra de forma combinada los *cuatro tipos de razonamiento con incertidumbre* vistos en la asignatura:
+El sistema integra de forma combinada los cuatro tipos de razonamiento con incertidumbre vistos en la asignatura:
 
-- *Razonamiento por defecto:* deducción por mundo cerrado (a falta de evidencia en contra, la receta se asume apta) y, si el usuario no da ninguna preferencia, se asume por defecto que prefiere recetas fáciles.
-- *Lógica difusa:* el encaje de la densidad calórica se mide con el grado de pertenencia (`membership`) de las kcal reales a conjuntos difusos trapezoidales.
-- *Factores de certeza (MYCIN):* motor principal de decisión.
-- *Razonamiento probabilístico:* como segunda opinión, estima la probabilidad de acierto como la media geométrica de la satisfacción por aspecto (cada CF se traduce a una probabilidad y se promedian geométricamente).
+- *Razonamiento por defecto: *si el usuario no da ninguna preferencia, se asume por defecto que prefiere recetas fáciles.
+- *Lógica difusa:* el encaje de la densidad calórica se mide con el grado de pertenencia de las kcal reales a conjuntos difusos trapezoidales.
+- *Factores de certeza (MYCIN):* motor principal de decisión, se utiliza para calcular el CF combinado .
+- *Razonamiento probabilístico:* como segunda opinión, estima la probabilidad de acierto como la media geométrica de la satisfacción por aspecto ,cada CF se traduce a una probabilidad y se promedian geométricamente.
 
 = Descripción del proceso seguido
 
 == Procedimiento seguido para el desarrollo de la base de conocimiento
 
-La base de conocimiento se construyó en las siguientes etapas:
 
-+ *Adquisición y representación del recetario.* Se recopilaron unas 100 recetas reales (con su enlace web de origen) y se representaron como hechos `receta` e `ingrediente` en `BDrecetas_100.clp`. Cada receta guarda únicamente los datos *objetivos* y fáciles de obtener: nombre, tipo de plato, dificultad, comensales, tiempo de cocinado, información nutricional (texto libre) e ingredientes con su cantidad y unidad.
++ *Adquisición y representación del recetario.* Se recopilaron unas 100 recetas reales con su enlace web  y se representaron como hechos `receta` e `ingrediente` en `BDrecetas_100.clp`. Cada receta guarda únicamente los datos objetivos y fáciles de obtener: nombre, tipo de plato, dificultad, comensales, tiempo de cocinado, información nutricional (texto libre) e ingredientes con su cantidad y unidad.
 
-+ *Identificación del conocimiento derivado.* Se observó que muchas propiedades útiles para recomendar (apta para una dieta, contiene alérgenos, nivel calórico/proteico…) *no conviene introducirlas a mano* receta a receta, porque sería tedioso y propenso a errores. Por eso se decidió *deducirlas* mediante reglas a partir de los ingredientes y la información nutricional.
++ *Identificación del conocimiento derivado.* Se observó que muchas propiedades útiles para recomendar apta para una dieta, contiene alérgenos, nivel calórico/proteico… no conviene introducirlas a mano receta a receta, porque sería costoso y produciría  errores. Por eso se decidió deducirlas mediante reglas a partir de los ingredientes y la información nutricional.
 
-+ *Construcción del vocabulario de ingredientes.* Se definieron funciones auxiliares (`es-condimento`, `es-importante`, `es-dulce`, `contiene`) y listas de palabras clave (carnes, pescados, lácteos, harinas, picantes…) que permiten clasificar cada receta inspeccionando los nombres de sus ingredientes mediante búsqueda de subcadenas.
++ *Construcción del vocabulario de ingredientes.* Se han definido funciones auxiliares (`es-condimento`, `es-importante`, `es-dulce`, `contiene`) y listas de palabras clave (carnes, pescados, lácteos, harinas, picantes…) que permiten clasificar cada receta inspeccionando los nombres de sus ingredientes mediante búsqueda de subcadenas.
 
-+ *Definición de las reglas de deducción de propiedades (Módulo 1)* con dos niveles de prioridad: primero los marcadores positivos (algo está presente) y después las reglas de cierre por negación (es vegetariana/vegana/sin gluten/sin lactosa por mundo cerrado).
++ *Definición de las reglas de deducción de propiedades: * Primero se buscan marcadores que indiquen si algo está presente , por ejemplo alimentos obligatorios , después se usa otro nivel para deducir las propiedades que se identifican con negación o afirmación , por ejemplo (es vegetariana/vegana/sin gluten/sin lactosa ).
 
-+ *Diseño del razonamiento con incertidumbre.* Se adaptaron los ejemplos de la asignatura (`ejemplofuzzy.clp`, factores de certeza y razonamiento por defecto) para puntuar las recetas que superan el filtrado.
++ *Diseño del razonamiento con incertidumbre.* Se adaptaron los ejemplos de la asignatura (`ejemplofuzzy.clp`, factores de certeza y razonamiento por defecto) para puntuar las recetas que superan el filtrado según los atributos que se usan para las preferencias.
 
-+ *Refinamiento iterativo.* Se ajustaron los umbrales (calorías baja/media/alta, proteína, conjuntos difusos, valores de CF) probando el sistema con distintas combinaciones de respuestas.
++ *Refinamiento.* Se ajustaron los umbrales (calorías baja/media/alta, proteína, conjuntos difusos, valores de CF) probando el sistema con distintas combinaciones de respuestas para ver que razonamiento se ajustaba mejor al objetivo del sistema.
 
 == Procedimiento de validación y verificación del sistema
 

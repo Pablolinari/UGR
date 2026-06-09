@@ -1,20 +1,16 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;   RAZONAMIENTO BAYESIANO   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;  ¿LE GUSTARIA COMER PASTA HOY? (DOS CAUSAS Y DOS EFECTOS) ;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; CP = comer pasta hoy   (variable a inferir, X)
 ;; E  = edad de la persona            (causa que influye)
 ;; C  = comio pasta ayer              (causa que influye)
 ;; G  = le gustan los restaurantes italianos   (efecto)
 ;; F  = frecuencia con la que come pasta        (efecto)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (deffacts relaciones_causa_efecto
-(influye  edad ComerPasta)        ; la edad influye en la probabilidad de comer pasta
-(influye  comio_ayer ComerPasta)  ; haber comido pasta ayer influye
-(efecto restaurantes_italianos ComerPasta)  ; le gustan los restaurantes italianos
-(efecto frecuencia ComerPasta)              ; frecuencia con la que come pasta
+(influye  edad ComerPasta)        
+(influye  comio_ayer ComerPasta) 
+(efecto restaurantes_italianos ComerPasta)  
+(efecto frecuencia ComerPasta)             
 )
 
 (deffacts probabilidad_variables_que_influyen
@@ -35,10 +31,8 @@
 )
 
 (deffacts probabilidad_efectos
-; G = le gustan los restaurantes italianos (efecto binario)
 (probcond restaurantes_italianos si ComerPasta SI 0.8)
 (probcond restaurantes_italianos si ComerPasta NO 0.25)
-; F = frecuencia con la que come pasta (efecto con tres valores)
 (probcond frecuencia esporadicamente ComerPasta SI 0.10)
 (probcond frecuencia frecuentemente  ComerPasta SI 0.4)
 (probcond frecuencia habitualmente   ComerPasta SI 0.5)
@@ -46,7 +40,6 @@
 (probcond frecuencia frecuentemente  ComerPasta NO 0.2)
 (probcond frecuencia habitualmente   ComerPasta NO 0.1)
 )
-; Inicializamos valores para calculos a partir de probcond2
 (deffacts inicializacion_probabilidades
 (probconj2 ComerPasta SI edad joven 0)
 (probconj2 ComerPasta SI edad mediana 0)
@@ -60,7 +53,7 @@
 =>
 (printout t "Este es un sistema para estimar si a usted le gustaria comer pasta hoy" crlf)
 (assert (informar datos))
-(printout t crlf crlf "DATOS: Los datos estadisticos de que dispongo son:" crlf)
+(printout t crlf crlf "DATOS:" crlf)
 )
 
 ;;;; MODULO INFORMAR DATOS ;;;;
@@ -182,7 +175,7 @@
 (declare (salience -2))
 ?f <- (deducciones simples)
 =>
-(printout t crlf crlf "INDAGANDO: Vamos a indagar en base a esos datos" crlf)
+(printout t crlf crlf "busco en la base de datos" crlf)
 (retract ?f)
 (assert (red causal causas))
 )
@@ -299,14 +292,7 @@
 )
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;   INTERACCION CON EL USUARIO  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;  Se solicitan al usuario (total o parcialmente) los datos de la persona:
-;;;  la edad, si comio pasta ayer, si le gustan los restaurantes italianos y
-;;;  la frecuencia con la que come pasta. Con ello se estima la probabilidad
-;;;  de que a la persona le guste comer pasta.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;;;   INTERACCION CON EL USUARIO  ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defrule preguntar_edad
 (red causal causas)
