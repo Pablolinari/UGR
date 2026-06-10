@@ -76,7 +76,7 @@ obtenidas ejecutando directamente los programas sobre CLIPS.
 == Deducibilidad de préstamos: `prestamo.clp`
 
 `prestamo.clp` es un sistema de clasificación que decide si un préstamo es
-*deducible* o *no deducible* en la declaración de la renta. Parte de una lista
+deducible o no deducible en la declaración de la renta. Parte de una lista
 de préstamos predefinidos (cada uno con un `tipo` y un `destino`) y permite
 seleccionar uno existente o dar de alta uno nuevo respondiendo a las preguntas
 de si es personal y si se destina a vivienda.
@@ -120,8 +120,8 @@ de si es personal y si se destina a vivienda.
 
 == Recomendación de motorización: `coche.clp`
 
-`coche.clp` es un sistema de recomendación basado en *factores de certeza
-(CF)*. Realiza siete preguntas (presupuesto, kilometraje anual, trayectos
+`coche.clp` es un sistema de recomendación basado en factores de certeza
+(CF). Realiza siete preguntas (presupuesto, kilometraje anual, trayectos
 largos, remolque pesado, uso urbano, viajes a Zonas de Bajas Emisiones y
 beneficios por etiqueta Cero) y, según el contexto, dispara reglas que aportan
 evidencia a favor o en contra de cada tipo de motorización. Finalmente se recomienda la motorización con mayor factor de certeza.
@@ -182,8 +182,8 @@ evidencia a favor o en contra de cada tipo de motorización. Finalmente se recom
 
 = Sistema experto difuso: `infarto.clp`
 
-`infarto.clp` estima el *riesgo de infarto* de un paciente mediante un sistema
-experto *difuso* . A partir de tres variables de
+`infarto.clp` estima el riesgo de infarto de un paciente mediante un sistema
+experto difuso . A partir de tres variables de
 entrada (índice de masa corporal *IMC*, *edad* y *colesterol*), el sistema determina la probabilidad de sufrir un infarto
 
 Cada entrada se evalúa sobre funciones de pertenencia
