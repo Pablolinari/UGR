@@ -1,0 +1,994 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/ic/nutricion#"
+     xml:base="http://www.semanticweb.org/ic/nutricion"
+     xmlns:nut="http://www.semanticweb.org/ic/nutricion#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/ic/nutricion">
+        <rdfs:comment xml:lang="es">Ontologia de un centro de nutricion web que recomienda
+recetas a los clientes en funcion de su perfil (dieta que sigue, tipo de plato que
+prioriza, ingredientes obligatorios y alergias).
+Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comment>
+        <rdfs:label xml:lang="es">Ontologia Centro de Nutricion</rdfs:label>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Calorias -->
+
+    <rdfs:Datatype rdf:about="http://www.semanticweb.org/ic/nutricion#Calorias">
+        <rdfs:comment xml:lang="es">Entero no negativo (kcal).</rdfs:comment>
+        <rdfs:label xml:lang="es">Calorias</rdfs:label>
+        <owl:equivalentClass>
+            <rdfs:Datatype>
+                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                <owl:withRestrictions rdf:parseType="Collection">
+                    <rdf:Description>
+                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</xsd:minInclusive>
+                    </rdf:Description>
+                </owl:withRestrictions>
+            </rdfs:Datatype>
+        </owl:equivalentClass>
+    </rdfs:Datatype>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Edad -->
+
+    <rdfs:Datatype rdf:about="http://www.semanticweb.org/ic/nutricion#Edad">
+        <rdfs:comment xml:lang="es">Entero entre 0 y 120 anios.</rdfs:comment>
+        <rdfs:label xml:lang="es">Edad</rdfs:label>
+        <owl:equivalentClass>
+            <rdfs:Datatype>
+                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                <owl:withRestrictions rdf:parseType="Collection">
+                    <rdf:Description>
+                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</xsd:minInclusive>
+                    </rdf:Description>
+                    <rdf:Description>
+                        <xsd:maxInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">120</xsd:maxInclusive>
+                    </rdf:Description>
+                </owl:withRestrictions>
+            </rdfs:Datatype>
+        </owl:equivalentClass>
+    </rdfs:Datatype>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Gramos -->
+
+    <rdfs:Datatype rdf:about="http://www.semanticweb.org/ic/nutricion#Gramos">
+        <rdfs:comment xml:lang="es">Decimal no negativo (gramos de macronutriente por 100g).</rdfs:comment>
+        <rdfs:label xml:lang="es">Gramos</rdfs:label>
+        <owl:equivalentClass>
+            <rdfs:Datatype>
+                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                <owl:withRestrictions rdf:parseType="Collection">
+                    <rdf:Description>
+                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0</xsd:minInclusive>
+                    </rdf:Description>
+                </owl:withRestrictions>
+            </rdfs:Datatype>
+        </owl:equivalentClass>
+    </rdfs:Datatype>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Sexo -->
+
+    <rdfs:Datatype rdf:about="http://www.semanticweb.org/ic/nutricion#Sexo">
+        <rdfs:comment xml:lang="es">Cadena enumerada: Hombre o Mujer.</rdfs:comment>
+        <rdfs:label xml:lang="es">Sexo</rdfs:label>
+        <owl:equivalentClass>
+            <rdfs:Datatype>
+                <owl:oneOf>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+                        <rdf:first>Hombre</rdf:first>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#List"/>
+                                <rdf:first>Mujer</rdf:first>
+                                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                            </rdf:Description>
+                        </rdf:rest>
+                    </rdf:Description>
+                </owl:oneOf>
+            </rdfs:Datatype>
+        </owl:equivalentClass>
+    </rdfs:Datatype>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#aptaParaDieta -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#aptaParaDieta">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+        <rdfs:comment xml:lang="es">Tipos de dieta para los que la receta es adecuada.</rdfs:comment>
+        <rdfs:label xml:lang="es">apta para dieta</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#contieneAlergeno -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#contieneAlergeno">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Alergeno"/>
+        <rdfs:comment xml:lang="es">Alergeno presente en un ingrediente.</rdfs:comment>
+        <rdfs:label xml:lang="es">contiene alergeno</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#esIngredienteDe -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#esIngredienteDe">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/ic/nutricion#tieneIngrediente"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:comment xml:lang="es">Inversa de tiene ingrediente.</rdfs:comment>
+        <rdfs:label xml:lang="es">es ingrediente de</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#ingredienteObligatorio -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#ingredienteObligatorio">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:comment xml:lang="es">Ingrediente que el cliente exige que aparezca en sus recetas.</rdfs:comment>
+        <rdfs:label xml:lang="es">ingrediente obligatorio</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#priorizaTipoPlato -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#priorizaTipoPlato">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+        <rdfs:comment xml:lang="es">Tipo de plato que el cliente prioriza en las recomendaciones.</rdfs:comment>
+        <rdfs:label xml:lang="es">prioriza tipo de plato</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#recetaContieneAlergeno -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#recetaContieneAlergeno">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Alergeno"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#tieneIngrediente"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#contieneAlergeno"/>
+        </owl:propertyChainAxiom>
+        <rdfs:comment xml:lang="es">Alergenos presentes en una receta, deducidos de los alergenos de sus ingredientes mediante una cadena de propiedades.</rdfs:comment>
+        <rdfs:label xml:lang="es">receta contiene alergeno</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#sigueDieta -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#sigueDieta">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+        <rdfs:comment xml:lang="es">Dieta que sigue el cliente.</rdfs:comment>
+        <rdfs:label xml:lang="es">sigue dieta</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#tieneAlergia -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#tieneAlergia">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Alergeno"/>
+        <rdfs:comment xml:lang="es">Alergias o intolerancias del cliente.</rdfs:comment>
+        <rdfs:label xml:lang="es">tiene alergia</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#tieneIngrediente -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#tieneIngrediente">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:comment xml:lang="es">Ingredientes que componen una receta.</rdfs:comment>
+        <rdfs:label xml:lang="es">tiene ingrediente</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#tieneTipoPlato -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/ic/nutricion#tieneTipoPlato">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+        <rdfs:comment xml:lang="es">Categoria de plato de la receta: entrante, principal o postre.</rdfs:comment>
+        <rdfs:label xml:lang="es">tiene tipo de plato</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#calorias -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#calorias">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Calorias"/>
+        <rdfs:label xml:lang="es">calorias (por 100g)</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#carbohidratos -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#carbohidratos">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Gramos"/>
+        <rdfs:label xml:lang="es">carbohidratos (g/100g)</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#comensales -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#comensales">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:label xml:lang="es">comensales</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#descripcion -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#descripcion">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label xml:lang="es">descripcion</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#edad -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#edad">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Edad"/>
+        <rdfs:label xml:lang="es">edad</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#grasas -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#grasas">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Gramos"/>
+        <rdfs:label xml:lang="es">grasas (g/100g)</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#likes -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#likes">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#nonNegativeInteger"/>
+        <rdfs:label xml:lang="es">likes</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#link -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#link">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#anyURI"/>
+        <rdfs:label xml:lang="es">link</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#nombre -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#nombre">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment xml:lang="es">Nombre identificativo. Slot comun a varias clases.</rdfs:comment>
+        <rdfs:label xml:lang="es">nombre</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#proteinas -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#proteinas">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Gramos"/>
+        <rdfs:label xml:lang="es">proteinas (g/100g)</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#sexo -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#sexo">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/ic/nutricion#Sexo"/>
+        <rdfs:label xml:lang="es">sexo</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#tiempoPreparacionMin -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/ic/nutricion#tiempoPreparacionMin">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:label xml:lang="es">tiempo de preparacion (min)</rdfs:label>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Alergeno -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#Alergeno">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Gluten"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Lactosa"/>
+                </owl:oneOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Sustancia que puede provocar alergia o intolerancia.</rdfs:comment>
+        <rdfs:label xml:lang="es">Alergeno</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Cliente -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#Cliente">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#sigueDieta"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#sigueDieta"/>
+                <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment xml:lang="es">Usuario del centro de nutricion. Todo cliente sigue exactamente una dieta.</rdfs:comment>
+        <rdfs:label xml:lang="es">Cliente</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#ClienteVegano -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#ClienteVegano">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#sigueDieta"/>
+                        <owl:hasValue rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegana"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Cliente que sigue una dieta vegana.</rdfs:comment>
+        <rdfs:label xml:lang="es">Cliente Vegano</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Dieta -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#Dieta">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Normal"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Vegana"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Vegetariana"/>
+                </owl:oneOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Regimen alimentario.</rdfs:comment>
+        <rdfs:label xml:lang="es">Dieta</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Ingrediente -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#Ingrediente">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#calorias"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ic/nutricion#Calorias"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment xml:lang="es">Alimento basico que compone las recetas, con su informacion nutricional.</rdfs:comment>
+        <rdfs:label xml:lang="es">Ingrediente</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#IngredienteProteico -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#IngredienteProteico">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#proteinas"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">20.0</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Ingrediente con 20g o mas de proteina por cada 100g.</rdfs:comment>
+        <rdfs:label xml:lang="es">Ingrediente Proteico</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Receta -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#Receta">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#tieneIngrediente"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#tieneTipoPlato"/>
+                <owl:someValuesFrom rdf:resource="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment xml:lang="es">Plato recomendable. Toda receta tiene al menos un ingrediente y un unico tipo de plato.</rdfs:comment>
+        <rdfs:label xml:lang="es">Receta</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#RecetaConLactosa -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#RecetaConLactosa">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#recetaContieneAlergeno"/>
+                        <owl:hasValue rdf:resource="http://www.semanticweb.org/ic/nutricion#Lactosa"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Receta que contiene algun ingrediente con lactosa.</rdfs:comment>
+        <rdfs:label xml:lang="es">Receta Con Lactosa</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#RecetaPopular -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#RecetaPopular">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#likes"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:minInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">100</xsd:minInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Receta con 100 likes o mas.</rdfs:comment>
+        <rdfs:label xml:lang="es">Receta Popular</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#RecetaPostre -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#RecetaPostre">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#tieneTipoPlato"/>
+                        <owl:hasValue rdf:resource="http://www.semanticweb.org/ic/nutricion#Postre"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Receta cuyo tipo de plato es postre.</rdfs:comment>
+        <rdfs:label xml:lang="es">Receta Postre</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#RecetaRapida -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#RecetaRapida">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#tiempoPreparacionMin"/>
+                        <owl:someValuesFrom>
+                            <rdfs:Datatype>
+                                <owl:onDatatype rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                                <owl:withRestrictions rdf:parseType="Collection">
+                                    <rdf:Description>
+                                        <xsd:maxInclusive rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</xsd:maxInclusive>
+                                    </rdf:Description>
+                                </owl:withRestrictions>
+                            </rdfs:Datatype>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Receta que se prepara en 15 minutos o menos.</rdfs:comment>
+        <rdfs:label xml:lang="es">Receta Rapida</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#RecetaVegana -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#RecetaVegana">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/ic/nutricion#aptaParaDieta"/>
+                        <owl:hasValue rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegana"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Receta apta para la dieta vegana.</rdfs:comment>
+        <rdfs:label xml:lang="es">Receta Vegana</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#TipoPlato -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/ic/nutricion#TipoPlato">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Entrante"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Postre"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Principal"/>
+                </owl:oneOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="es">Categoria del plato dentro del menu.</rdfs:comment>
+        <rdfs:label xml:lang="es">Tipo de Plato</rdfs:label>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Ana -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Ana">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <ingredienteObligatorio rdf:resource="http://www.semanticweb.org/ic/nutricion#Quinoa"/>
+        <priorizaTipoPlato rdf:resource="http://www.semanticweb.org/ic/nutricion#Principal"/>
+        <sigueDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegana"/>
+        <edad rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">30</edad>
+        <nombre>Ana</nombre>
+        <sexo>Mujer</sexo>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#BatidoProteico -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#BatidoProteico">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <aptaParaDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegetariana"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Leche"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Platano"/>
+        <tieneTipoPlato rdf:resource="http://www.semanticweb.org/ic/nutricion#Entrante"/>
+        <comensales rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</comensales>
+        <descripcion>Batido de platano y leche, rico en proteinas.</descripcion>
+        <likes rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">200</likes>
+        <link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://nutricion.example/recetas/batido-proteico</link>
+        <nombre>Batido proteico de platano</nombre>
+        <tiempoPreparacionMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</tiempoPreparacionMin>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#EnsaladaDeQuinoa -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#EnsaladaDeQuinoa">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <aptaParaDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegana"/>
+        <aptaParaDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegetariana"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Quinoa"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Tofu"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Tomate"/>
+        <tieneTipoPlato rdf:resource="http://www.semanticweb.org/ic/nutricion#Principal"/>
+        <comensales rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</comensales>
+        <descripcion>Ensalada fresca de quinoa con tomate y tofu.</descripcion>
+        <likes rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">150</likes>
+        <link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://nutricion.example/recetas/ensalada-quinoa</link>
+        <nombre>Ensalada de quinoa</nombre>
+        <tiempoPreparacionMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">15</tiempoPreparacionMin>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Entrante -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Entrante">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+        <nombre>Entrante</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Gluten -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Gluten">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Alergeno"/>
+        <nombre>Gluten</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Juan -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Juan">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+        <ingredienteObligatorio rdf:resource="http://www.semanticweb.org/ic/nutricion#PechugaPollo"/>
+        <priorizaTipoPlato rdf:resource="http://www.semanticweb.org/ic/nutricion#Postre"/>
+        <sigueDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Normal"/>
+        <tieneAlergia rdf:resource="http://www.semanticweb.org/ic/nutricion#Lactosa"/>
+        <edad rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">25</edad>
+        <nombre>Juan</nombre>
+        <sexo>Hombre</sexo>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Lactosa -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Lactosa">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Alergeno"/>
+        <nombre>Lactosa</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Leche -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Leche">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <contieneAlergeno rdf:resource="http://www.semanticweb.org/ic/nutricion#Lactosa"/>
+        <calorias rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">64</calorias>
+        <carbohidratos rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4.8</carbohidratos>
+        <grasas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3.6</grasas>
+        <nombre>Leche</nombre>
+        <proteinas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3.4</proteinas>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Normal -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Normal">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+        <nombre>Normal</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#PechugaPollo -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#PechugaPollo">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <calorias rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">165</calorias>
+        <carbohidratos rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0</carbohidratos>
+        <grasas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3.6</grasas>
+        <nombre>Pechuga de pollo</nombre>
+        <proteinas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">31.0</proteinas>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Platano -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Platano">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <calorias rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">89</calorias>
+        <carbohidratos rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">22.8</carbohidratos>
+        <grasas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.3</grasas>
+        <nombre>Platano</nombre>
+        <proteinas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.1</proteinas>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#PolloAlHorno -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#PolloAlHorno">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <aptaParaDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Normal"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#PechugaPollo"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Tomate"/>
+        <tieneTipoPlato rdf:resource="http://www.semanticweb.org/ic/nutricion#Principal"/>
+        <comensales rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">4</comensales>
+        <descripcion>Pechuga de pollo al horno con tomate.</descripcion>
+        <likes rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">80</likes>
+        <link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://nutricion.example/recetas/pollo-al-horno</link>
+        <nombre>Pollo al horno</nombre>
+        <tiempoPreparacionMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">45</tiempoPreparacionMin>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Postre -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Postre">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+        <nombre>Postre</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Principal -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Principal">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+        <nombre>Principal</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Quinoa -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Quinoa">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <calorias rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">120</calorias>
+        <carbohidratos rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">21.3</carbohidratos>
+        <grasas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.9</grasas>
+        <nombre>Quinoa</nombre>
+        <proteinas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4.4</proteinas>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#TartaDeChocolate -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#TartaDeChocolate">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Receta"/>
+        <aptaParaDieta rdf:resource="http://www.semanticweb.org/ic/nutricion#Vegetariana"/>
+        <tieneIngrediente rdf:resource="http://www.semanticweb.org/ic/nutricion#Leche"/>
+        <tieneTipoPlato rdf:resource="http://www.semanticweb.org/ic/nutricion#Postre"/>
+        <comensales rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</comensales>
+        <descripcion>Tarta de chocolate con leche.</descripcion>
+        <likes rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">300</likes>
+        <link rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://nutricion.example/recetas/tarta-chocolate</link>
+        <nombre>Tarta de chocolate</nombre>
+        <tiempoPreparacionMin rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">60</tiempoPreparacionMin>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Tofu -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Tofu">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <calorias rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">76</calorias>
+        <carbohidratos rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.9</carbohidratos>
+        <grasas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4.8</grasas>
+        <nombre>Tofu</nombre>
+        <proteinas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">8.0</proteinas>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Tomate -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Tomate">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+        <calorias rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">18</calorias>
+        <carbohidratos rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3.9</carbohidratos>
+        <grasas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.2</grasas>
+        <nombre>Tomate</nombre>
+        <proteinas rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.9</proteinas>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Vegana -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Vegana">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+        <nombre>Vegana</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/ic/nutricion#Vegetariana -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/ic/nutricion#Vegetariana">
+        <rdf:type rdf:resource="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+        <nombre>Vegetariana</nombre>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Alergeno"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Cliente"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Dieta"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Ingrediente"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Receta"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#TipoPlato"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
+        <owl:distinctMembers rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Ana"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#BatidoProteico"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#EnsaladaDeQuinoa"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Juan"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Leche"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#PechugaPollo"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Platano"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#PolloAlHorno"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Quinoa"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#TartaDeChocolate"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Tofu"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Tomate"/>
+        </owl:distinctMembers>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
+        <owl:distinctMembers rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Entrante"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Gluten"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Lactosa"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Normal"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Postre"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Principal"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Vegana"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/ic/nutricion#Vegetariana"/>
+        </owl:distinctMembers>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+

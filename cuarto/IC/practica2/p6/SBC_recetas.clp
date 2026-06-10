@@ -554,9 +554,9 @@
   (return "normal")
 )
 
-;;; RAZONAMIENTO CON INCERTIDUMBRE 
-
-os alimentan o complementan esa decision y se explican al usuario.
+;;; RAZONAMIENTO CON INCERTIDUMBRE
+;;; Cada preferencia del usuario genera evidencias con factor de certeza (CF)
+;;; que alimentan o complementan esa decision y se explican al usuario.
 
 ; Mantiene el CF dentro de (-1,1) para evitar divisiones por cero al combinar.
 (deffunction acotar-cf (?x)
@@ -668,7 +668,10 @@ os alimentan o complementan esa decision y se explican al usuario.
 )
 
 ; Redacta, al final del proceso, un texto natural que justifica por que se
-; aconseja la receta   
+; aconseja la receta al usuario, combinando restricciones, evidencias y CF.
+(deffunction explicar-receta (?r ?cf ?dieta ?sl ?sg ?ing)
+  ;; --- Restricciones obligatorias que la receta respeta ---
+  (bind ?restr (create$))
   (if (and (neq ?dieta ns) (neq ?dieta normal) (neq ?dieta fin)) then
     (bind ?restr (create$ ?restr (str-cat "es apta para dieta " ?dieta))))
   (if (eq ?sl si) then (bind ?restr (create$ ?restr "no contiene lactosa")))
@@ -768,7 +771,7 @@ os alimentan o complementan esa decision y se explican al usuario.
 
   ;; MODULO 3: proponer tipo de receta segun preferencia del usuario.
   ;; Si responde ns, no aporta evidencia de tipo.
-  (printout t crlf "que pregunto esto] El tipo es una preferencia: no descarta, da mucha certeza a las recetas del tipo pedido." crlf)
+  (printout t crlf "El tipo es una preferencia: no descarta, da mucha certeza a las recetas del tipo pedido." crlf)
   (printout t "Tipo (principal|entrante|postre|ns|fin): ")
   (assert (respuesta-tipo (normalizar-respuesta (read))))
 )

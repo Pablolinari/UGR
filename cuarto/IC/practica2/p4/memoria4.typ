@@ -33,6 +33,7 @@
 #set heading(numbering: "1.1")
 #show heading: set block(above: 1.4em, below: 1em)
 
+
 // --- PORTADA ---
 #align(center)[
   #v(1cm)
@@ -67,11 +68,11 @@
 
 = Inferencias del razonador
 
-Esta ontología (`nutricion.owl`) modela un centro de nutrición con las clases
+Esta ontología  modela un centro de nutrición con las clases
 *Cliente*, *Receta*, *Ingrediente*, *TipoPlato*, *Dieta* y *Alergeno*. Se ha
 ejecutado el razonador #emph[HermiT], que confirma que la ontología es
-#strong[consistente]. A continuación se recogen tres ejemplos de hechos
-deducidos por el razonador (ninguno aparece asertado de forma explícita) junto
+consistente. A continuación se recogen tres ejemplos de hechos
+deducidos por el razonador  junto
 con su explicación.
 
 == Valor de propiedad deducido
@@ -81,15 +82,12 @@ con su explicación.
 ]
 
 En la ontología se declara la propiedad de objeto `esIngredienteDe` como
-#emph[inversa] de `tieneIngrediente`:
+inversa de `tieneIngrediente`:
 
-```
-esIngredienteDe  owl:inverseOf  tieneIngrediente
-```
 
 Sobre el individuo `EnsaladaDeQuinoa` solo se aserta el hecho directo
 `EnsaladaDeQuinoa tieneIngrediente Quinoa`. Aplicando la semántica de
-`owl:inverseOf` (si un individuo $a$ se relaciona con $b$ mediante una propiedad
+`inverseOf` (si un individuo $a$ se relaciona con $b$ mediante una propiedad
 $P$, entonces $b$ se relaciona con $a$ mediante su inversa $P^(-1)$), el
 razonador deduce automáticamente el valor recíproco:
 
@@ -97,8 +95,13 @@ razonador deduce automáticamente el valor recíproco:
 Quinoa  esIngredienteDe  EnsaladaDeQuinoa
 ```
 
-Este valor no se ha introducido manualmente —se respeta el criterio de asertar
-solo los valores no deducibles—: lo genera el razonador al sincronizar.
+Este valor no se ha introducido manualmente , se respeta el criterio de asertar
+solo los valores no deducibles, lo genera el razonador al sincronizar.
+
+
+  #image("infoquinoa.png", width: 80%)
+  #image("expquinoa.png", width: 80%)
+
 
 == Axioma de clase deducido (clasificación de un individuo)
 
@@ -106,7 +109,7 @@ solo los valores no deducibles—: lo genera el razonador al sincronizar.
   *Hecho inferido:* `Ana rdf:type ClienteVegano`
 ]
 
-`ClienteVegano` es una #emph[clase definida] (no primitiva), declarada como
+`ClienteVegano` es una clase definida no primitiva, declarada como
 equivalente a la intersección de `Cliente` con los individuos cuya dieta es
 `Vegana`:
 
@@ -115,7 +118,7 @@ ClienteVegano  ≡  Cliente  ⊓  (sigueDieta value Vegana)
 ```
 
 Del individuo `Ana` solo se asertan los hechos `Ana rdf:type Cliente` y
-`Ana sigueDieta Vegana`; en ningún momento se declara que sea `ClienteVegano`.
+`Ana sigueDieta Vegana`, en ningún momento se declara que sea `ClienteVegano`.
 Como `Ana` satisface las dos condiciones necesarias y suficientes de la
 definición (es un `Cliente` y su valor de `sigueDieta` es exactamente `Vegana`),
 el razonador deduce el nuevo axioma de tipo:
@@ -124,10 +127,9 @@ el razonador deduce el nuevo axioma de tipo:
 Ana  rdf:type  ClienteVegano
 ```
 
-Es decir, #emph[clasifica] el individuo dentro de la clase definida. De forma
-análoga, el razonador deduce `PechugaPollo rdf:type IngredienteProteico`, ya que
-su valor de `proteinas` es $31.0 >= 20.0$, lo que satisface la definición de
-`IngredienteProteico`.
+Es decir, clasifica el individuo dentro de la clase definida. 
+#image("infoana.png", width: 80%)
+  #image("expana.png", width: 80%)
 
 == Relación de jerarquía deducida
 
@@ -135,23 +137,20 @@ su valor de `proteinas` es $31.0 >= 20.0$, lo que satisface la definición de
   *Hecho inferido:* `RecetaVegana ⊑ Receta` (RecetaVegana es subclase de Receta)
 ]
 
-La clase `RecetaVegana` se ha definido #emph[únicamente] mediante una
-equivalencia, sin declarar explícitamente ninguna relación `rdfs:subClassOf`:
+La clase `RecetaVegana` se ha definido únicamente mediante una
+equivalencia, sin declarar explícitamente ninguna relación `subClassOf`:
 
 ```
 RecetaVegana  ≡  Receta  ⊓  (aptaParaDieta value Vegana)
 ```
 
 A partir de esta definición, el razonador deduce que toda instancia de
-`RecetaVegana` es necesariamente una instancia de `Receta` (la intersección es
-un subconjunto de cada uno de sus operandos) e infiere la relación de jerarquía:
+`RecetaVegana` es necesariamente una instancia de `Receta`  e infiere la relación de jerarquía:
 
 ```
-RecetaVegana  rdfs:subClassOf  Receta
+RecetaVegana  subClassOf  Receta
 ```
 
-Esta arista no estaba asertada: antes de razonar, `RecetaVegana` colgaba
-directamente de `owl:Thing` en la jerarquía. Tras la clasificación, el razonador
-la reubica como subclase de `Receta`. El mismo mecanismo coloca `ClienteVegano`
-bajo `Cliente`, `IngredienteProteico` bajo `Ingrediente`, y `RecetaPostre`,
-`RecetaRapida` y `RecetaPopular` bajo `Receta`.
+
+  #image("inforeceta.png", width: 80%)
+  #image("expreceta.png", width: 80%)

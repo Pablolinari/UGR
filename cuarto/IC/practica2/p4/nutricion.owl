@@ -23,13 +23,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:label xml:lang="es">Ontologia Centro de Nutricion</rdfs:label>
     </owl:Ontology>
 
-
-    <!-- =========================================================== -->
-    <!--  TIPOS DE DATOS PERSONALIZADOS                              -->
-    <!--  (se crean nuevos datatypes restringiendo los de XSD)       -->
-    <!-- =========================================================== -->
-
-    <!-- Edad: entero entre 0 y 120 -->
     <rdfs:Datatype rdf:about="&nut;Edad">
         <rdfs:label xml:lang="es">Edad</rdfs:label>
         <rdfs:comment xml:lang="es">Entero entre 0 y 120 anios.</rdfs:comment>
@@ -48,7 +41,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </rdfs:Datatype>
 
-    <!-- Calorias: entero no negativo -->
     <rdfs:Datatype rdf:about="&nut;Calorias">
         <rdfs:label xml:lang="es">Calorias</rdfs:label>
         <rdfs:comment xml:lang="es">Entero no negativo (kcal).</rdfs:comment>
@@ -64,7 +56,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </rdfs:Datatype>
 
-    <!-- Gramos: decimal no negativo, para los macronutrientes -->
     <rdfs:Datatype rdf:about="&nut;Gramos">
         <rdfs:label xml:lang="es">Gramos</rdfs:label>
         <rdfs:comment xml:lang="es">Decimal no negativo (gramos de macronutriente por 100g).</rdfs:comment>
@@ -80,7 +71,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </rdfs:Datatype>
 
-    <!-- Sexo: cadena enumerada (Hombre | Mujer) -->
     <rdfs:Datatype rdf:about="&nut;Sexo">
         <rdfs:label xml:lang="es">Sexo</rdfs:label>
         <rdfs:comment xml:lang="es">Cadena enumerada: Hombre o Mujer.</rdfs:comment>
@@ -101,12 +91,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </rdfs:Datatype>
 
-
-    <!-- =========================================================== -->
-    <!--  PROPIEDADES DE TIPO OBJETO                                 -->
-    <!-- =========================================================== -->
-
-    <!-- Receta p-tiene Ingrediente -->
     <owl:ObjectProperty rdf:about="&nut;tieneIngrediente">
         <rdfs:label xml:lang="es">tiene ingrediente</rdfs:label>
         <rdfs:comment xml:lang="es">Ingredientes que componen una receta.</rdfs:comment>
@@ -122,7 +106,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Receta"/>
     </owl:ObjectProperty>
 
-    <!-- Receta p-tipo TipoPlato (cada receta es de un unico tipo de plato) -->
     <owl:ObjectProperty rdf:about="&nut;tieneTipoPlato">
         <rdfs:label xml:lang="es">tiene tipo de plato</rdfs:label>
         <rdfs:comment xml:lang="es">Categoria de plato de la receta: entrante, principal o postre.</rdfs:comment>
@@ -131,7 +114,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;TipoPlato"/>
     </owl:ObjectProperty>
 
-    <!-- Receta p-dieta Dieta -->
     <owl:ObjectProperty rdf:about="&nut;aptaParaDieta">
         <rdfs:label xml:lang="es">apta para dieta</rdfs:label>
         <rdfs:comment xml:lang="es">Tipos de dieta para los que la receta es adecuada.</rdfs:comment>
@@ -139,7 +121,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Dieta"/>
     </owl:ObjectProperty>
 
-    <!-- Cliente p-sigue Dieta (un cliente sigue una unica dieta) -->
     <owl:ObjectProperty rdf:about="&nut;sigueDieta">
         <rdfs:label xml:lang="es">sigue dieta</rdfs:label>
         <rdfs:comment xml:lang="es">Dieta que sigue el cliente.</rdfs:comment>
@@ -148,7 +129,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Dieta"/>
     </owl:ObjectProperty>
 
-    <!-- Cliente p-prioridad TipoPlato -->
     <owl:ObjectProperty rdf:about="&nut;priorizaTipoPlato">
         <rdfs:label xml:lang="es">prioriza tipo de plato</rdfs:label>
         <rdfs:comment xml:lang="es">Tipo de plato que el cliente prioriza en las recomendaciones.</rdfs:comment>
@@ -156,7 +136,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;TipoPlato"/>
     </owl:ObjectProperty>
 
-    <!-- Cliente p-obligatoria Ingrediente -->
     <owl:ObjectProperty rdf:about="&nut;ingredienteObligatorio">
         <rdfs:label xml:lang="es">ingrediente obligatorio</rdfs:label>
         <rdfs:comment xml:lang="es">Ingrediente que el cliente exige que aparezca en sus recetas.</rdfs:comment>
@@ -164,7 +143,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Ingrediente"/>
     </owl:ObjectProperty>
 
-    <!-- Cliente p-tiene Alergias -->
     <owl:ObjectProperty rdf:about="&nut;tieneAlergia">
         <rdfs:label xml:lang="es">tiene alergia</rdfs:label>
         <rdfs:comment xml:lang="es">Alergias o intolerancias del cliente.</rdfs:comment>
@@ -172,14 +150,24 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Alergeno"/>
     </owl:ObjectProperty>
 
+    <owl:ObjectProperty rdf:about="&nut;contieneAlergeno">
+        <rdfs:label xml:lang="es">contiene alergeno</rdfs:label>
+        <rdfs:comment xml:lang="es">Alergeno presente en un ingrediente.</rdfs:comment>
+        <rdfs:domain rdf:resource="&nut;Ingrediente"/>
+        <rdfs:range rdf:resource="&nut;Alergeno"/>
+    </owl:ObjectProperty>
 
-    <!-- =========================================================== -->
-    <!--  PROPIEDADES DE TIPO DATO (SLOTS)                           -->
-    <!-- =========================================================== -->
+    <owl:ObjectProperty rdf:about="&nut;recetaContieneAlergeno">
+        <rdfs:label xml:lang="es">receta contiene alergeno</rdfs:label>
+        <rdfs:comment xml:lang="es">Alergenos presentes en una receta, deducidos de los alergenos de sus ingredientes mediante una cadena de propiedades.</rdfs:comment>
+        <rdfs:domain rdf:resource="&nut;Receta"/>
+        <rdfs:range rdf:resource="&nut;Alergeno"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&nut;tieneIngrediente"/>
+            <rdf:Description rdf:about="&nut;contieneAlergeno"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
 
-    <!-- nombre: slot comun a Ingrediente, Receta y Cliente.            -->
-    <!-- Se declara SIN dominio, al nivel mas alto de la jerarquia,     -->
-    <!-- por ser compartido por varias clases.                         -->
     <owl:DatatypeProperty rdf:about="&nut;nombre">
         <rdfs:label xml:lang="es">nombre</rdfs:label>
         <rdfs:comment xml:lang="es">Nombre identificativo. Slot comun a varias clases.</rdfs:comment>
@@ -187,7 +175,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&xsd;string"/>
     </owl:DatatypeProperty>
 
-    <!-- Slots de Cliente -->
     <owl:DatatypeProperty rdf:about="&nut;sexo">
         <rdfs:label xml:lang="es">sexo</rdfs:label>
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
@@ -202,7 +189,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Edad"/>
     </owl:DatatypeProperty>
 
-    <!-- Slots de Receta -->
     <owl:DatatypeProperty rdf:about="&nut;descripcion">
         <rdfs:label xml:lang="es">descripcion</rdfs:label>
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
@@ -238,7 +224,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&xsd;nonNegativeInteger"/>
     </owl:DatatypeProperty>
 
-    <!-- Slots de Ingrediente -->
     <owl:DatatypeProperty rdf:about="&nut;calorias">
         <rdfs:label xml:lang="es">calorias (por 100g)</rdfs:label>
         <rdf:type rdf:resource="&owl;FunctionalProperty"/>
@@ -267,12 +252,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <rdfs:range rdf:resource="&nut;Gramos"/>
     </owl:DatatypeProperty>
 
-
-    <!-- =========================================================== -->
-    <!--  CLASES PRIMARIAS (PRIMITIVAS)                              -->
-    <!-- =========================================================== -->
-
-    <!-- Cliente: el usuario del centro. Sigue exactamente una dieta. -->
     <owl:Class rdf:about="&nut;Cliente">
         <rdfs:label xml:lang="es">Cliente</rdfs:label>
         <rdfs:comment xml:lang="es">Usuario del centro de nutricion. Todo cliente sigue exactamente una dieta.</rdfs:comment>
@@ -290,7 +269,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </rdfs:subClassOf>
     </owl:Class>
 
-    <!-- Receta: plato recomendable. Tiene al menos un ingrediente y un tipo de plato. -->
     <owl:Class rdf:about="&nut;Receta">
         <rdfs:label xml:lang="es">Receta</rdfs:label>
         <rdfs:comment xml:lang="es">Plato recomendable. Toda receta tiene al menos un ingrediente y un unico tipo de plato.</rdfs:comment>
@@ -308,7 +286,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </rdfs:subClassOf>
     </owl:Class>
 
-    <!-- Ingrediente -->
     <owl:Class rdf:about="&nut;Ingrediente">
         <rdfs:label xml:lang="es">Ingrediente</rdfs:label>
         <rdfs:comment xml:lang="es">Alimento basico que compone las recetas, con su informacion nutricional.</rdfs:comment>
@@ -320,7 +297,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </rdfs:subClassOf>
     </owl:Class>
 
-    <!-- TipoPlato: clase enumerada (entrante, principal, postre) -->
     <owl:Class rdf:about="&nut;TipoPlato">
         <rdfs:label xml:lang="es">Tipo de Plato</rdfs:label>
         <rdfs:comment xml:lang="es">Categoria del plato dentro del menu.</rdfs:comment>
@@ -335,7 +311,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- Dieta: clase enumerada (vegana, vegetariana, normal) -->
     <owl:Class rdf:about="&nut;Dieta">
         <rdfs:label xml:lang="es">Dieta</rdfs:label>
         <rdfs:comment xml:lang="es">Regimen alimentario.</rdfs:comment>
@@ -350,7 +325,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- Alergeno: clase enumerada (lactosa, gluten) -->
     <owl:Class rdf:about="&nut;Alergeno">
         <rdfs:label xml:lang="es">Alergeno</rdfs:label>
         <rdfs:comment xml:lang="es">Sustancia que puede provocar alergia o intolerancia.</rdfs:comment>
@@ -364,7 +338,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- Disyuncion entre las clases de mas alto nivel del dominio -->
     <owl:AllDisjointClasses>
         <owl:members rdf:parseType="Collection">
             <rdf:Description rdf:about="&nut;Cliente"/>
@@ -376,13 +349,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:members>
     </owl:AllDisjointClasses>
 
-
-    <!-- =========================================================== -->
-    <!--  CLASES DEFINIDAS (a partir de las primitivas)             -->
-    <!--  El razonador clasificara los individuos automaticamente.   -->
-    <!-- =========================================================== -->
-
-    <!-- 1) Receta vegana: apta para la dieta Vegana -->
     <owl:Class rdf:about="&nut;RecetaVegana">
         <rdfs:label xml:lang="es">Receta Vegana</rdfs:label>
         <rdfs:comment xml:lang="es">Receta apta para la dieta vegana.</rdfs:comment>
@@ -399,7 +365,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- 2) Receta postre: cuyo tipo de plato es Postre -->
     <owl:Class rdf:about="&nut;RecetaPostre">
         <rdfs:label xml:lang="es">Receta Postre</rdfs:label>
         <rdfs:comment xml:lang="es">Receta cuyo tipo de plato es postre.</rdfs:comment>
@@ -416,7 +381,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- 3) Receta rapida: <= 15 min de preparacion -->
     <owl:Class rdf:about="&nut;RecetaRapida">
         <rdfs:label xml:lang="es">Receta Rapida</rdfs:label>
         <rdfs:comment xml:lang="es">Receta que se prepara en 15 minutos o menos.</rdfs:comment>
@@ -442,7 +406,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- 4) Receta popular: con 100 o mas likes -->
     <owl:Class rdf:about="&nut;RecetaPopular">
         <rdfs:label xml:lang="es">Receta Popular</rdfs:label>
         <rdfs:comment xml:lang="es">Receta con 100 likes o mas.</rdfs:comment>
@@ -468,7 +431,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- 5) Cliente vegano: sigue la dieta Vegana -->
     <owl:Class rdf:about="&nut;ClienteVegano">
         <rdfs:label xml:lang="es">Cliente Vegano</rdfs:label>
         <rdfs:comment xml:lang="es">Cliente que sigue una dieta vegana.</rdfs:comment>
@@ -485,7 +447,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-    <!-- 6) Ingrediente proteico: >= 20 g de proteina por 100g -->
     <owl:Class rdf:about="&nut;IngredienteProteico">
         <rdfs:label xml:lang="es">Ingrediente Proteico</rdfs:label>
         <rdfs:comment xml:lang="es">Ingrediente con 20g o mas de proteina por cada 100g.</rdfs:comment>
@@ -511,12 +472,21 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         </owl:equivalentClass>
     </owl:Class>
 
-
-    <!-- =========================================================== -->
-    <!--  INDIVIDUOS: TIPOS DE PLATO, DIETAS Y ALERGENOS             -->
-    <!--  (los valores que definen la clase enumerada bastan;        -->
-    <!--   el tipo rdf:type lo deduce el razonador por el oneOf)     -->
-    <!-- =========================================================== -->
+    <owl:Class rdf:about="&nut;RecetaConLactosa">
+        <rdfs:label xml:lang="es">Receta Con Lactosa</rdfs:label>
+        <rdfs:comment xml:lang="es">Receta que contiene algun ingrediente con lactosa.</rdfs:comment>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&nut;Receta"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&nut;recetaContieneAlergeno"/>
+                        <owl:hasValue rdf:resource="&nut;Lactosa"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
 
     <owl:NamedIndividual rdf:about="&nut;Entrante">
         <rdf:type rdf:resource="&nut;TipoPlato"/>
@@ -553,7 +523,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <nombre>Gluten</nombre>
     </owl:NamedIndividual>
 
-    <!-- Todos los individuos enumerados son distintos entre si -->
     <owl:AllDifferent>
         <owl:distinctMembers rdf:parseType="Collection">
             <rdf:Description rdf:about="&nut;Entrante"/>
@@ -566,11 +535,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
             <rdf:Description rdf:about="&nut;Gluten"/>
         </owl:distinctMembers>
     </owl:AllDifferent>
-
-
-    <!-- =========================================================== -->
-    <!--  INDIVIDUOS: INGREDIENTES                                   -->
-    <!-- =========================================================== -->
 
     <owl:NamedIndividual rdf:about="&nut;Quinoa">
         <rdf:type rdf:resource="&nut;Ingrediente"/>
@@ -590,7 +554,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <carbohidratos rdf:datatype="&xsd;decimal">3.9</carbohidratos>
     </owl:NamedIndividual>
 
-    <!-- Pechuga de pollo: el razonador la clasificara como IngredienteProteico -->
     <owl:NamedIndividual rdf:about="&nut;PechugaPollo">
         <rdf:type rdf:resource="&nut;Ingrediente"/>
         <nombre>Pechuga de pollo</nombre>
@@ -607,6 +570,7 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <proteinas rdf:datatype="&xsd;decimal">3.4</proteinas>
         <grasas rdf:datatype="&xsd;decimal">3.6</grasas>
         <carbohidratos rdf:datatype="&xsd;decimal">4.8</carbohidratos>
+        <contieneAlergeno rdf:resource="&nut;Lactosa"/>
     </owl:NamedIndividual>
 
     <owl:NamedIndividual rdf:about="&nut;Platano">
@@ -627,13 +591,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <carbohidratos rdf:datatype="&xsd;decimal">1.9</carbohidratos>
     </owl:NamedIndividual>
 
-
-    <!-- =========================================================== -->
-    <!--  INDIVIDUOS: RECETAS                                        -->
-    <!--  (no se asignan las clases definidas: las deduce el razonador) -->
-    <!-- =========================================================== -->
-
-    <!-- Sera RecetaVegana + RecetaRapida + RecetaPopular -->
     <owl:NamedIndividual rdf:about="&nut;EnsaladaDeQuinoa">
         <rdf:type rdf:resource="&nut;Receta"/>
         <nombre>Ensalada de quinoa</nombre>
@@ -664,7 +621,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <aptaParaDieta rdf:resource="&nut;Normal"/>
     </owl:NamedIndividual>
 
-    <!-- Sera RecetaRapida + RecetaVegetariana(no definida) -->
     <owl:NamedIndividual rdf:about="&nut;BatidoProteico">
         <rdf:type rdf:resource="&nut;Receta"/>
         <nombre>Batido proteico de platano</nombre>
@@ -679,7 +635,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <aptaParaDieta rdf:resource="&nut;Vegetariana"/>
     </owl:NamedIndividual>
 
-    <!-- Sera RecetaPostre -->
     <owl:NamedIndividual rdf:about="&nut;TartaDeChocolate">
         <rdf:type rdf:resource="&nut;Receta"/>
         <nombre>Tarta de chocolate</nombre>
@@ -693,12 +648,6 @@ Practica 2 de Ingenieria del Conocimiento. Autor: Pablo Linari Perez.</rdfs:comm
         <aptaParaDieta rdf:resource="&nut;Vegetariana"/>
     </owl:NamedIndividual>
 
-
-    <!-- =========================================================== -->
-    <!--  INDIVIDUOS: CLIENTES                                       -->
-    <!-- =========================================================== -->
-
-    <!-- Ana: sigue dieta Vegana => el razonador la clasifica ClienteVegano -->
     <owl:NamedIndividual rdf:about="&nut;Ana">
         <rdf:type rdf:resource="&nut;Cliente"/>
         <nombre>Ana</nombre>
