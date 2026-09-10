@@ -1,21 +1,32 @@
 #!/bin/bash
 
-if [ $# -eq 0 ];then
-	echo "Hay que indicar la contrasenia"
-	echo "La contrasenia es: contrasenia"
-	exit 1
-fi
+
+read -p "Contrasenia para descifrar: " descpass
+read -p "Contrasenia para integridad: " macpass 
 
 for archivo in "$PWD"/*; do 
-	
 	nombre=$(basename "$archivo")
-	if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ]; 
+	if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [ "$nombre" = "prueba.sh" ] || [[ "$nombre" = *.mac ]]; 
+	#if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [[ "$nombre" = *.mac ]]; 
 	then
 		continue
 	fi
+
 	if [ -f "$archivo" ];then
 		echo "recuperando : $archivo"
-		openssl enc -aes128 -pbkdf2 -k "$1" -in $archivo -out $archivo.bin -d && mv "$archivo".bin $archivo
+
+		hmacoriginal=$(<"$archivo".hmac)
+		hmacafter=$(openssl dgst -sha256 -hmac "$macpass" $archivo)
+
+		if [ "$hmacoriginal" == "$hmacafter" ];then
+			echo "Integridad Garantizada"
+			openssl enc -aes128 -pbkdf2 -k "$decpass" -in $archivo -out $archivo.bin -d && mv "$archivo".bin $archivo
+			rm "$archivo".hmac
+		else
+			echo "No conserva la integridad el archivo: " "$archivo"
+			echo "No se desencripta por seguridad" 
+		fi
+
 	fi
 done
 

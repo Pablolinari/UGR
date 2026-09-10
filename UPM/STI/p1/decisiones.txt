@@ -1,0 +1,100 @@
+Nombre: Pablo Linari Pérez
+Grupo: 5S1M-B
+
+==================================================
+1. MATERIAL CLAVE
+==================================================
+¿Qué claves genera o utiliza la solución? ¿Por qué eligió su longitud y formato?
+
+Respuesta (máximo 50 palabras):
+
+Utilizo dos claves distintas, una para cifrar y otra para integridad , las claves las introduce el usuario y son las mismas para 
+todos los archivos ya que considero un entorno que no necesita seguridad tan alta. 
+
+Al usar el parametro -k la clave pada por una función de derivación
+
+
+==================================================
+2. CONFIDENCIALIDAD E INTEGRIDAD
+==================================================
+¿Qué primitivas criptográficas utiliza y por qué?
+
+Respuesta (máximo 50 palabras):
+
+Para el cifrado uso aes128 y
+
+
+
+
+==================================================
+3. ARCHIVOS GENERADOS
+==================================================
+¿Qué archivos genera la solución?
+
+Respuesta (máximo 50 palabras):
+
+La solución genera archivos temporales y el resultado son los mismos archivos 
+que había en el directorio pero cifrados y acompañados de un archivo con el mismo nombre y con extensión .hmac
+donde se guarda el hash que garantiza integridad.
+
+
+
+==================================================
+4. RECUPERACIÓN Y VERIFICACIÓN
+==================================================
+¿Qué verificaciones realiza antes de recuperar
+la información?
+
+Respuesta (máximo 50 palabras):
+
+Genero un hash del archivo antes de desencriptarlo y compruebo que coincide con 
+el hash que he guardado en el archivo con el mismo nombre y extensión .hmac
+
+ 
+Si se garantiza la integridad lo desencripto , si no imprimo un mensaje en la pantalla avisando de la falta de integridad.
+y no lo desencripto para mantener el sistema seguro.
+
+
+
+==================================================
+5. USO DEL PROGRAMA
+==================================================
+¿Cómo se gestiona el uso que una persona usuaria hace?
+
+Respuesta (máximo 50 palabras):
+
+La persona ejecuta los scripts y debe introducir dos contraseñas
+una para encriptar y la otra para garantizar integridad. 
+
+Una vez ejecutado proteger.sh , el proceso es el mismo pero con 
+recuperar.sh , esta vez , el sistema comprobará si se mantiene 
+la integridad y en este caso se desencriptarán, si no se avisará al 
+usuario.
+
+
+
+==================================================
+6. SISTEMA DE ARCHIVOS Y ENTORNO
+==================================================
+¿Cómo se gestiona la interacción del programa con el entorno de ejecución?
+
+Respuesta (máximo 50 palabras):
+
+
+
+
+==================================================
+8. REFLEXIÓN FINAL
+==================================================
+¿Qué dimensión de la seguridad no proporciona su
+solución aunque funcione correctamente?
+
+Respuesta (máximo 50 palabras):
+
+No contempla el uso de contraseñas individuales para cada archivo. 
+
+Si se añaden nuevos archivos y se vuelve a ejecutar el script sobre todos los 
+archivos del directorio actual. Los previamente encriptados no se encriptan y los nuevos si , pero 
+depende del usuario usar las mismas contraseñas que en la ejecución anterior.
+
+
