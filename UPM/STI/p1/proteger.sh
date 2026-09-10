@@ -13,7 +13,7 @@ for archivo in "$PWD"/**; do
 		continue
 	fi
 
-	if [ -f "$archivo" ] && [! -f "$archivo".hmac];then
+	if [ -f "$archivo" ] && [ ! -f "$archivo".hmac ];then
 		echo "protegiendo : $archivo"
 		openssl enc -aes128 -pbkdf2 -k "$decpass" -in $archivo -out $archivo.bin && mv "$archivo".bin $archivo
 
