@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#Pablo Linari Pérez
 
 read -p "Contrasenia para descifrar: " descpass
 read -p "Contrasenia para integridad: " macpass 
