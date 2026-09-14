@@ -23,7 +23,7 @@ Respuesta (máximo 50 palabras):
 
 Para el cifrado uso AES-128 en modo CBC, con la clave derivada mediante PBKDF2 (-pbkdf2) para
 resistir ataques de fuerza bruta sobre la contraseña. Para la integridad uso HMAC-SHA256 con una
-clave distinta, verificándolo antes de desencriptar (Encrypt-then-MAC) para detectar manipulaciones.
+clave distinta, verificándolo antes de desencriptar para detectar si la información ha sido manipulada.
 
 
 
