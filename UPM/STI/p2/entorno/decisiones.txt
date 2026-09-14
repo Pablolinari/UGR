@@ -1,0 +1,42 @@
+Nombre:
+Grupo:
+
+==================================================
+1. ESTABLECIMIENTO DE CLAVES
+==================================================
+
+Explique qué mecanismo utiliza para obtener
+la clave de cifrado y qué mecanismo utiliza
+para obtener la clave del MAC.
+
+Respuesta (máximo 50 palabras):
+
+
+
+==================================================
+2. LONGITUDES DE CLAVE
+==================================================
+
+Indique las longitudes utilizadas para:
+
+- RSA: 
+- Diffie-Hellman:
+- clave de cifrado:
+- clave del MAC:
+
+Justifique brevemente su elección.
+
+Respuesta (máximo 50 palabras):
+
+
+
+==================================================
+3. MATERIAL INTERCAMBIADO
+==================================================
+
+¿Qué archivos atraviesan el directorio canal?
+
+Respuesta (máximo 50 palabras):
+
+
+
