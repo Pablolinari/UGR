@@ -9,9 +9,9 @@ Grupo: 5S1M-B
 Respuesta (máximo 50 palabras):
 
 Utilizo dos claves distintas, una para cifrar y otra para integridad , las claves las introduce el usuario y son las mismas para 
-todos los archivos ya que considero un entorno que no necesita seguridad tan alta. 
+todos los archivos ya que considero un entorno que no necesita seguridad tan alta y es más cómodo para el usuario. 
 
-Al usar el parametro -k la clave pada por una función de derivación
+La clave se pasa por una función de derivación, para hacerla más resistente contra ataques.
 
 
 ==================================================
@@ -21,11 +21,9 @@ Al usar el parametro -k la clave pada por una función de derivación
 
 Respuesta (máximo 50 palabras):
 
-Para el cifrado uso AES-128 en modo CBC, con la clave derivada mediante PBKDF2 (-pbkdf2) para
-resistir ataques de fuerza bruta sobre la contraseña. Para la integridad uso HMAC-SHA256 con una
+Para el cifrado uso AES-128 en modo CBC, con la clave derivada mediante PBKDF2  para
+resistir ataques de fuerza bruta sobre la contraseña. Para la integridad uso SHA256 con una
 clave distinta, verificándolo antes de desencriptar para detectar si la información ha sido manipulada.
-
-
 
 
 ==================================================
@@ -35,10 +33,9 @@ clave distinta, verificándolo antes de desencriptar para detectar si la informa
 
 Respuesta (máximo 50 palabras):
 
-La solución genera archivos temporales y el resultado son los mismos archivos 
+La solución genera archivos temporales (que no ve el usuario) y el resultado son los mismos archivos 
 que había en el directorio pero cifrados y acompañados de un archivo con el mismo nombre y con extensión .hmac
 donde se guarda el hash que garantiza integridad.
-
 
 
 ==================================================
@@ -52,10 +49,8 @@ Respuesta (máximo 50 palabras):
 Genero un hash del archivo antes de desencriptarlo y compruebo que coincide con 
 el hash que he guardado en el archivo con el mismo nombre y extensión .hmac
 
- 
 Si se garantiza la integridad lo desencripto , si no imprimo un mensaje en la pantalla avisando de la falta de integridad.
 y no lo desencripto para mantener el sistema seguro.
-
 
 
 ==================================================

@@ -1,18 +1,21 @@
 #!/bin/bash
 #Pablo Linari Pérez
 
-read -p "Contrasenia para descifrar: " descpass
+read -p "Contrasenia para descifrar: " decpass
 read -p "Contrasenia para integridad: " macpass 
 
 for archivo in "$PWD"/*; do 
 	nombre=$(basename "$archivo")
-	if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [ "$nombre" = "prueba.sh" ] || [[ "$nombre" = *.mac ]]; 
-	#if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [[ "$nombre" = *.mac ]]; 
+	if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [[ "$nombre" = *.mac ]]; 
 	then
 		continue
 	fi
 
 	if [ -f "$archivo" ];then
+		if [ ! -f "$archivo".hmac ]; then
+			continue
+		fi
+
 		echo "recuperando : $archivo"
 
 		hmacoriginal=$(<"$archivo".hmac)
