@@ -6,7 +6,7 @@ read -p "Contrasenia para integridad: " macpass
 
 for archivo in "$PWD"/*; do 
 	nombre=$(basename "$archivo")
-	if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [[ "$nombre" = *.mac ]]; 
+	if [ "$nombre" = "proteger.sh" ] || [ "$nombre" = "recuperar.sh" ] || [[ "$nombre" = *.hmac ]]; 
 	then
 		continue
 	fi
@@ -19,11 +19,11 @@ for archivo in "$PWD"/*; do
 		echo "recuperando : $archivo"
 
 		hmacoriginal=$(<"$archivo".hmac)
-		hmacafter=$(openssl dgst -sha256 -hmac "$macpass" $archivo)
+		hmacafter=$(openssl dgst -sha256 -hmac "$macpass" "$archivo")
 
 		if [ "$hmacoriginal" == "$hmacafter" ];then
 			echo "Integridad Garantizada"
-			openssl enc -aes128 -pbkdf2 -k "$decpass" -in $archivo -out $archivo.bin -d && mv "$archivo".bin $archivo
+			openssl enc -aes128 -pbkdf2 -k "$decpass" -in "$archivo" -out "$archivo".bin -d && mv "$archivo".bin "$archivo"
 			rm "$archivo".hmac
 		else
 			echo "No conserva la integridad el archivo: " "$archivo"
