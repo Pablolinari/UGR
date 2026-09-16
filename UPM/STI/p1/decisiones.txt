@@ -21,7 +21,7 @@ La clave se pasa por una función de derivación, para hacerla más resistente c
 
 Respuesta (máximo 50 palabras):
 
-Para el cifrado uso AES-128 en modo CBC, con la clave derivada mediante PBKDF2  para
+Para el cifrado uso AES-128 que es el estándar actual para cifrar, con la clave derivada mediante PBKDF2  para
 resistir ataques de fuerza bruta sobre la contraseña. Para la integridad uso SHA256 con una
 clave distinta, verificándolo antes de desencriptar para detectar si la información ha sido manipulada.
 
@@ -77,8 +77,7 @@ usuario.
 
 Respuesta (máximo 50 palabras):
 
-
-
+Los scripts operan sobre el directorio actual ($PWD), recorriendo sus archivos y excluyéndose a sí mismos y a los .hmac. Usan un archivo temporal .bin que sustituye al original con mv, y las contraseñas se leen por pantalla sin ocultarse (sin la opción -s de read).
 
 ==================================================
 8. REFLEXIÓN FINAL
