@@ -15,12 +15,34 @@ printf "DESTINATARIO: Genero mi clave privada y pública "
 openssl genrsa -out clave_destinatario_privada.pem 1024
 openssl rsa -pubout -in clave_destinatario_privada.pem -out clave_destinatario_publica.pem
 cd ..
-openssl genpkey -paramfile dh_parametros.pem
-↳ -out dh_clave_privada.pem
+
 cd destinatario
-printf "DESTINATARIO: Genero mi clave privada y pública DH "
+printf "DESTINATARIO: Genero parámetros y los comparto"
 openssl genpkey -genparam -algorithm DH -out dh_parametros.pem -pkeyopt pbits:1024
-openssl genpkey -paramfile dh_parametros.pem -out dh_clave_privada.pem
+cp dh_parametros.pem ../canal/dh_parametros.pem
+
+printf"DESTINATARIO: Genero mi clave publica y privada y comparto la publica "
+openssl genpkey -paramfile dh_parametros.pem -out dh_clave_privada_destinatario.pem
+openssl pkey -in dh_clave_privada_destinatario.pem -pubout -out dh_clave_publica_destinatario.pem
+cp dh_clave_publica_destinatario.pem ../canal/dh_clave_publica_destinatario.pem
+cd ..
+
+cd remitente
+printf "REMITENTE: recibo parámetros y clave pública"
+cp  ../canal/dh_parametros.pem dh_parametros.pem
+cp  ../canal/dh_clave_publica_destinatario.pem dh_clave_publica_destinatario.pem
+
+printf "REMITENTE: genero mi clave publica y privada"
+openssl genpkey -paramfile dh_parametros.pem -out dh_clave_privada_remitente.pem
+openssl pkey -in dh_clave_privada_remitente.pem -pubout -out dh_clave_publica_remitente.pem
+printf "Genero clave compartida"
+openssl pkeyutl -derive -inkey dh_clave_privada_remitente.pem -peerkey dh_clave_publica_destinatario.pem -out material_clave_remitente.bin
+cd ..
+
+cd destinatario
+printf "DESTINATARIO: Genero clave compartida"
+
+openssl pkeyutl -derive -inkey dh_clave_privada_remitente.pem -peerkey dh_clave_publica_destinatario.pem -out material_clave_remitente.bin
 cd ..
 #cd remitente 
 #printf "REMITENTE: Genero mi clave privada y pública "
