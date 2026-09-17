@@ -77,7 +77,8 @@ usuario.
 
 Respuesta (máximo 50 palabras):
 
-Los scripts operan sobre el directorio actual ($PWD), recorriendo sus archivos y excluyéndose a sí mismos y a los .hmac. Usan un archivo temporal .bin que sustituye al original con mv, y las contraseñas se leen por pantalla sin ocultarse (sin la opción -s de read).
+Los scripts operan sobre el directorio actual ($PWD), recorriendo sus archivos y excluyéndose a sí mismos y a los .hmac. 
+Usan un archivo temporal .bin que sustituye al original con mv, de esta forma el archivo se encripta pero mantiene la extensión original.
 
 ==================================================
 8. REFLEXIÓN FINAL
