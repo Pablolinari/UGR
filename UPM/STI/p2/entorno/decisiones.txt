@@ -10,7 +10,18 @@ la clave de cifrado y qué mecanismo utiliza
 para obtener la clave del MAC.
 
 Respuesta (máximo 50 palabras):
+Para la clave de cifrado , el remitente genera una clave de sesión, 
+la encripta usando la clave publica del destinatario y la comparte para que 
+el destinatario la descifre, de esta manera ambos sabern la clave.
 
+Para el MAC se usa DH , usando un archivo de parámetros común a 
+ambos, tanto destinatario como remitente generan sus claves publicas y privadas. 
+
+El remitente genera una clave usando su clave privada y la publica del destinatario.
+
+El destinatario genera una clave usando su clave privada y la publica del remitente.
+
+Esta clave generada en ambos lados es identica , y es la que se usa para el MAC.
 
 
 ==================================================
@@ -37,6 +48,14 @@ Respuesta (máximo 50 palabras):
 ¿Qué archivos atraviesan el directorio canal?
 
 Respuesta (máximo 50 palabras):
+
+Clave pública RSA del remitente:
+Clave cifrada con RSA:
+Archivo con parámetros de DH:
+Clave pública del remitente de DH:
+Clave pública del destinatario de DH:
+Archivo secreto.txt cifrado:
+Archivo HMAC de secreto.txt :
 
 
 
