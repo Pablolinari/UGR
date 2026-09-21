@@ -12,7 +12,7 @@ cd ..
 
 cd destinatario
 printf "DESTINATARIO: Genero mi clave privada y pública (RSA) \n"
-openssl genrsa -out clave_destinatario_privada.pem 3072
+openssl genrsa -out clave_destinatario_privada.pem 512 #3072
 openssl rsa -pubout -in clave_destinatario_privada.pem -out clave_destinatario_publica.pem
 printf "DESTINATARIO: Comparto mi clave pública (RSA)\n"
 cp  clave_destinatario_publica.pem ../canal/clave_destinatario_publica.pem
@@ -39,7 +39,7 @@ cd ..
 cd destinatario
 printf "DESTINATARIO: Genero parámetros y los comparto (DH)\n"
 ### preguntar : tarda mcho por que , puedo bajerle los bits 
-openssl genpkey -genparam -algorithm DH -out dh_parametros.pem -pkeyopt pbits:3072
+openssl genpkey -genparam -algorithm DH -out dh_parametros.pem -pkeyopt pbits:512 ##3072
 cp dh_parametros.pem ../canal/dh_parametros.pem
 
 printf "DESTINATARIO: Genero mi clave pública y privada y comparto la pública (DH) \n"

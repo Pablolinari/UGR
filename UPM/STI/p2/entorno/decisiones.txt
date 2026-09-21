@@ -1,5 +1,5 @@
-Nombre:
-Grupo:
+Nombre:Pablo Linari Pérez
+Grupo: 5S1M-B
 
 ==================================================
 1. ESTABLECIMIENTO DE CLAVES
@@ -49,13 +49,13 @@ Respuesta (máximo 50 palabras):
 
 Respuesta (máximo 50 palabras):
 
-Clave pública RSA del remitente:
-Clave cifrada con RSA:
-Archivo con parámetros de DH:
-Clave pública del remitente de DH:
-Clave pública del destinatario de DH:
-Archivo secreto.txt cifrado:
-Archivo HMAC de secreto.txt :
+Clave pública RSA del destinatario: clave_destinatario_publica.pem
+Clave cifrada con RSA: clave_secreta.hex.bin 
+Archivo con parámetros de DH:dh_parametros.pem
+Clave pública del remitente de DH:dh_clave_publica_remitente.pem
+Clave pública del destinatario de DH:dh_clave_publica_destinatario.pem
+Archivo secreto.txt cifrado:secreto_cifrado.bin
+Archivo HMAC de secreto.txt :secreto_cifrado.bin.hmac
 
 
 
