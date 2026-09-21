@@ -7,12 +7,12 @@ cd ..
 # Puede usar cp o mv para enviar archivos entre los directorios
 
 # TO DO: el criptosistema
-
+### generar los parametros dh una sola vez con 3072 , y asumir para la ejecucion que ya existen en remitente/
 #genero claves para el destinatario y el remitente
 
 cd destinatario
 printf "DESTINATARIO: Genero mi clave privada y pública (RSA) \n"
-openssl genrsa -out clave_destinatario_privada.pem 512 #3072
+openssl genrsa -out clave_destinatario_privada.pem 3072
 openssl rsa -pubout -in clave_destinatario_privada.pem -out clave_destinatario_publica.pem
 printf "DESTINATARIO: Comparto mi clave pública (RSA)\n"
 cp  clave_destinatario_publica.pem ../canal/clave_destinatario_publica.pem
@@ -36,11 +36,16 @@ printf "DESTINATARIO: Descifro la clave (RSA)\n"
 openssl pkeyutl -decrypt -inkey clave_destinatario_privada.pem -in clave_secreta.hex.bin -out clave_secreta.hex
 cd ..
 
-cd destinatario
-printf "DESTINATARIO: Genero parámetros y los comparto (DH)\n"
-### preguntar : tarda mcho por que , puedo bajerle los bits 
-openssl genpkey -genparam -algorithm DH -out dh_parametros.pem -pkeyopt pbits:512 ##3072
+cd remitente 
+printf "REMITENTE:  Comparto los parametros de Diffie-Hellman (DH)\n"
+# asumo que los parametros de dh ya existen en el remitente
 cp dh_parametros.pem ../canal/dh_parametros.pem
+cd ..
+
+cd destinatario
+
+printf "DESTINATARIO: recibo los parametros para el Diffie-Hellman (DH) \n"
+cp ../canal/dh_parametros.pem dh_parametros.pem
 
 printf "DESTINATARIO: Genero mi clave pública y privada y comparto la pública (DH) \n"
 openssl genpkey -paramfile dh_parametros.pem -out dh_clave_privada_destinatario.pem
@@ -49,8 +54,7 @@ cp dh_clave_publica_destinatario.pem ../canal/dh_clave_publica_destinatario.pem
 cd ..
 
 cd remitente
-printf "REMITENTE: recibo parámetros y clave pública (DH)\n"
-cp  ../canal/dh_parametros.pem dh_parametros.pem
+printf "REMITENTE: recibo  clave pública (DH)\n"
 cp  ../canal/dh_clave_publica_destinatario.pem dh_clave_publica_destinatario.pem
 
 printf "REMITENTE: genero mi clave pública y privada (DH)\n"
@@ -72,9 +76,11 @@ cd ..
 
 cd remitente
 printf "REMITENTE: Encripto el mensaje (RSA)\n"
-openssl enc -aes-256-cbc -in secreto.txt -out secreto_cifrado.bin -pass file:clave_secreta.hex -pbkdf2
+openssl enc -aes-128-cbc -in secreto.txt -out secreto_cifrado.bin -pass file:clave_secreta.hex -pbkdf2
 
 printf "REMITENTE: Genero MAC (DH)\n"
+## pasar esto por un hash
+
 openssl dgst -sha256 -mac HMAC -macopt hexkey:"$(od -An -tx1 dh_clave_remitente.bin | tr -d ' \n')" secreto_cifrado.bin > secreto_cifrado.bin.hmac
 
 printf "REMITENTE: Envío el secreto encriptado y documento de integridad al destinatario\n"
@@ -92,7 +98,7 @@ openssl dgst -sha256 -mac HMAC -macopt hexkey:"$(od -An -tx1 dh_clave_destinatar
 if cmp -s secreto_cifrado_nuevo.bin.hmac secreto_cifrado.bin.hmac; then
 	printf "DESTINATARIO: coinciden los HMAC, integridad garantizada\n"
 	printf "DESTINATARIO: desencripto (RSA) \n"
-	openssl enc -d -aes-256-cbc -in secreto_cifrado.bin -out secreto_descifrado.txt -pass file:clave_secreta.hex -pbkdf2
+	openssl enc -d -aes-128-cbc -in secreto_cifrado.bin -out secreto_descifrado.txt -pass file:clave_secreta.hex -pbkdf2
 	printf "Secreto desencriptado: %s\n" "$(cat secreto_descifrado.txt)"
 fi
 cd ..

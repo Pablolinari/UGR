@@ -15,10 +15,9 @@ la encripta usando la clave publica del destinatario y la comparte para que
 el destinatario la descifre, de esta manera ambos sabern la clave.
 
 Para el MAC se usa DH , usando un archivo de parámetros común a 
-ambos, tanto destinatario como remitente generan sus claves publicas y privadas. 
+ambos que supongo que ya existe, tanto destinatario como remitente generan sus claves publicas y privadas. 
 
 El remitente genera una clave usando su clave privada y la publica del destinatario.
-
 El destinatario genera una clave usando su clave privada y la publica del remitente.
 
 Esta clave generada en ambos lados es identica , y es la que se usa para el MAC.
@@ -30,14 +29,15 @@ Esta clave generada en ambos lados es identica , y es la que se usa para el MAC.
 
 Indique las longitudes utilizadas para:
 
-- RSA: 
-- Diffie-Hellman:
-- clave de cifrado:
-- clave del MAC:
+- RSA: 3072 bits
+- Diffie-Hellman: 3072 bits 
+- clave de cifrado: 128 bits (AES-128)
+- clave del MAC: 128 bits de seguridad (HMAC-SHA256; clave derivada del secreto DH de 3072 bits)
 
 Justifique brevemente su elección.
 
 Respuesta (máximo 50 palabras):
+Según las guías CCN-STIC 807/221 (ENS, nivel alto, 128 bits de fortaleza mínima), RSA y DH requieren ≥3072 bits, y AES y HMAC-SHA256 claves ≥128 bits. Así todos los componentes ofrecen el mismo nivel y ninguno es el eslabón débil.
 
 
 
