@@ -79,9 +79,9 @@ printf "REMITENTE: Encripto el mensaje (RSA)\n"
 openssl enc -aes-128-cbc -in secreto.txt -out secreto_cifrado.bin -pass file:clave_secreta.hex -pbkdf2
 
 printf "REMITENTE: Genero MAC (DH)\n"
-## pasar esto por un hash
-
-openssl dgst -sha256 -mac HMAC -macopt hexkey:"$(od -An -tx1 dh_clave_remitente.bin | tr -d ' \n')" secreto_cifrado.bin > secreto_cifrado.bin.hmac
+# derivo la clave del MAC pasando el secreto DH por SHA-256
+openssl dgst -sha256 -r dh_clave_remitente.bin | cut -d' ' -f1 > clave_mac_remitente.hex
+openssl dgst -sha256 -mac HMAC -macopt hexkey:"$(cat clave_mac_remitente.hex)" secreto_cifrado.bin > secreto_cifrado.bin.hmac
 
 printf "REMITENTE: Envío el secreto encriptado y documento de integridad al destinatario\n"
 mv secreto_cifrado.bin ../canal/
@@ -94,7 +94,9 @@ cp ../canal/secreto_cifrado.bin.hmac secreto_cifrado.bin.hmac
 
 printf "DESTINATARIO: recibo secreto encriptado y documento de integridad \n"
 printf "DESTINATARIO: Compruebo la integridad (DH) \n"
-openssl dgst -sha256 -mac HMAC -macopt hexkey:"$(od -An -tx1 dh_clave_destinatario.bin | tr -d ' \n')" secreto_cifrado.bin > secreto_cifrado_nuevo.bin.hmac
+# derivo la clave del MAC pasando el secreto DH por SHA-256
+openssl dgst -sha256 -r dh_clave_destinatario.bin | cut -d' ' -f1 > clave_mac_destinatario.hex
+openssl dgst -sha256 -mac HMAC -macopt hexkey:"$(cat clave_mac_destinatario.hex)" secreto_cifrado.bin > secreto_cifrado_nuevo.bin.hmac
 if cmp -s secreto_cifrado_nuevo.bin.hmac secreto_cifrado.bin.hmac; then
 	printf "DESTINATARIO: coinciden los HMAC, integridad garantizada\n"
 	printf "DESTINATARIO: desencripto (RSA) \n"
