@@ -12,7 +12,7 @@ para obtener la clave del MAC.
 Respuesta (máximo 50 palabras):
 Para la clave de cifrado , el remitente genera una clave de sesión, 
 la encripta usando la clave publica del destinatario y la comparte para que 
-el destinatario la descifre, de esta manera ambos sabern la clave.
+el destinatario la descifre, de esta manera ambos saben la clave.
 
 Para el MAC se usa DH , usando un archivo de parámetros común a 
 ambos que supongo que ya existe, tanto destinatario como remitente generan sus claves publicas y privadas. 
@@ -20,7 +20,7 @@ ambos que supongo que ya existe, tanto destinatario como remitente generan sus c
 El remitente genera una clave usando su clave privada y la publica del destinatario.
 El destinatario genera una clave usando su clave privada y la publica del remitente.
 
-Esta clave generada en ambos lados es identica , y es la que se usa para el MAC.
+Esta clave generada  se pasa por un hash , en ambos lados es identica , y es la que se usa para el MAC.
 
 
 ==================================================
@@ -32,12 +32,14 @@ Indique las longitudes utilizadas para:
 - RSA: 3072 bits
 - Diffie-Hellman: 3072 bits 
 - clave de cifrado: 128 bits (AES-128)
-- clave del MAC: 128 bits de seguridad (HMAC-SHA256; clave derivada del secreto DH de 3072 bits)
+- clave del MAC: 256 bits (SHA-256 del secreto DH), ~128 bits de seguridad por DH-3072
 
 Justifique brevemente su elección.
 
 Respuesta (máximo 50 palabras):
-Según las guías CCN-STIC 807/221 (ENS, nivel alto, 128 bits de fortaleza mínima), RSA y DH requieren ≥3072 bits, y AES y HMAC-SHA256 claves ≥128 bits. Así todos los componentes ofrecen el mismo nivel y ninguno es el eslabón débil.
+Según la guía CCN-STIC 807 (ENS, nivel alto, 128 bits de fortaleza mínima), 
+RSA y DH requieren 3072 bits, y AES y HMAC-SHA256 claves de al menos 128 bits. 
+Así todos los componentes ofrecen el mismo nivel y ninguno es el eslabón débil.
 
 
 
