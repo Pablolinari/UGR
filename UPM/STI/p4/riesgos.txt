@@ -1,0 +1,52 @@
+Nombre: Pablo Linari Pérez
+Grupo: 5S1M-B
+
+==================================================
+1. RIESGO Y CONTRAMEDIDA 1
+==================================================
+
+Identifique un riesgo visto o comentado durante las
+prácticas que pueda aparecer en una conexión TLS o
+en los sistemas que la soportan y una posible contramedida 
+(máximo 50 palabras):
+
+Riesgo: aceptar en el navegador un certificado autofirmado
+o no confiable, permite
+un ataque de intermediario que lea o altere el tráfico.
+
+Contramedida: emitir certificados con una CA,
+importar su raíz verificando la huella por un canal seguro.
+
+==================================================
+2. RIESGO Y CONTRAMEDIDA 2
+==================================================
+
+Identifique un segundo riesgo visto o comentado durante 
+las prácticas que pueda aparecer en una conexión TLS o
+en los sistemas que la soportan y una posible contramedida 
+(máximo 50 palabras):
+
+Riesgo: un cliente que no verifica el certificado del
+servidor puede conectarse a un servidor que no es el que 
+espera sin detectarlo.
+
+Contramedida: configurar siempre la CA de confianza
+y abortar la conexión si la verificación falla
+y comprobar además que el nombre
+coincide.
+
+==================================================
+3. RIESGO Y CONTRAMEDIDA 3
+==================================================
+
+Identifique un tercer riesgo visto o comentado durante 
+las prácticas que pueda aparecer en una conexión TLS o
+en los sistemas que la soportan y una posible contramedida 
+(máximo 50 palabras):
+
+Riesgo: un servicio sin cifrar 
+expone los datos en claro con tcpdump cualquiera en la
+red puede leerlos o modificarlos, perdiendo
+confidencialidad e integridad.
+
+Contramedida: encapsular el servicio en TLS
